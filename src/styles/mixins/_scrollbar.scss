@@ -1,3 +1,5 @@
+@use '../colors' as *;
+
 @mixin customScrollbar($thumb-color: $gray-300, $hover-color: $gray-300, $width: 4px) {
   &::-webkit-scrollbar {
     width: $width;
