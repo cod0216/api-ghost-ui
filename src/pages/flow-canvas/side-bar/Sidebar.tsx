@@ -1,8 +1,8 @@
-import styles from './side-bar.module.scss';
-import ApiList from '../api-list/api-list.tsx';
-import ScenarioList from '../scenario-list/scenario-list.tsx';
+import styles from './Sidebar.module.scss';
+import ApiList from '@/pages/flow-canvas/api-list/ApiList.tsx';
+import ScenarioList from '@/pages/flow-canvas/scenario-list/ScenarioList.tsx';
 
-const SideBar = () => {
+const Sidebar = () => {
   return (
     <div className={styles.sidebarContainer}>
       <h2>Ghost API</h2>
@@ -21,4 +21,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default Sidebar;

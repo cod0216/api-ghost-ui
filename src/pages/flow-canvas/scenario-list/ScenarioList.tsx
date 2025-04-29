@@ -1,4 +1,4 @@
-import styles from './scenario-list.module.scss';
+import styles from '@/pages/flow-canvas/scenario-list/ScenarioList.module.scss';
 
 /**
  * Displays a static list of user scenarios for selection.
