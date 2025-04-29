@@ -1,16 +1,28 @@
-@use '../../../styles/mixins/scrollbar';
+/**
+ * @fileoverview Styles for the Sidebar component.
+ * 
+ * @use '@/styles/mixins/scrollbar':
+ * - Imports custom scrollbar mixin for styling the scrollbar.
+ */
 
+@use '@/styles/mixins/scrollbar';
+
+/**
+ * The main container for the sidebar
+ */
 .sidebarContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
   height: 100%;
-  width: 250px;
   background-color: $white;
   border-right: 1px solid $outline-color;
 }
 
+/**
+ * A search input field in the sidebar.
+ */
 .search {
   width: 100%;
   padding: 10px;
@@ -19,6 +31,10 @@
   background-color: $gray-200;
 }
 
+/**
+ * A container for the history section in the sidebar.
+ * @include scrollbar.customScrollbar applies a custom scrollbar mixin for better UX.
+ */
 .historyContainer {
   flex-grow: 1;
   display: flex;
@@ -28,6 +44,9 @@
   @include scrollbar.customScrollbar;
 }
 
+/**
+ * A single item in the history list.
+ */
 .historyItem {
   display: flex;
   justify-content: space-between;
@@ -36,17 +55,26 @@
   cursor: pointer;
   border-radius: 5px;
   padding: 8px;
-  border-bottom: 1px solid $gray-100;
+  border-bottom: 1px solid $outline-color;
 }
 
+/**
+ * Styles for the history item when hovered.
+ */
 .historyItem:hover {
   background-color: $gray-100;
 }
 
+/**
+ * Used in history items to represent success status.
+ */
 .success {
-  color: $red-500;
+  color: $blue-500;
 }
 
+/**
+ * Used in history items to represent failure status.
+ */
 .fail {
-  color: $blue-500;
+  color: $red-500;
 }

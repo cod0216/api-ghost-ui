@@ -1,12 +1,26 @@
-// Font Sizes
+/**
+ * @fileoverview Typography scale variables used throughout the application.
+ * Includes font sizes and font weights from small to large scale.
+ */
+
+/** Font Sizes (xs to 5xl)*/
 $font-size-xs: 12px;
 $font-size-sm: 14px;
 $font-size-md: 16px;
-$font-size-lg: 20px;
-$font-size-xl: 24px;
-$font-size-xxl: 32px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 30px;
+$font-size-4xl: 36px;
+$font-size-5xl: 48px;
 
-// Font Weights
+/** Font Weights */
+$font-weight-thin: 100;
+$font-weight-extralight: 200;
+$font-weight-light: 300;
 $font-weight-regular: 400;
 $font-weight-medium: 500;
+$font-weight-semibold: 600;
 $font-weight-bold: 700;
+$font-weight-extrabold: 800;
+$font-weight-black: 900;

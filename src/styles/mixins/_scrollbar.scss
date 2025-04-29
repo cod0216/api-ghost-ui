@@ -1,5 +1,23 @@
+/**
+ * @fileoverview Custom scrollbar mixin.
+ * This mixin styles the scrollbar for elements, allowing customization of the thumb color, hover color, and width.
+ * Default values for the thumb and hover colors are set to gray, and the width is set to 4px.
+ * 
+ * Usage:
+ * @include customScrollbar($thumb-color, $hover-color, $width);
+ * - $thumb-color: The color of the scrollbar thumb (default is $gray-300).
+ * - $hover-color: The color of the scrollbar thumb on hover (default is $gray-300).
+ * - $width: The width of the scrollbar (default is 4px).
+ */
 @use '../colors' as *;
 
+/**
+  * Mixin to style custom scrollbars with adjustable thumb color, hover color, and width.
+  *
+  * @param {Color} $thumb-color - The color of the scrollbar thumb (default is $gray-300).
+  * @param {Color} $hover-color - The color of the scrollbar thumb when hovered (default is $gray-300).
+  * @param {Length} $width - The width of the scrollbar (default is 4px).
+  */
 @mixin customScrollbar($thumb-color: $gray-300, $hover-color: $gray-300, $width: 4px) {
   &::-webkit-scrollbar {
     width: $width;

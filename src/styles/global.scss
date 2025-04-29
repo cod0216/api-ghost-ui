@@ -1,12 +1,25 @@
+/**
+ * @fileoverview Global styles including font-face, reset styles, and base theme setup.
+ * This file sets the default font, resets margins/paddings, and applies theme colors.
+ */
+
 @use './colors' as *;
 
+/** 
+  * Register Pretendard variable font.
+  * Supports dynamic font weights from 100 to 900.
+  */
 @font-face {
   font-family: 'Pretendard';
-  src: url('..//assets/fonts/PretendardVariable.ttf') format('truetype');
+  src: url('../assets/fonts/PretendardVariable.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
 
+/**
+  * Global reset for all elements.
+  * Removes default margins/paddings and applies border-box sizing.
+  */
 *,
 *::before,
 *::after {
@@ -15,6 +28,10 @@
   box-sizing: border-box;
 }
 
+/**
+  * Base body styles.
+  * Sets default font, background color, text color, and line height.
+  */
 body {
   font-family: 'Pretendard', sans-serif;
   background-color: $white;
