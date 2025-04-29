@@ -1,5 +1,3 @@
-# Pull Request Guidelines – API GHOST
-
 <!--  
 Thank you for contributing to the API GHOST project.  
 This document provides guidelines to ensure smooth collaboration and maintain high code quality.  
@@ -29,8 +27,6 @@ Available types:
     style:    modify CSS styles
 -->
 
-## PR Template
-
 ### Related Issue
 
 - Please specify the issue number linked to this PR. (e.g., Fixes #<issue_number>)
@@ -49,7 +45,7 @@ Available types:
 
 - Add any context or reference information that may help reviewers understand the changes.
 
-## Pre-Submission Checklist
+### Pre-Submission Checklist
 
 - [ ] Have you completed code style (convention) checks locally?
 - [ ] Have you passed the CI tests in your local environment?
