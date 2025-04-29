@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './api-list.module.scss';
+import styles from '@/pages/flow-canvas/api-list/ApiList.module.scss';
 import { mockEndpoints, Endpoint } from '@/pages/flow-canvas/data/endpoint.ts';
 
 /**

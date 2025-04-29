@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   ReactFlow,
-  ReactFlowProvider,
+  useReactFlow,
   addEdge,
   useNodesState,
   useEdgesState,
@@ -10,13 +10,15 @@ import {
   Node,
 } from 'reactflow';
 import { Endpoint } from '@/pages/flow-canvas/data/endpoint.ts';
-import styles from './flow-canvas.module.scss';
-import SideBar from '@/pages/flow-canvas/side-bar/side-bar.tsx';
+import styles from '@/pages/flow-canvas/FlowCanvas.module.scss';
+import SideBar from '@/pages/flow-canvas/side-bar/Sidebar.tsx';
 import 'reactflow/dist/style.css';
 
 const FlowCanvas: React.FC = () => {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const { project } = useReactFlow();
 
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges(eds => addEdge(params, eds)),
@@ -31,41 +33,43 @@ const FlowCanvas: React.FC = () => {
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
+      const bounds = reactFlowWrapper.current?.getBoundingClientRect();
+      if (!bounds) return;
       const data = event.dataTransfer.getData('application/reactflow');
       if (!data) return;
       const endpoint: Endpoint = JSON.parse(data);
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const position = {
+      const position = project({
         x: event.clientX - bounds.left,
         y: event.clientY - bounds.top,
-      };
+      });
       const newNode: Node = {
-        id: endpoint.id,
+        id: `${endpoint.id}_${Date.now()}`,
         type: 'default',
         position,
         data: { label: `${endpoint.method} ${endpoint.path}` },
       };
       setNodes(nds => nds.concat(newNode));
     },
-    [setNodes],
+    [project, setNodes],
   );
 
   return (
-    <ReactFlowProvider>
-      <div className={styles.container}>
-        <SideBar />
-        <div className={styles.canvas} onDragOver={onDragOver} onDrop={onDrop}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            fitView
-          />
-        </div>
+    <div className={styles.container}>
+      <SideBar />
+      <div className={styles.canvas} ref={reactFlowWrapper}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+          fitView
+          style={{ width: '100%', height: '100%' }}
+        />
       </div>
-    </ReactFlowProvider>
+    </div>
   );
 };
 
