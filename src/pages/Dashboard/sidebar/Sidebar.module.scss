@@ -1,7 +1,10 @@
+@import '@/styles/mixins/scrollbar';
+
 .sidebarContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 100%;
 }
 
 .search {
@@ -13,8 +16,12 @@
 }
 
 .historyContainer {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+
+  @include customScrollbar();
 }
 
 .historyItem {
@@ -24,7 +31,7 @@
   color: $gray-700;
   cursor: pointer;
   border-radius: 5px;
-  padding: 5px;
+  padding: 8px;
   border-bottom: 1px solid $gray-100;
 }
 

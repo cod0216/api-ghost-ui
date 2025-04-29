@@ -5,12 +5,8 @@ const Sidebar = () => {
     <div className={styles.sidebarContainer}>
       <h2>Ghost API</h2>
       <input type="text" placeholder="Search" className={styles.search} />
-
       <h4>History</h4>
       <div className={styles.historyContainer}>
-        <div className={styles.historyItem}>
-          Board <span className={styles.fail}>fail</span>
-        </div>
         <div className={styles.historyItem}>
           Scenario 1 <span className={styles.success}>success</span>
         </div>
