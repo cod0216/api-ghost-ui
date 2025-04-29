@@ -1,6 +1,17 @@
+/**
+ * @fileoverview Sidebar component for the dashboard page.
+ * Provides navigation and request history features.
+ */
+
 import styles from './Sidebar.module.scss';
 
-const Sidebar = () => {
+/**
+ * Sidebar component displays the application title,
+ * search input, and a history section for previous requests.
+ *
+ * @returns A React component representing the sidebar UI.
+ */
+const Sidebar: React.FC = () => {
   return (
     <div className={styles.sidebarContainer}>
       <h2>Ghost API</h2>
