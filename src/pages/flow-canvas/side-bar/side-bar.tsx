@@ -2,7 +2,7 @@ import styles from './side-bar.module.scss';
 import ApiList from '../api-list/api-list.tsx';
 import ScenarioList from '../scenario-list/scenario-list.tsx';
 
-const Sidebar = () => {
+const SideBar = () => {
   return (
     <div className={styles.sidebarContainer}>
       <h2>Ghost API</h2>
@@ -21,4 +21,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SideBar;

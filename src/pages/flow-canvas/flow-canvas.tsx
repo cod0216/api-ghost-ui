@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './flow-canvas.module.scss';
-import Sidebar from './side-bar/side-bar.tsx';
+import SideBar from './side-bar/side-bar.tsx';
 
 export interface FlowCanvasProps {}
 /**
@@ -12,7 +12,7 @@ const FlowCanvas = () => {
   return (
     <div className={styles.container}>
       <div>
-        <Sidebar />
+        <SideBar />
       </div>
       <div className={styles.canvas}>Flow Canvas</div>
     </div>
