@@ -26,6 +26,7 @@ Available types:
     test:     Add or update tests
     docs:     Update documentation (e.g., README)
     refactor: Code changes that neither fix a bug nor add a feature
+    style:    modify CSS styles
 -->
 
 ## PR Template
