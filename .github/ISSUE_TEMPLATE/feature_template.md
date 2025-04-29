@@ -1,6 +1,7 @@
 ---
 name: Feature Request
 about: Suggest a new feature for the project
+title: "[Feature] "
 ---
 
 # feature request
