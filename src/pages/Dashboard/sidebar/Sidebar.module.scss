@@ -1,11 +1,11 @@
 /**
  * @fileoverview Styles for the Sidebar component.
  * 
- * @use '../../../styles/mixins/scrollbar':
+ * @use '@/styles/mixins/scrollbar':
  * - Imports custom scrollbar mixin for styling the scrollbar.
  */
 
-@use '../../../styles/mixins/scrollbar';
+@use '@/styles/mixins/scrollbar';
 
 /**
  * The main container for the sidebar
@@ -16,7 +16,6 @@
   gap: 10px;
   padding: 20px;
   height: 100%;
-  width: 250px;
   background-color: $white;
   border-right: 1px solid $outline-color;
 }
@@ -56,7 +55,7 @@
   cursor: pointer;
   border-radius: 5px;
   padding: 8px;
-  border-bottom: 1px solid $gray-100;
+  border-bottom: 1px solid $outline-color;
 }
 
 /**

@@ -1,8 +1,52 @@
-/**
-* Main content area inside the dashboard.
-*/
 .mainContent {
   flex: 1;
   background: $white;
-  padding: 20px;
+  overflow-y: auto;
+}
+
+.historyInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid $outline-color;
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+    color: $gray-900;
+  }
+
+  p {
+    margin: 0;
+    color: $gray-600;
+    font-size: 14px;
+  }
+
+  .meta {
+    text-align: right;
+    font-size: 13px;
+    color: $gray-500;
+
+    div + div {
+      margin-top: 4px;
+    }
+  }
+}
+
+.resultItem {
+  padding: 10px 0;
+  border-bottom: 1px solid $outline-color;
+  font-size: 14px;
+
+  strong {
+    font-weight: 600;
+    color: $gray-800;
+  }
+
+  .status {
+    margin-left: 8px;
+    color: $gray-600;
+  }
 }
