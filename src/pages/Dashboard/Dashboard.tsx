@@ -5,6 +5,7 @@
 
 import styles from './Dashboard.module.scss';
 import Sidebar from '@/pages/dashboard/sidebar/Sidebar.tsx';
+import MainContent from './main-content/MainContent.tsx';
 
 /**
  * Dashboard component responsible for rendering the main layout of the dashboard page.
@@ -15,7 +16,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className={styles.container}>
       <Sidebar />
-      <div className={styles.mainContent}>main</div>
+      <MainContent />
     </div>
   );
 };
