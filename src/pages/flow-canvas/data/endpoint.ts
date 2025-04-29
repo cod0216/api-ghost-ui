@@ -3,8 +3,10 @@
  * for use in the FlowCanvas drag-and-drop scenario builder.
  */
 
+/** HTTP method types */
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'FETCH' | 'STOMP';
 
+/** API Endpoint interface */
 export interface Endpoint {
   id: string;
   method: HttpMethod;
