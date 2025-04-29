@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './ScenarioList.module.scss';
+import styles from './scenario-list.module.scss';
 
 /**
  * Displays a static list of user scenarios for selection.

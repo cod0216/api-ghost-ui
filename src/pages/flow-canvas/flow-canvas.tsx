@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './FlowCanvas.module.scss';
-import Sidebar from './SideBar/SideBar.tsx';
+import styles from './flow-canvas.module.scss';
+import Sidebar from './side-bar/side-bar.tsx';
 
 export interface FlowCanvasProps {}
 /**

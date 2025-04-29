@@ -1,6 +1,6 @@
-import styles from './Sidebar.module.scss';
-import ApiList from '../ApiList/ApiList.tsx';
-import ScenarioList from '../ScenarioList/ScenarioList.tsx';
+import styles from './side-bar.module.scss';
+import ApiList from '../api-list/api-list.tsx';
+import ScenarioList from '../scenario-list/scenario-list.tsx';
 
 const Sidebar = () => {
   return (

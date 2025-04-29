@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './ApiList.module.scss';
+import styles from './api-list.module.scss';
 
 const ApiList = () => {
   return <ul className={styles.list}></ul>;
