@@ -1,3 +1,10 @@
+/**
+ * @fileoverview ScenarioList.tsx
+ *
+ * ScenarioList provides a static list of user-defined scenarios that can be selected
+ * for visualization on the FlowCanvas. Each list item can invoke a callback when clicked.
+ */
+
 import styles from '@/pages/flow-canvas/scenario-list/ScenarioList.module.scss';
 
 /**
