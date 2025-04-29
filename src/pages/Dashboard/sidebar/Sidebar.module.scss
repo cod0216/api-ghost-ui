@@ -1,0 +1,41 @@
+.sidebarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 15px;
+  background-color: $gray-200;
+}
+
+.historyContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: $font-size-sm;
+  color: $gray-700;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+  border-bottom: 1px solid $gray-100;
+}
+
+.historyItem:hover {
+  background-color: $gray-100;
+}
+
+.success {
+  color: $red-500;
+}
+
+.fail {
+  color: $blue-500;
+}
