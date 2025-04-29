@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Defines the Endpoint type, HttpMethod union data
+ * for use in the FlowCanvas drag-and-drop scenario builder.
+ */
+
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'FETCH' | 'STOMP';
 
 export interface Endpoint {
@@ -6,6 +11,9 @@ export interface Endpoint {
   path: string;
 }
 
+/**
+ * mock endpoint data
+ */
 export const mockEndpoints: Endpoint[] = [
   { id: '1', method: 'GET', path: '/api/auths/login' },
   { id: '2', method: 'POST', path: '/api/users' },

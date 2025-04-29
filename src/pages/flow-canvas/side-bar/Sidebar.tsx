@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Sidebar.tsx
+ */
+
 import styles from './Sidebar.module.scss';
 import ApiList from '@/pages/flow-canvas/api-list/ApiList.tsx';
 import ScenarioList from '@/pages/flow-canvas/scenario-list/ScenarioList.tsx';

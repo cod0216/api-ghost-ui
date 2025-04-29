@@ -1,3 +1,11 @@
+/**
+ * @fileoverview FlowCanvas.tsx
+ *
+ * FlowCanvas provides a UI where users can construct scenario flows by
+ * dragging and dropping selected EndPoints to place nodes and connecting
+ * those nodes to define the flow.
+ */
+
 import React, { useCallback, useRef } from 'react';
 import {
   ReactFlow,
@@ -14,6 +22,12 @@ import styles from '@/pages/flow-canvas/FlowCanvas.module.scss';
 import SideBar from '@/pages/flow-canvas/side-bar/Sidebar.tsx';
 import 'reactflow/dist/style.css';
 
+/**
+ * Provides an interface for visualizing scenario flows and
+ * allows adding endpoints as nodes via drag-and-drop.
+ *
+ * @returns Rendered FlowCanvas UI
+ */
 const FlowCanvas: React.FC = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
