@@ -30,16 +30,10 @@ const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => 
         </div>
       </div>
 
-      <div>
-        {/* Map through the results and display each result item */}
-        {history.results.map((res, idx) => (
-          <div key={idx} className={styles.resultItem}>
-            <strong>
-              {res.method} {res.endpoint}
-            </strong>
-            <span className={styles.status}>- {res.statusCode}</span>
-          </div>
-        ))}
+      <div className={styles.chartContainer}>
+        <div className={styles.flowGraphArea}> Flow graph </div>
+        <div className={styles.latencyGraphArea}> Latency graph </div>
+        <div className={styles.tableArea}> Table </div>
       </div>
     </div>
   );
