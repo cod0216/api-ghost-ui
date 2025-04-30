@@ -35,7 +35,7 @@ const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => 
 
       <div className={styles.chartContainer}>
         <FlowGraphArea />
-        <LatencyGraphArea />
+        <LatencyGraphArea history={history} />
         <TableArea results={history.results} />
       </div>
     </div>
