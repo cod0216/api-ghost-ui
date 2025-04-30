@@ -3,8 +3,8 @@ import { HistoryItem } from '@/types/index.ts';
 export const mockHistoryList: HistoryItem[] = [
   {
     id: 'SC-001',
-    title: '회원가입 시나리오',
-    description: '신규 사용자 회원가입 후 로그인까지 확인',
+    title: 'Sign-Up Scenario',
+    description: 'Verifies the sign-up process and login for a new user',
     executedAt: '2025-04-23T14:15:00+09:00',
     totalDurationMs: 550,
     averageDurationMs: 275,
@@ -45,8 +45,8 @@ export const mockHistoryList: HistoryItem[] = [
   },
   {
     id: 'SC-003',
-    title: '정상 로그인 및 로그아웃',
-    description: '정상 로그인 후 로그아웃까지',
+    title: 'Successful Login and Logout',
+    description: 'Verifies login followed by logout',
     executedAt: '2025-04-24T10:00:00+09:00',
     totalDurationMs: 420,
     averageDurationMs: 210,
@@ -84,8 +84,8 @@ export const mockHistoryList: HistoryItem[] = [
   },
   {
     id: 'SC-004',
-    title: '상품 조회 시나리오',
-    description: '상품 목록 조회 및 상세 조회',
+    title: 'Product Query Scenario',
+    description: 'Checks product list and detail view',
     executedAt: '2025-04-24T11:30:00+09:00',
     totalDurationMs: 350,
     averageDurationMs: 175,
@@ -123,8 +123,8 @@ export const mockHistoryList: HistoryItem[] = [
   },
   {
     id: 'SC-005',
-    title: '주문 실패 시나리오',
-    description: '재고 없음으로 인한 주문 실패',
+    title: 'Order Failure Scenario',
+    description: 'Order failure due to out-of-stock product',
     executedAt: '2025-04-25T09:10:00+09:00',
     totalDurationMs: 300,
     averageDurationMs: 300,
@@ -149,8 +149,8 @@ export const mockHistoryList: HistoryItem[] = [
   },
   {
     id: 'SC-006',
-    title: '비밀번호 재설정',
-    description: '비밀번호 재설정 절차 확인',
+    title: 'Password Reset',
+    description: 'Verifies the password reset process',
     executedAt: '2025-04-26T12:45:00+09:00',
     totalDurationMs: 450,
     averageDurationMs: 225,
@@ -186,11 +186,10 @@ export const mockHistoryList: HistoryItem[] = [
       },
     ],
   },
-
   {
     id: 'SC-003',
-    title: '복합 사용자 흐름 시나리오',
-    description: '회원가입 → 로그인 → 정보 조회/수정 → 로그아웃 등 전체 흐름 검증',
+    title: 'Complex User Flow Scenario',
+    description: 'Verifies the entire flow: Sign Up → Login → Retrieve/Update Info → Logout, etc.',
     executedAt: '2025-04-29T10:00:00+09:00',
     totalDurationMs: 1480,
     averageDurationMs: 148,
@@ -229,7 +228,7 @@ export const mockHistoryList: HistoryItem[] = [
         method: 'GET',
         requestBody: {},
         requestHeaders: { Authorization: 'Bearer jwt.token.value' },
-        responseBody: { name: '홍길동', email: 'user@example.com' },
+        responseBody: { name: 'Hong Gil-dong', email: 'user@example.com' },
         responseHeaders: { contentType: 'application/json' },
         statusCode: 200,
         startTime: '2025-04-29T10:00:01.400+09:00',
