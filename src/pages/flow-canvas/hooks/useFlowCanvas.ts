@@ -13,12 +13,22 @@ import {
   useReactFlow,
   useNodesState,
   useEdgesState,
+  XYPosition,
 } from 'reactflow';
 import { Endpoint } from '@/pages/flow-canvas/data/endpoint.ts';
 
+interface FlowNodeData {
+  baseUrl: string;
+  method: string;
+  path: string;
+  showBody: boolean;
+  body?: any;
+}
+type FlowNode = Node<FlowNodeData>;
+
 export function useFlowCanvas() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<FlowNodeData>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const { project } = useReactFlow();
 
@@ -65,9 +75,14 @@ export function useFlowCanvas() {
         ...ns,
         {
           id: `${endpoint.id}_${Date.now()}`,
-          type: 'default',
+          type: 'custom',
           position,
-          data: { label: `${endpoint.method} ${endpoint.path}` },
+          data: {
+            baseUrl: 'https://ssafy.com',
+            method: endpoint.method.toLowerCase(),
+            path: endpoint.path,
+            showBody: false,
+          },
         },
       ]);
     },

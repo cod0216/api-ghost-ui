@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
-import { ReactFlow, ReactFlowProvider } from 'reactflow';
+import { ReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import SideBar from '@/pages/flow-canvas/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
+import CustomNode from '@/pages/flow-canvas/custom-node/CustomNode.tsx';
 import styles from './FlowCanvas.module.scss';
+const nodeTypes = { custom: CustomNode };
 
 /**
  * Provides an interface for visualizing scenario flows and
@@ -32,6 +34,7 @@ const FlowCanvas: React.FC = () => {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          nodeTypes={nodeTypes}
           onConnect={onConnect}
           onDragOver={onDragOver}
           onDrop={onDrop}
