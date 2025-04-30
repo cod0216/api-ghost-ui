@@ -9,7 +9,7 @@
  * The component handles tab management (selecting, adding, and closing tabs) and history item selection.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.scss';
 import Sidebar from '@/pages/dashboard/sidebar/Sidebar.tsx';
 import MainContent from '@/pages/dashboard/main-content/MainContent.tsx';
@@ -57,6 +57,15 @@ const Dashboard: React.FC = () => {
       if (matched) setSelectedHistory(matched); // Update the selected history
     }
   };
+
+  useEffect(() => {
+    if (selectedTab) {
+      const matched = mockHistoryList.find(h => h.id === selectedTab.id);
+      if (matched) setSelectedHistory(matched);
+    } else {
+      setSelectedHistory(null);
+    }
+  }, [selectedTab]);
 
   return (
     <div className={styles.container}>
