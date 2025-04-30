@@ -11,6 +11,9 @@
  */
 import { HistoryItem } from '@/types/index.ts';
 import styles from './MainContent.module.scss';
+import FlowGraphArea from '../flow-graph-area/FlowGraphArea.tsx';
+import LatencyGraphArea from '../latency-graph-area/LatencyGrahpArea.tsx';
+import TableArea from '../table-area/TableArea.tsx';
 
 const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => {
   // If no history is selected, empty content.
@@ -30,16 +33,10 @@ const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => 
         </div>
       </div>
 
-      <div>
-        {/* Map through the results and display each result item */}
-        {history.results.map((res, idx) => (
-          <div key={idx} className={styles.resultItem}>
-            <strong>
-              {res.method} {res.endpoint}
-            </strong>
-            <span className={styles.status}>- {res.statusCode}</span>
-          </div>
-        ))}
+      <div className={styles.chartContainer}>
+        <FlowGraphArea />
+        <LatencyGraphArea />
+        <TableArea results={history.results} />
       </div>
     </div>
   );
