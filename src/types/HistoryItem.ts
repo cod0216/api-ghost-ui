@@ -11,13 +11,13 @@ export interface HistoryItem {
   results: ResultItem[];
 }
 
-interface ResultItem {
+export interface ResultItem {
   endpoint: string;
   method: string;
-  requestBody: any;
+  requestBody?: object;
   requestHeader?: Record<string, string>;
   requestHeaders?: Record<string, string>;
-  responseBody: any;
+  responseBody?: object;
   responseHeaders: Record<string, string>;
   statusCode: number;
   startTime: string;

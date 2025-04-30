@@ -11,12 +11,14 @@
  * @returns {JSX.Element} A React functional component rendering request/response data in tabular form.
  */
 import styles from './TableArea.module.scss';
-import { mockHistoryList } from '../__mocks__/mockHistoryList.ts';
 import React from 'react';
+import { ResultItem } from '@/types/index.ts';
 
-const TableArea: React.FC = () => {
-  const results = mockHistoryList[0].results;
+interface TableAreaProps {
+  results: ResultItem[];
+}
 
+const TableArea: React.FC<TableAreaProps> = ({ results }) => {
   return (
     <div className={styles.tableArea}>
       <h4>Request / Response Raw Data</h4>
