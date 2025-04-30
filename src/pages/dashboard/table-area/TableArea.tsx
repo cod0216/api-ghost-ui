@@ -1,3 +1,15 @@
+/**
+ * @fileoverview TableArea component displays a raw data table for request and response history.
+ *
+ * This component renders a table based on mock API history data.
+ * It includes details such as HTTP method, endpoint, status code, duration,
+ * timestamps, and headers/bodies of the requests and responses.
+ *
+ * Data is currently sourced from a mock object (`mockHistoryList`).
+ *
+ * @component
+ * @returns {JSX.Element} A React functional component rendering request/response data in tabular form.
+ */
 import styles from './TableArea.module.scss';
 import { mockHistoryList } from '../__mocks__/mockHistoryList.ts';
 import React from 'react';
