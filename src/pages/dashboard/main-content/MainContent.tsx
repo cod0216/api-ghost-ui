@@ -11,9 +11,9 @@
  */
 import { HistoryItem } from '@/types/index.ts';
 import styles from './MainContent.module.scss';
-import FlowGraphArea from '../flow-graph-area/FlowGraphArea.tsx';
-import LatencyGraphArea from '../latency-graph-area/LatencyGrahpArea.tsx';
-import TableArea from '../table-area/TableArea.tsx';
+import FlowGraphArea from '@/pages/dashboard/flow-graph-area/FlowGraphArea.tsx';
+import LatencyGraphArea from '@/pages/dashboard/latency-graph-area/LatencyGrahpArea.tsx';
+import TableArea from '@/pages/dashboard/table-area/TableArea.tsx';
 
 const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => {
   // If no history is selected, empty content.
