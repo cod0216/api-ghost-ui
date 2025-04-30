@@ -1,0 +1,20 @@
+@use '@/styles/mixins/scrollbar';
+
+.sidebarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  height: 100%;
+  width: 250px;
+  background-color: $white;
+  border-right: 1px solid $outline-color;
+}
+
+.search {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 15px;
+  background-color: $gray-200;
+}
