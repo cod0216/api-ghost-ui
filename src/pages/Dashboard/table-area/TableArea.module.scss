@@ -1,0 +1,16 @@
+.tableArea {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  overflow-x: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tableDataArea {
+  flex-grow: 1;
+  background-color: $primary-50;
+  border-radius: 8px;
+}
