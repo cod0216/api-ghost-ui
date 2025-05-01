@@ -38,32 +38,32 @@
 
 .deleteMethod {
   @extend .methodBtn;
-  background-color: $red-50;
-  color: $red-500;
+  background-color: $delete-bg;
+  color: $delete-font;
 }
 
 .getMethod {
   @extend .methodBtn;
-  background-color: $blue-50;
-  color: $blue-500;
+  background-color: $get-bg;
+  color: $get-font;
 }
 
 .postMethod {
   @extend .methodBtn;
-  background-color: $green-50;
-  color: $green-500;
+  background-color: $post-bg;
+  color: $post-font;
 }
 
 .putMethod {
   @extend .methodBtn;
-  background-color: $primary-50;
-  color: $primary-600;
+  background-color: $put-bg;
+  color: $put-font;
 }
 
-.patchMethod {
+.fatchMethod {
   @extend .methodBtn;
-  background-color: $red-200;
-  color: $red-500;
+  background-color: $fetch-bg;
+  color: $fetch-font;
 }
 
 .path {
