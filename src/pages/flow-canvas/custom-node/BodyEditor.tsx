@@ -13,11 +13,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({ onClose }) => {
     e.stopPropagation();
   };
 
-  return (
-    <div className={styles.editorPopover} onClick={handleClick}>
-      {/* 빈 흰색 영역 — 나중에 직접 레이아웃 잡으시면 됩니다 */}
-    </div>
-  );
+  return <div className={styles.editorPopover} onClick={handleClick}></div>;
 };
 
 export default BodyEditor;
