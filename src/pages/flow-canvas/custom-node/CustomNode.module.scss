@@ -89,14 +89,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 10px;
   cursor: pointer;
 }
 
 .line {
   display: block;
-  height: 2px;
+  height: 1px;
   margin: 1px;
   background-color: $gray-500;
 }
