@@ -1,6 +1,9 @@
 /**
- * @fileoverview
+ * @fileoverview CustomNode.tsx
  *
+ * This component defines a custom node used in React Flow.
+ * Each node represents an API endpoint with its baseUrl, method, and path.
+ * It also supports toggling a body editor for modifying the request body.
  */
 
 import React, { MouseEvent, useCallback } from 'react';
@@ -17,9 +20,10 @@ type FlowNodeData = {
 };
 
 /**
+ * CustomNode component
  *
- * @param param0
- * @returns
+ * @param param0 Props passed by React Flow: node ID and data
+ * @returns Rendered node UI component
  */
 const CustomNode: React.FC<NodeProps<FlowNodeData>> = ({ id, data }) => {
   const { setNodes } = useReactFlow();

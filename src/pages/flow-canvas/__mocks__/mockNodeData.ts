@@ -1,6 +1,11 @@
 /**
- * mock endpoint data
+ * @fileoverview endpoint data
+ *
+ * Provides mock endpoint data used for simulating nodes in the FlowCanvas.
+ * Each endpoint includes an ID, HTTP method, and a path to represent
+ * an API request structure in scenario flows.
  */
+
 import { HttpMethod } from '@/types/HttpMethod.ts';
 import { NodeEndPoint } from '@/types/NodeEndPoint.ts';
 
