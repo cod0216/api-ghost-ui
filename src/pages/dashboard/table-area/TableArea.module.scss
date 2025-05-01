@@ -13,6 +13,7 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 
     th,
     td {
@@ -21,6 +22,8 @@
       text-align: center;
       vertical-align: top;
       font-size: $font-size-xs;
+      word-wrap: break-word;
+      overflow: hidden;
     }
 
     th {
@@ -32,6 +35,17 @@
     td {
       background-color: $white;
       color: $gray-900;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        width: 100px;
+      }
+
+      &:nth-child(3),
+      &:nth-child(4),
+      &:nth-child(5) {
+        width: 150px;
+      }
 
       pre {
         margin: 0;
@@ -67,16 +81,17 @@
     max-height: 1000px;
   }
 }
+
 .detailContent {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // 기본은 2열
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   padding: 1rem;
   border-top: 1px solid $primary-100;
   background-color: $white;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr; // 모바일에서는 1열
+    grid-template-columns: 1fr;
   }
 }
 

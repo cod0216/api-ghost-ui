@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './TableArea.module.scss';
 import { ResultItem } from '@/types/index.ts';
 import DetailRow from './DetailRow.tsx';
+import LightIndicator from '@/conponents/LightIndicator.tsx';
 
 interface TableRowProps {
   item: ResultItem;
@@ -13,7 +14,9 @@ const TableRow: React.FC<TableRowProps> = ({ item }) => {
   return (
     <>
       <tr onClick={() => setOpen(!open)} className={styles.summaryRow}>
-        <td>{item.isRequestSuccess ? '✅' : '❌'}</td>
+        <td>
+          <LightIndicator isSuccess={item.isRequestSuccess} />
+        </td>
         <td>{item.method}</td>
         <td>{item.endpoint}</td>
         <td>{item.statusCode}</td>
