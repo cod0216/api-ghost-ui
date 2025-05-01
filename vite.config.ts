@@ -16,6 +16,7 @@ export default defineConfig({
           @use "@/styles/global" as *;
           @use "@/styles/fonts" as *;
           @use "@/styles/colors" as *;
+          @use "@/styles/radius" as *;
         `,
       },
     },

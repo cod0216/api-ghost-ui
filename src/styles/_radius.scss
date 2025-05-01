@@ -3,8 +3,11 @@
  *  Defines the standard border-radius scale used throughout the project.
  */
 
-$radius-sm: 2px;
-$radius-md: 4px;
+$radius-xs: 2px;
+$radius-sm: 4px;
+$radius-md: 6px;
 $radius-lg: 8px;
-$radius-xl: 16px;
+$radius-xl: 10px;
+$radius-2xl: 12px;
+$radius-3xl: 14px;
 $radius-full: 9999px;
