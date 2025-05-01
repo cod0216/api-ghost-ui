@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './TableArea.module.scss';
 import { ResultItem } from '@/types/index.ts';
 import DetailRow from './DetailRow.tsx';
-import LightIndicator from '@/conponents/LightIndicator.tsx';
+import LightIndicator from '@/components/LightIndicator.tsx';
 
 interface TableRowProps {
   item: ResultItem;
