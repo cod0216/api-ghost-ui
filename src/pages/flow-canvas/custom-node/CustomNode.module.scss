@@ -1,5 +1,9 @@
 /**
+ * @fileoverview CustomNode.module.scss
  *
+ * Defines styles for the custom node component.
+ * Includes layout for node boxes, method buttons, path display,
+ * body section, and editor popover.
  */
 
 .node {
@@ -11,7 +15,7 @@
   min-width: 200px;
 }
 
-.methodBtn {
+.methodButton {
   font-size: $font-size-2xs;
   padding: 0px 6px;
   border: none;
@@ -19,7 +23,7 @@
 }
 
 .header {
-  background-color: $primary-600;
+  background-color: $primary-700;
   color: $white;
   font-size: $font-size-xs;
   text-align: center;
@@ -37,38 +41,38 @@
 }
 
 .deleteMethod {
-  @extend .methodBtn;
+  @extend .methodButton;
   background-color: $delete-bg;
   color: $delete-font;
 }
 
 .getMethod {
-  @extend .methodBtn;
+  @extend .methodButton;
   background-color: $get-bg;
   color: $get-font;
 }
 
 .postMethod {
-  @extend .methodBtn;
+  @extend .methodButton;
   background-color: $post-bg;
   color: $post-font;
 }
 
 .putMethod {
-  @extend .methodBtn;
+  @extend .methodButton;
   background-color: $put-bg;
   color: $put-font;
 }
 
 .fatchMethod {
-  @extend .methodBtn;
+  @extend .methodButton;
   background-color: $fetch-bg;
   color: $fetch-font;
 }
 
 .path {
   font-size: $font-size-xs;
-  font-weight: bold;
+  font-weight: $font-weight-medium;
   color: $black;
   flex: 1;
   margin: 0 8px;
