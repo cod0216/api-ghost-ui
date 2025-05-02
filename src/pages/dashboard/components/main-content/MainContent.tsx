@@ -10,7 +10,7 @@
  * @returns {JSX.Element} The component to render.
  */
 import { HistoryItem } from '@/common/types/index.ts';
-import styles from './MainContent.module.scss';
+import styles from '@/pages/dashboard/styles/MainContent.module.scss';
 import FlowGraphArea from '@/pages/dashboard/components/flow-graph-area/FlowGraphArea.tsx';
 import LatencyGraphArea from '@/pages/dashboard/components/latency-graph-area/LatencyGrahpArea.tsx';
 import TableArea from '@/pages/dashboard/components/table-area/TableArea.tsx';
@@ -34,7 +34,7 @@ const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => 
       </div>
 
       <div className={styles.chartContainer}>
-        <FlowGraphArea />
+        <FlowGraphArea results={history.results} />
         <LatencyGraphArea history={history} />
         <TableArea results={history.results} />
       </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import styles from './TableArea.module.scss';
+import styles from '@/pages/dashboard/styles/TableArea.module.scss';
 import { ResultItem } from '@/common/types/index.ts';
-import DetailRow from './DetailRow.tsx';
+import DetailRow from '@/pages/dashboard/components/table-area/DetailRow.tsx';
 import LightIndicator from '@/common/components/LightIndicator.tsx';
 
 interface TableRowProps {

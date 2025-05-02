@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './TableArea.module.scss';
+import styles from '@/pages/dashboard/styles/TableArea.module.scss';
 import { ResultItem } from '@/common/types/index.ts';
-import TableRow from './TableRow.tsx';
+import TableRow from '@/pages/dashboard/components/table-area/TableRow.tsx';
 
 interface TableAreaProps {
   results: ResultItem[];
