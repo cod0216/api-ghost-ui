@@ -1,30 +1,34 @@
 /**
+ * @fileoverview CustomNode.module.scss
  *
+ * Defines styles for the custom node component.
+ * Includes layout for node boxes, method buttons, path display,
+ * body section, and editor popover.
  */
 
 .node {
   position: relative;
   background: $white;
   border: 1px solid $outline-color;
-  border-radius: 8px;
+  border-radius: $radius-lg;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   min-width: 200px;
 }
 
-.methodBtn {
+.methodButton {
   font-size: $font-size-2xs;
   padding: 0px 6px;
   border: none;
-  border-radius: 12px;
+  border-radius: $radius-2xl;
 }
 
 .header {
-  background-color: $primary-600;
+  background-color: $primary-700;
   color: $white;
   font-size: $font-size-xs;
   text-align: center;
   padding: 2px 8px;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: $radius-lg $radius-lg 0px 0px;
 }
 
 .actions {
@@ -33,42 +37,42 @@
   justify-content: space-between;
   background: $white;
   padding: 4px 8px;
-  border-radius: 0px 0px 8px 8px;
+  border-radius: 0px 0px $radius-lg $radius-lg;
 }
 
 .deleteMethod {
-  @extend .methodBtn;
-  background-color: $red-50;
-  color: $red-500;
+  @extend .methodButton;
+  background-color: $delete-bg;
+  color: $delete-font;
 }
 
 .getMethod {
-  @extend .methodBtn;
-  background-color: $blue-50;
-  color: $blue-500;
+  @extend .methodButton;
+  background-color: $get-bg;
+  color: $get-font;
 }
 
 .postMethod {
-  @extend .methodBtn;
-  background-color: $green-50;
-  color: $green-500;
+  @extend .methodButton;
+  background-color: $post-bg;
+  color: $post-font;
 }
 
 .putMethod {
-  @extend .methodBtn;
-  background-color: $primary-50;
-  color: $primary-600;
+  @extend .methodButton;
+  background-color: $put-bg;
+  color: $put-font;
 }
 
-.patchMethod {
-  @extend .methodBtn;
-  background-color: $red-200;
-  color: $red-500;
+.fatchMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
 }
 
 .path {
   font-size: $font-size-xs;
-  font-weight: bold;
+  font-weight: $font-weight-medium;
   color: $black;
   flex: 1;
   margin: 0 8px;
@@ -85,14 +89,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 10px;
   cursor: pointer;
 }
 
 .line {
   display: block;
-  height: 2px;
+  height: 1px;
   margin: 1px;
   background-color: $gray-500;
 }
@@ -100,9 +104,8 @@
 .body {
   background: $gray-50;
   padding: 8px;
-  font-family: monospace;
   font-size: 0.75rem;
-  border-radius: 4px;
+  border-radius: $radius-sm;
   max-height: 120px;
   overflow: auto;
 }
@@ -115,7 +118,6 @@
   border: 1px solid $outline-color;
   border-top: none;
   padding: 8px;
-  font-family: monospace;
   font-size: $font-size-xs;
   line-height: 1.4;
   box-sizing: border-box;
@@ -128,7 +130,7 @@
   width: 100%;
   background: $white;
   border: 1px solid $outline-color;
-  border-radius: 6px;
+  border-radius: $radius-md;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
   padding: 8px;
@@ -138,7 +140,7 @@
   background: $gray-50;
   padding: 8px;
   font-size: $font-size-2xs;
-  border-radius: 4px;
+  border-radius: $radius-sm;
   max-height: 120px;
   overflow: auto;
 }

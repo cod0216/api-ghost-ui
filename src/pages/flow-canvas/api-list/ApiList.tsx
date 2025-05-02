@@ -7,7 +7,7 @@
 
 import React from 'react';
 import styles from '@/pages/flow-canvas/api-list/ApiList.module.scss';
-import { mockEndpoints, Endpoint } from '@/pages/flow-canvas/data/endpoint.ts';
+import { mockEndpoints } from '../__mocks__/mockNodeData.ts';
 
 /**
  * ApiList component

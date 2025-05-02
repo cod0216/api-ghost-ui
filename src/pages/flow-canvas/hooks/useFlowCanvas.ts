@@ -15,7 +15,7 @@ import {
   useEdgesState,
   XYPosition,
 } from 'reactflow';
-import { Endpoint } from '@/pages/flow-canvas/data/endpoint.ts';
+import { NodeEndPoint } from '@/types/NodeEndPoint.ts';
 
 interface FlowNodeData {
   baseUrl: string;
@@ -66,7 +66,7 @@ export function useFlowCanvas() {
       const data = e.dataTransfer.getData('application/reactflow');
       if (!data) return;
 
-      const endpoint: Endpoint = JSON.parse(data);
+      const endpoint: NodeEndPoint = JSON.parse(data);
       const position = project({
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
