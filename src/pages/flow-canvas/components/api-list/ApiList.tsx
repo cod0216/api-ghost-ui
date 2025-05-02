@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import styles from '@/pages/flow-canvas/api-list/ApiList.module.scss';
-import { mockEndpoints } from '../__mocks__/mockNodeData.ts';
+import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
+import { mockEndpoints } from '../../__mocks__/mockNodeData.ts';
 
 /**
  * ApiList component

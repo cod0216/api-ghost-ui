@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './TableArea.module.scss';
-import { ResultItem } from '@/types/index.ts';
+import { ResultItem } from '@/common/types/index.ts';
 
 interface DetailRowProps {
   isOpen: boolean;

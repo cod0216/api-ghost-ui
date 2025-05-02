@@ -6,8 +6,8 @@
  * an API request structure in scenario flows.
  */
 
-import { HttpMethod } from '@/types/HttpMethod.ts';
-import { NodeEndPoint } from '@/types/NodeEndPoint.ts';
+import { HttpMethod } from '@/common/types/HttpMethod.ts';
+import { NodeEndPoint } from '@/common/types/NodeEndPoint.ts';
 
 export const mockEndpoints: NodeEndPoint[] = [
   { id: '1', method: HttpMethod.GET, path: '/api/auths/login' },

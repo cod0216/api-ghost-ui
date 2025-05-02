@@ -15,7 +15,7 @@ import {
   useEdgesState,
   XYPosition,
 } from 'reactflow';
-import { NodeEndPoint } from '@/types/NodeEndPoint.ts';
+import { NodeEndPoint } from '@/common/types/NodeEndPoint.ts';
 
 interface FlowNodeData {
   baseUrl: string;

@@ -5,7 +5,7 @@
  * for visualization on the FlowCanvas. Each list item can invoke a callback when clicked.
  */
 import React from 'react';
-import styles from './ScenarioList.module.scss';
+import styles from '@/pages/flow-canvas/styles/ScenarioList.module.scss';
 
 interface ScenarioListProps {
   scenarios?: { id: string; name: string }[];

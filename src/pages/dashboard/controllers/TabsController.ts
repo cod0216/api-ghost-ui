@@ -7,7 +7,7 @@
  * @fileoverview Responsible for managing the collection of tabs, tracking the selected tab,
  * and displaying the corresponding content for that tab.
  */
-import { TabItem } from '@/types/index.ts';
+import { TabItem } from '@/common/types/index.ts';
 
 /**
  * Controller for managing tabs within the Dashboard.

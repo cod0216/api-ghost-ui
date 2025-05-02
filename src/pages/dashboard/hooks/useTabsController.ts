@@ -5,8 +5,8 @@
  * Provides functionality to select, add, and close tabs while maintaining the list of tabs and the selected tab.
  */
 import { useState } from 'react';
-import { TabsController } from '@/controllers/TabsController.ts';
-import { TabItem } from '@/types/index.ts';
+import { TabsController } from '@/pages/dashboard/controllers/TabsController.ts';
+import { TabItem } from '@/common/types/index.ts';
 
 /**
  * Hook to manage tab state and actions in the dashboard.

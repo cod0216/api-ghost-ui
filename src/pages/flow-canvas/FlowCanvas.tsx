@@ -9,10 +9,10 @@
 import React from 'react';
 import { ReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
-import SideBar from '@/pages/flow-canvas/side-bar/Sidebar.tsx';
+import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
-import CustomNode from '@/pages/flow-canvas/custom-node/CustomNode.tsx';
-import styles from './FlowCanvas.module.scss';
+import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
+import styles from './styles/FlowCanvas.module.scss';
 const nodeTypes = { custom: CustomNode };
 
 /**
