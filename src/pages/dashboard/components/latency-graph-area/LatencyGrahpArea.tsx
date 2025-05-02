@@ -9,7 +9,7 @@
  */
 import LatencyGraph from './LatencyGraph.tsx';
 import styles from './LatencyGraphArea.module.scss';
-import { HistoryItem } from '@/types/index.ts';
+import { HistoryItem } from '@/common/types/index.ts';
 
 interface LatencyGraphAreaProps {
   history: HistoryItem;

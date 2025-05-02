@@ -1,4 +1,4 @@
-import { HistoryItem } from '@/types/index.ts';
+import { HistoryItem } from '@/common/types/index.ts';
 
 export const mockHistoryList: HistoryItem[] = [
   {

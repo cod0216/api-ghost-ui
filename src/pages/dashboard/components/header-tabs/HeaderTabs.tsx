@@ -8,7 +8,7 @@
  * @fileoverview Displays a list of tabs with close buttons, and allows tab selection and closure.
  */
 
-import { TabItem } from '@/types/index.ts';
+import { TabItem } from '@/common/types/index.ts';
 import styles from './HeaderTabs.module.scss';
 
 // Props interface for the HeaderTabs component

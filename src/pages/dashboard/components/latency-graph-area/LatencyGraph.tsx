@@ -10,7 +10,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 import styles from './LatencyGraph.module.scss';
-import { HistoryItem } from '@/types/index.ts';
+import { HistoryItem } from '@/common/types/index.ts';
 
 interface LatencyGraphProps {
   history: HistoryItem;

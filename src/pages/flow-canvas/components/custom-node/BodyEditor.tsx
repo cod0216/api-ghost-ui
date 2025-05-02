@@ -6,7 +6,7 @@
  */
 
 import React, { MouseEvent } from 'react';
-import styles from '@/pages/flow-canvas/custom-node/BodyEditor.module.scss';
+import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 
 export interface BodyEditorProps {
   body: any;

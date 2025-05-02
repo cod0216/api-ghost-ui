@@ -8,8 +8,8 @@
 
 import React, { MouseEvent, useCallback } from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
-import BodyEditor from '@/pages/flow-canvas/custom-node/BodyEditor.tsx';
-import styles from './CustomNode.module.scss';
+import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
+import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
 
 type FlowNodeData = {
   baseUrl: string;
