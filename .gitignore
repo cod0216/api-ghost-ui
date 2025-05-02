@@ -29,4 +29,4 @@ dist-ssr
 *.sw?
 
 # mock file
-__mocks__/
+**/__mocks__/
