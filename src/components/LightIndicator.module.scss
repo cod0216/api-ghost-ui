@@ -1,0 +1,14 @@
+.indicator {
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.success {
+  background: radial-gradient(circle, $gray-100 0%, $green-300 100%);
+  box-shadow: 0 0 10px $green-300;
+}
+
+.failure {
+  background: radial-gradient(circle, $red-100 0%, $red-300 100%);
+  box-shadow: 0 0 10px $red-300;
+}

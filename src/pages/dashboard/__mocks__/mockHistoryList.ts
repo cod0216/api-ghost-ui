@@ -83,7 +83,7 @@ export const mockHistoryList: HistoryItem[] = [
     ],
   },
   {
-    id: 'SC-004',
+    id: 'SC-014',
     title: 'Product Query Scenario',
     description: 'Checks product list and detail view',
     executedAt: '2025-04-24T11:30:00+09:00',
@@ -122,7 +122,7 @@ export const mockHistoryList: HistoryItem[] = [
     ],
   },
   {
-    id: 'SC-005',
+    id: 'SC-015',
     title: 'Order Failure Scenario',
     description: 'Order failure due to out-of-stock product',
     executedAt: '2025-04-25T09:10:00+09:00',
@@ -148,7 +148,7 @@ export const mockHistoryList: HistoryItem[] = [
     ],
   },
   {
-    id: 'SC-006',
+    id: 'SC-016',
     title: 'Password Reset',
     description: 'Verifies the password reset process',
     executedAt: '2025-04-26T12:45:00+09:00',
@@ -187,7 +187,7 @@ export const mockHistoryList: HistoryItem[] = [
     ],
   },
   {
-    id: 'SC-003',
+    id: 'SC-013',
     title: 'Complex User Flow Scenario',
     description: 'Verifies the entire flow: Sign Up → Login → Retrieve/Update Info → Logout, etc.',
     executedAt: '2025-04-29T10:00:00+09:00',
