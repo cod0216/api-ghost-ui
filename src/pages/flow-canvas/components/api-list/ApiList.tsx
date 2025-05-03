@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
+import styles from '@/pages/flow-canvas/styles/ApiList.module.scss';
 import { mockEndpoints } from '../../__mocks__/mockNodeData.ts';
 
 /**
