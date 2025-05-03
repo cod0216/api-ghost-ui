@@ -7,11 +7,14 @@
  * @component
  * @returns {JSX.Element} A React functional component rendering the flow graph area.
  */
-import styles from './FlowGraphArea.module.scss';
+import { ResultItem } from '@/common/types/HistoryItem.ts';
+import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 
-interface FlowGraphAreaProps {}
+interface FlowGraphAreaProps {
+  results: ResultItem[];
+}
 
-const FlowGraphArea: React.FC<FlowGraphAreaProps> = () => {
+const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results }) => {
   return (
     <div className={styles.flowGraphArea}>
       <h4>Flow</h4>

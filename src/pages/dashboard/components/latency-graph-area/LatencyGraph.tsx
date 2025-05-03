@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import styles from './LatencyGraph.module.scss';
+import styles from '@/pages/dashboard/styles/LatencyGraph.module.scss';
 import { HistoryItem } from '@/common/types/index.ts';
 
 interface LatencyGraphProps {

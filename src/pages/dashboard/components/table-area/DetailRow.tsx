@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './TableArea.module.scss';
+import styles from '@/pages/dashboard/styles/TableArea.module.scss';
 import { ResultItem } from '@/common/types/index.ts';
 
 interface DetailRowProps {

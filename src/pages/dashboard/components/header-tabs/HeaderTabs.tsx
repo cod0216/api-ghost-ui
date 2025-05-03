@@ -9,7 +9,7 @@
  */
 
 import { TabItem } from '@/common/types/index.ts';
-import styles from './HeaderTabs.module.scss';
+import styles from '@/pages/dashboard/styles/HeaderTabs.module.scss';
 
 // Props interface for the HeaderTabs component
 interface HeaderTabsProps {
@@ -47,22 +47,21 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({ tabs, selectedTab, onSelectTab,
   return (
     <div className={styles.tabs}>
       {tabs.map(tab => {
-        // Determine if this tab is the selected tab
         const isSelected = tab.id === selectedTab?.id;
 
         return (
           <div
             key={tab.id}
             className={`${styles.tab} ${isSelected ? styles.selectedTab : ''}`}
-            onClick={() => onSelectTab(tab.id)} // Handle tab selection
+            onClick={() => onSelectTab(tab.id)}
           >
             <span className={styles.title}>{tab.title}</span>
 
             <span
               className={styles.close}
               onClick={e => {
-                e.stopPropagation(); // Prevent tab selection when closing
-                onCloseTab(tab.id); // Handle tab closing
+                e.stopPropagation();
+                onCloseTab(tab.id);
               }}
             >
               ×

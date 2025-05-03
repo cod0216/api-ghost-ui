@@ -7,8 +7,8 @@
  * @component
  * @returns {JSX.Element} A React functional component rendering the latency graph section.
  */
-import LatencyGraph from './LatencyGraph.tsx';
-import styles from './LatencyGraphArea.module.scss';
+import LatencyGraph from '@/pages/dashboard/components/latency-graph-area/LatencyGraph.tsx';
+import styles from '@/pages/dashboard/styles/LatencyGraphArea.module.scss';
 import { HistoryItem } from '@/common/types/index.ts';
 
 interface LatencyGraphAreaProps {
