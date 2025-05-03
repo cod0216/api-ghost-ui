@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { ReactFlow } from 'reactflow';
+import { ReactFlow, MarkerType, useReactFlow, Handle, Position, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
 import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
@@ -38,6 +38,19 @@ const FlowCanvas: React.FC = () => {
           onConnect={onConnect}
           onDragOver={onDragOver}
           onDrop={onDrop}
+          defaultEdgeOptions={{
+            type: 'smoothstep',
+            animated: true,
+            style: {
+              stroke: '#25297f',
+              strokeWidth: 2,
+              strokeDasharray: '5 5',
+            },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: '#25297f',
+            },
+          }}
           fitView
         />
       </div>
