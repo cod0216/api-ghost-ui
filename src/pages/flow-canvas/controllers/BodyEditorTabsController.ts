@@ -1,39 +1,53 @@
 /**
- * BodyEditorController class
+ * @fileoverview Controller for the BodyEditor popover.
  *
- * Manages the state of the BodyEditor popover, including main and sub tab selection.
+ * Manages the active main tab and tracks the last-selected sub tab for each main tab.
  */
 export class BodyEditorController {
   private mainTab: 'request' | 'response' = 'request';
-  private subTab: 'header' | 'body' | 'params' = 'body';
+
+  private subTabMap: {
+    request: 'header' | 'body' | 'params';
+    response: 'header' | 'body';
+  } = {
+    request: 'header',
+    response: 'header',
+  };
 
   /**
-   * Gets current main tab.
+   * @Returns the currently selected main tab.
    */
   getMainTab(): 'request' | 'response' {
     return this.mainTab;
   }
 
   /**
-   * Gets current sub tab.
+   * @Returns the sub tab associated with the active main tab.
    */
   getSubTab(): 'header' | 'body' | 'params' {
-    return this.subTab;
+    return this.subTabMap[this.mainTab];
   }
 
   /**
-   * Selects a main tab and resets sub tab to default for that context.
+   * Switches the active main tab.
+   * Does not reset sub tabs—instead preserves each tab’s last selection.
    */
   selectMainTab(tab: 'request' | 'response') {
     this.mainTab = tab;
-    // default sub-tab per main selection
-    this.subTab = tab === 'request' ? 'body' : 'header';
   }
 
   /**
-   * Selects a sub tab. UI should ensure only valid combos are passed.
+   * Updates the sub tab for the active main tab.
+   * @Throws if attempting to select 'params' under the 'response' tab.
    */
   selectSubTab(tab: 'header' | 'body' | 'params') {
-    this.subTab = tab;
+    if (this.mainTab === 'request') {
+      this.subTabMap.request = tab;
+    } else {
+      if (tab === 'params') {
+        throw new Error('Cannot select "params" under the response tab.');
+      }
+      this.subTabMap.response = tab;
+    }
   }
 }
