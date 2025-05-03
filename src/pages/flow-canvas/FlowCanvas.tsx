@@ -38,20 +38,12 @@ const FlowCanvas: React.FC = () => {
           onConnect={onConnect}
           onDragOver={onDragOver}
           onDrop={onDrop}
+          fitView
           defaultEdgeOptions={{
             type: 'smoothstep',
             animated: true,
-            style: {
-              stroke: '#25297f',
-              strokeWidth: 2,
-              strokeDasharray: '5 5',
-            },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: '#25297f',
-            },
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#25297f' },
           }}
-          fitView
         />
       </div>
     </div>
