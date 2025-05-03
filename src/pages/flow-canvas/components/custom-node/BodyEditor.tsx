@@ -13,71 +13,52 @@ export interface BodyEditorProps {
  * Uses a controller and hook to manage its tab state.
  */
 const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
-  const { mainTab, subTab, selectMainTab, selectSubTab } = useBodyEditorController();
+  const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
+    useBodyEditorController();
 
   const stopCollapse = (e: MouseEvent) => {
     e.stopPropagation();
   };
 
+  const tempContent = () => {
+    const key = `${mainTab}_${subTab}` as const;
+    const contentMap: Record<string, JSX.Element> = {
+      request_header: <div>헤더</div>,
+      request_body: <div>바디</div>,
+      request_params: <div>파람</div>,
+      response_header: <div>헤더</div>,
+      response_body: <div>바디</div>,
+    };
+    return contentMap[key];
+  };
+
   return (
     <div className={styles.editorPopover} onClick={stopCollapse}>
       <div className={styles.mainTabs}>
-        <button
-          className={`${styles.tab} ${mainTab === 'request' ? styles.activeMainTab : ''}`}
-          onClick={() => selectMainTab('request')}
-        >
-          Request
-        </button>
-        <button
-          className={`${styles.tab} ${mainTab === 'response' ? styles.activeMainTab : ''}`}
-          onClick={() => selectMainTab('response')}
-        >
-          Response
-        </button>
+        {(['request', 'response'] as const).map(tab => (
+          <button
+            key={tab}
+            className={`${styles.tab} ${mainTab === tab ? styles.activeMainTab : ''}`}
+            onClick={() => selectMainTab(tab)}
+          >
+            {tab[0].toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
       </div>
 
       <div className={styles.subTabs}>
-        <button
-          className={`${styles.tab} ${subTab === 'header' ? styles.activeSubTab : ''}`}
-          onClick={() => selectSubTab('header')}
-        >
-          Header
-        </button>
-
-        {mainTab === 'request' && (
-          <>
-            <button
-              className={`${styles.tab} ${subTab === 'body' ? styles.activeSubTab : ''}`}
-              onClick={() => selectSubTab('body')}
-            >
-              Body
-            </button>
-            <button
-              className={`${styles.tab} ${subTab === 'params' ? styles.activeSubTab : ''}`}
-              onClick={() => selectSubTab('params')}
-            >
-              Params
-            </button>
-          </>
-        )}
-
-        {mainTab === 'response' && (
+        {availableSubTabs.map(tab => (
           <button
-            className={`${styles.tab} ${subTab === 'body' ? styles.activeSubTab : ''}`}
-            onClick={() => selectSubTab('body')}
+            key={tab}
+            className={`${styles.tab} ${subTab === tab ? styles.activeSubTab : ''}`}
+            onClick={() => selectSubTab(tab)}
           >
-            Body
+            {tab[0].toUpperCase() + tab.slice(1)}
           </button>
-        )}
+        ))}
       </div>
 
-      <div className={styles.contentArea}>
-        {mainTab === 'request' && subTab === 'header' && <div>헤더</div>}
-        {mainTab === 'request' && subTab === 'body' && <div>바디</div>}
-        {mainTab === 'request' && subTab === 'params' && <div>파람</div>}
-        {mainTab === 'response' && subTab === 'header' && <div>헤더</div>}
-        {mainTab === 'response' && subTab === 'body' && <div>바디</div>}
-      </div>
+      <div className={styles.contentArea}>{tempContent()}</div>
 
       <div className={styles.buttonRow}>
         <button className={styles.saveButton} onClick={() => onSave(body)}>
