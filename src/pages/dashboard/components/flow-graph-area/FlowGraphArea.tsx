@@ -9,6 +9,8 @@
  */
 import { ResultItem } from '@/common/types/HistoryItem.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
+import { ReactFlowProvider } from 'reactflow';
+import ApiTestFlowGraph from '@/pages/dashboard/components/flow-graph-area/FlowGraphCanvas.tsx';
 
 interface FlowGraphAreaProps {
   results: ResultItem[];
@@ -18,7 +20,11 @@ const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results }) => {
   return (
     <div className={styles.flowGraphArea}>
       <h4>Flow</h4>
-      <div className={styles.graphArea}></div>
+      <div className={styles.graphArea}>
+        <ReactFlowProvider>
+          <ApiTestFlowGraph apiResults={results} />
+        </ReactFlowProvider>
+      </div>
     </div>
   );
 };

@@ -10,5 +10,10 @@
 .graphArea {
   flex-grow: 1;
   background-color: $primary-50;
-  border-radius: 8px;
+  border-radius: $radius-lg;
+}
+
+.flowGraph {
+  height: 100%;
+  width: 100%;
 }
