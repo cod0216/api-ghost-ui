@@ -1,6 +1,7 @@
 import React, { MouseEvent } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
+import { BODY_EDITOR_TABS } from '@/pages/flow-canvas/types/bodyEditorTabs.ts';
 
 export interface BodyEditorProps {
   body: any;
@@ -14,60 +15,46 @@ export interface BodyEditorProps {
  */
 const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
-    useBodyEditorController();
+    useBodyEditorController(BODY_EDITOR_TABS);
 
-  const stopCollapse = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
-
-  const tempContent = () => {
-    const key = `${mainTab}_${subTab}` as const;
-    const contentMap: Record<string, JSX.Element> = {
-      request_header: <div>헤더</div>,
-      request_body: <div>바디</div>,
-      request_params: <div>파람</div>,
-      response_header: <div>헤더</div>,
-      response_body: <div>바디</div>,
-    };
-    return contentMap[key];
-  };
+  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   return (
-    <div className={styles.editorPopover} onClick={stopCollapse}>
-      <div className={styles.mainTabs}>
-        {(['request', 'response'] as const).map(tab => (
+    <div className={styles.editorPopover} onClick={stopPropagation}>
+      <nav className={styles.mainTabs}>
+        {BODY_EDITOR_TABS.map(group => (
           <button
-            key={tab}
-            className={`${styles.tab} ${mainTab === tab ? styles.activeMainTab : ''}`}
-            onClick={() => selectMainTab(tab)}
+            key={group.mainTab.label}
+            className={`${styles.tab} ${mainTab.label === group.mainTab.label ? styles.activeMainTab : ''}`}
+            onClick={() => selectMainTab(group.mainTab)}
           >
-            {tab[0].toUpperCase() + tab.slice(1)}
+            {group.mainTab.label}
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className={styles.subTabs}>
+      <nav className={styles.subTabs}>
         {availableSubTabs.map(tab => (
           <button
-            key={tab}
+            key={tab.label}
             className={`${styles.tab} ${subTab === tab ? styles.activeSubTab : ''}`}
             onClick={() => selectSubTab(tab)}
           >
-            {tab[0].toUpperCase() + tab.slice(1)}
+            {tab.label}
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className={styles.contentArea}>{tempContent()}</div>
+      <section className={styles.contentArea}>{subTab.label}</section>
 
-      <div className={styles.buttonRow}>
+      <footer className={styles.buttonRow}>
         <button className={styles.saveButton} onClick={() => onSave(body)}>
-          save
+          Save
         </button>
         <button className={styles.closeButton} onClick={onClose}>
-          close
+          Close
         </button>
-      </div>
+      </footer>
     </div>
   );
 };

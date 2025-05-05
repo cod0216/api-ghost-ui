@@ -17,3 +17,18 @@
   color: $gray-700;
   font-size: $font-size-lg;
 }
+
+:global {
+  .react-flow__edge-path {
+    stroke: $primary-700;
+    stroke-width: 2px;
+    stroke-dasharray: 5 5;
+    color: $primary-700;
+  }
+
+  .react-flow__edge.selected .react-flow__edge-path {
+    stroke: $primary-700;
+    stroke-width: 2px;
+    stroke-dasharray: none;
+  }
+}

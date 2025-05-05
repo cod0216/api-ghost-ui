@@ -3,39 +3,41 @@
  *
  * Manages the active main tab and tracks the last-selected sub tab for each main tab.
  */
-type SubTab = 'header' | 'body' | 'params';
-type MainTab = 'request' | 'response';
-
-const allowedSubTabs: Record<MainTab, SubTab[]> = {
-  request: ['header', 'body', 'params'],
-  response: ['header', 'body'],
-};
+import { CombineTab, Tab } from '@/pages/flow-canvas/types/bodyEditorTabs.ts';
 
 export class BodyEditorController {
-  private mainTab: MainTab = 'request';
-  private subTabMap: Record<MainTab, SubTab> = {
-    request: 'header',
-    response: 'header',
-  };
+  private tabs: readonly CombineTab[];
+  private mainTab: Tab;
+  private subTabMap: Record<string, Tab>;
+
+  constructor(tabs: readonly CombineTab[]) {
+    this.tabs = tabs;
+    this.mainTab = tabs[0].mainTab;
+    this.subTabMap = tabs.reduce<Record<string, Tab>>((acc, { mainTab, subTabs }) => {
+      acc[mainTab.label] = subTabs[0];
+      return acc;
+    }, {});
+  }
+
   /**
    * @Returns the currently selected main tab.
    */
-  getMainTab(): MainTab {
+  getMainTab(): Tab {
     return this.mainTab;
   }
 
   /**
    * @Returns the sub tab associated with the active main tab.
    */
-  getSubTab(): SubTab {
-    return this.subTabMap[this.mainTab];
+  getSubTab(): Tab {
+    return this.subTabMap[this.mainTab.label];
   }
 
   /**
    * Switches the active main tab.
    * Does not reset sub tabs—instead preserves each tab’s last selection.
    */
-  selectMainTab(tab: MainTab) {
+  selectMainTab(tab: Tab): void {
     this.mainTab = tab;
   }
 
@@ -43,14 +45,12 @@ export class BodyEditorController {
    * Updates the sub tab for the active main tab.
    * @Throws if attempting to select 'params' under the 'response' tab.
    */
-  selectSubTab(tab: SubTab) {
-    if (!allowedSubTabs[this.mainTab].includes(tab)) {
-      throw new Error(`"${tab}" is not a valid sub-tab for "${this.mainTab}".`);
+  selectSubTab(tab: Tab): void {
+    const group = this.tabs.find(g => g.mainTab.label === this.mainTab.label);
+    const allowed = group ? group.subTabs.map(s => s.label) : [];
+    if (!allowed.includes(tab.label)) {
+      throw new Error(`"${tab}" is not valid for "${this.mainTab}"`);
     }
-    this.subTabMap[this.mainTab] = tab;
-  }
-
-  getAvailableSubTabs(): SubTab[] {
-    return allowedSubTabs[this.mainTab];
+    this.subTabMap[this.mainTab.label] = tab;
   }
 }
