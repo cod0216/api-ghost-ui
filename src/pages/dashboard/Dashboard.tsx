@@ -11,20 +11,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <Sidebar historyList={mockHistoryList} onClickItem={handleSelectHistory} />
-      </div>
-      <div className={styles.headerTabs}>
-        <HeaderTabs
-          tabs={tabs}
-          selectedTab={selectedTab}
-          onSelectTab={selectTab}
-          onCloseTab={closeTab}
-        />
-      </div>
-      <div className={styles.mainContent}>
-        <MainContent history={selectedHistory} />
-      </div>
+      <Sidebar
+        className={styles.sidebar}
+        historyList={mockHistoryList}
+        onClickItem={handleSelectHistory}
+      />
+      <HeaderTabs
+        className={styles.headerTabs}
+        tabs={tabs}
+        selectedTab={selectedTab}
+        onSelectTab={selectTab}
+        onCloseTab={closeTab}
+      />
+      <MainContent className={styles.mainContent} history={selectedHistory} />
     </div>
   );
 };

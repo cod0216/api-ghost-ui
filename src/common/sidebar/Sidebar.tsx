@@ -9,6 +9,7 @@ import { HistoryItem } from '@/common/types/index.ts';
 interface SidebarProps {
   historyList: HistoryItem[];
   onClickItem: (item: HistoryItem) => void;
+  className: string;
 }
 
 /**
@@ -17,9 +18,9 @@ interface SidebarProps {
  *
  * @returns A React component representing the sidebar UI.
  */
-const Sidebar: React.FC<SidebarProps> = ({ historyList, onClickItem }) => {
+const Sidebar: React.FC<SidebarProps> = ({ historyList, onClickItem, className }) => {
   return (
-    <div className={styles.sidebarContainer}>
+    <div className={`${styles.sidebarContainer} ${className}`}>
       <h2>Ghost API</h2>
       <input type="text" placeholder="Search" className={styles.search} />
       <h4>History</h4>

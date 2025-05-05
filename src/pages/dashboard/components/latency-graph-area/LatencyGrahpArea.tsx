@@ -13,11 +13,12 @@ import { HistoryItem } from '@/common/types/index.ts';
 
 interface LatencyGraphAreaProps {
   history: HistoryItem;
+  className: string;
 }
 
-const LatencyGraphArea: React.FC<LatencyGraphAreaProps> = ({ history }) => {
+const LatencyGraphArea: React.FC<LatencyGraphAreaProps> = ({ history, className }) => {
   return (
-    <div className={styles.latencyGraphArea}>
+    <div className={className}>
       <h4> Latency </h4>
       <div className={styles.graphArea}>
         <LatencyGraph history={history} />

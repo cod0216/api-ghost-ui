@@ -14,11 +14,12 @@ import ApiTestFlowGraph from '@/pages/dashboard/components/flow-graph-area/FlowG
 
 interface FlowGraphAreaProps {
   results: ResultItem[];
+  className: string;
 }
 
-const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results }) => {
+const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results, className }) => {
   return (
-    <div className={styles.flowGraphArea}>
+    <div className={className}>
       <h4>Flow</h4>
       <div className={styles.graphArea}>
         <ReactFlowProvider>

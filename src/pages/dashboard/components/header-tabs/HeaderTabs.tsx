@@ -16,11 +16,18 @@ interface HeaderTabsProps {
   selectedTab?: TabItem;
   onSelectTab: (id: string) => void;
   onCloseTab: (id: string) => void;
+  className: string;
 }
 
-const HeaderTabs: React.FC<HeaderTabsProps> = ({ tabs, selectedTab, onSelectTab, onCloseTab }) => {
+const HeaderTabs: React.FC<HeaderTabsProps> = ({
+  tabs,
+  selectedTab,
+  onSelectTab,
+  onCloseTab,
+  className,
+}) => {
   return (
-    <div className={styles.tabs}>
+    <div className={`${styles.tabs} ${className}`}>
       {tabs.map(tab => {
         const isSelected = tab.id === selectedTab?.id;
 
