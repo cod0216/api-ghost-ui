@@ -13,6 +13,7 @@ import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
 import styles from './styles/FlowCanvas.module.scss';
+import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
 const nodeTypes = { custom: CustomNode };
 
 /**
@@ -42,7 +43,7 @@ const FlowCanvas: React.FC = () => {
           defaultEdgeOptions={{
             type: 'smoothstep',
             animated: true,
-            markerEnd: { type: MarkerType.ArrowClosed, color: '#25297f' },
+            markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
           }}
         />
       </div>
