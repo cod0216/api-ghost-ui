@@ -70,6 +70,12 @@
   color: $fetch-font;
 }
 
+.stompMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
+}
+
 .path {
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
