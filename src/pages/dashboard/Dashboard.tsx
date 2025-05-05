@@ -6,15 +6,15 @@ import { useTabsController } from '@/pages/dashboard/hooks/useTabsController.ts'
 import { mockHistoryList } from './__mocks__/mockHistoryList.ts';
 
 const Dashboard: React.FC = () => {
-  const { tabs, selectedTab, selectedHistory, selectTab, closeTab, handleSelectHistory } =
-    useTabsController();
+  const { tabs, selectedTab, selectedList, selectTab, closeTab, handleSelectList } =
+    useTabsController(mockHistoryList);
 
   return (
     <div className={styles.container}>
       <Sidebar
         className={styles.sidebar}
         historyList={mockHistoryList}
-        onClickItem={handleSelectHistory}
+        onClickItem={handleSelectList}
       />
       <HeaderTabs
         className={styles.headerTabs}
@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
         onSelectTab={selectTab}
         onCloseTab={closeTab}
       />
-      <MainContent className={styles.mainContent} history={selectedHistory} />
+      <MainContent className={styles.mainContent} history={selectedList} />
     </div>
   );
 };

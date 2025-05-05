@@ -1,54 +1,54 @@
 import { useState } from 'react';
 import { TabsController } from '@/pages/dashboard/controllers/TabsController.ts';
-import { TabItem, HistoryItem } from '@/common/types/index.ts';
-import { mockHistoryList } from '@/pages/dashboard/__mocks__/mockHistoryList.ts';
+import { TabItem } from '@/common/types/index.ts';
 
-export const useTabsController = () => {
-  const [controller] = useState(() => new TabsController());
+export const useTabsController = <T extends { id: string; title: string }>(itemList: T[]) => {
+  const [controller] = useState(() => new TabsController(itemList));
   const [tabs, setTabs] = useState<TabItem[]>([]);
   const [selectedTab, setSelectedTab] = useState<TabItem | undefined>(undefined);
-  const [selectedHistory, setSelectedHistory] = useState<HistoryItem | null>(null);
+  const [selectedList, setSelectedList] = useState<T | null>(null);
+
+  const updateTabsAndSelection = () => {
+    const updatedTabs = controller.getTabs();
+    const currentTab = controller.getSelectedTab();
+    const currentHistory = currentTab ? (itemList.find(h => h.id === currentTab.id) ?? null) : null;
+
+    setTabs([...updatedTabs]);
+    setSelectedTab(currentTab);
+    setSelectedList(currentHistory);
+  };
 
   const selectTab = (id: string) => {
     controller.selectTab(id);
-    const tab = controller.getSelectedTab();
-    setSelectedTab(tab);
-    const matched = mockHistoryList.find(h => h.id === id);
-    if (matched) setSelectedHistory(matched);
+    updateTabsAndSelection();
   };
 
   const addTab = (tab: TabItem) => {
     controller.addTab(tab);
-    const updatedTabs = controller.getTabs();
-    setTabs([...updatedTabs]);
-    setSelectedTab(controller.getSelectedTab());
-
-    const matched = mockHistoryList.find(h => h.id === tab.id);
-    if (matched) setSelectedHistory(matched);
+    updateTabsAndSelection();
   };
 
   const closeTab = (id: string) => {
     controller.closeTab(id);
-    const updatedTabs = controller.getTabs();
-    setTabs([...updatedTabs]);
-    const selected = controller.getSelectedTab();
-    setSelectedTab(selected);
-
-    const matched = selected ? mockHistoryList.find(h => h.id === selected.id) : null;
-    setSelectedHistory(matched ?? null);
+    updateTabsAndSelection();
   };
 
-  const handleSelectHistory = (item: HistoryItem) => {
-    addTab({ id: item.id, title: item.title });
+  const handleSelectList = (item: T) => {
+    const exists = tabs.find(tab => tab.id === item.id);
+    if (exists) {
+      selectTab(item.id);
+    } else {
+      addTab({ id: item.id, title: item.title });
+    }
   };
 
   return {
     tabs,
     selectedTab,
-    selectedHistory,
+    selectedList,
     selectTab,
     addTab,
     closeTab,
-    handleSelectHistory,
+    handleSelectList,
   };
 };
