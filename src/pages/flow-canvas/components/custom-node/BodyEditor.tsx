@@ -2,6 +2,28 @@ import React, { MouseEvent } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
 
+type MainTab = 'request' | 'response';
+type SubTab = 'header' | 'body' | 'params';
+
+type ContentKey =
+  | 'request_header'
+  | 'request_body'
+  | 'request_params'
+  | 'response_header'
+  | 'response_body';
+
+const MAIN_TABS: MainTab[] = ['request', 'response'];
+
+const CONTENT_MAP: Record<ContentKey, JSX.Element> = {
+  request_header: <div>header</div>,
+  request_body: <div>body</div>,
+  request_params: <div>param</div>,
+  response_header: <div>header</div>,
+  response_body: <div>body</div>,
+};
+
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 export interface BodyEditorProps {
   body: any;
   onSave: (newBody: any) => void;
@@ -16,58 +38,47 @@ const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController();
 
-  const stopCollapse = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
+  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
-  const tempContent = () => {
-    const key = `${mainTab}_${subTab}` as const;
-    const contentMap: Record<string, JSX.Element> = {
-      request_header: <div>헤더</div>,
-      request_body: <div>바디</div>,
-      request_params: <div>파람</div>,
-      response_header: <div>헤더</div>,
-      response_body: <div>바디</div>,
-    };
-    return contentMap[key];
-  };
+  const contentKey = `${mainTab}_${subTab}` as ContentKey;
+  const content = CONTENT_MAP[contentKey] || <div>no contents</div>;
 
   return (
-    <div className={styles.editorPopover} onClick={stopCollapse}>
-      <div className={styles.mainTabs}>
-        {(['request', 'response'] as const).map(tab => (
+    <div className={styles.editorPopover} onClick={stopPropagation}>
+      <nav className={styles.mainTabs}>
+        {MAIN_TABS.map(tab => (
           <button
             key={tab}
             className={`${styles.tab} ${mainTab === tab ? styles.activeMainTab : ''}`}
             onClick={() => selectMainTab(tab)}
           >
-            {tab[0].toUpperCase() + tab.slice(1)}
+            {capitalize(tab)}
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className={styles.subTabs}>
+      <nav className={styles.subTabs}>
         {availableSubTabs.map(tab => (
           <button
             key={tab}
             className={`${styles.tab} ${subTab === tab ? styles.activeSubTab : ''}`}
             onClick={() => selectSubTab(tab)}
           >
-            {tab[0].toUpperCase() + tab.slice(1)}
+            {capitalize(tab)}
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className={styles.contentArea}>{tempContent()}</div>
+      <section className={styles.contentArea}>{content}</section>
 
-      <div className={styles.buttonRow}>
+      <footer className={styles.buttonRow}>
         <button className={styles.saveButton} onClick={() => onSave(body)}>
-          save
+          Save
         </button>
         <button className={styles.closeButton} onClick={onClose}>
-          close
+          Close
         </button>
-      </div>
+      </footer>
     </div>
   );
 };
