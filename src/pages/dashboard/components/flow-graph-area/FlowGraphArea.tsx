@@ -7,13 +7,13 @@
  * @component
  * @returns {JSX.Element} A React functional component rendering the flow graph area.
  */
-import { ResultItem } from '@/common/types/HistoryItem.ts';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 import { ReactFlowProvider } from 'reactflow';
 import ApiTestFlowGraph from '@/pages/dashboard/components/flow-graph-area/FlowGraphCanvas.tsx';
 
 interface FlowGraphAreaProps {
-  results: ResultItem[];
+  results: ScenarioTestDetailResponseResult[];
   className: string;
 }
 
@@ -23,7 +23,7 @@ const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results, className }) => 
       <h4>Flow</h4>
       <div className={styles.graphArea}>
         <ReactFlowProvider>
-          <ApiTestFlowGraph apiResults={results} />
+          <ApiTestFlowGraph results={results} />
         </ReactFlowProvider>
       </div>
     </div>

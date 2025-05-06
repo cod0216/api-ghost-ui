@@ -10,16 +10,16 @@ import {
   ReferenceLine,
 } from 'recharts';
 import styles from '@/pages/dashboard/styles/LatencyGraph.module.scss';
-import { HistoryItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
 
 interface LatencyGraphProps {
-  history: HistoryItem;
+  scenarioTestResult: ScenarioTestDetailResponse;
 }
 
-const LatencyGraph: React.FC<LatencyGraphProps> = ({ history }) => {
-  const average = history.averageDurationMs;
+const LatencyGraph: React.FC<LatencyGraphProps> = ({ scenarioTestResult }) => {
+  const average = scenarioTestResult.averageDurationMs;
 
-  const latencyData = history.results.map((res, index) => ({
+  const latencyData = scenarioTestResult.results.map((res, index) => ({
     name: `step ${index + 1}`,
     durationMs: res.durationMs,
   }));

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, useReactFlow, NodeTypes } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ApiRequestNode from '@/pages/dashboard/components/flow-graph-area/ApiRequestNode.tsx';
-import { ResultItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import { buildFlowElements } from '@/pages/dashboard/utils/rechartUtils.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 
@@ -11,21 +11,21 @@ const nodeTypes: NodeTypes = {
 };
 
 interface ApiTestFlowGraphProps {
-  apiResults: ResultItem[];
+  results: ScenarioTestDetailResponseResult[];
 }
 
-const ApiTestFlowGraph: React.FC<ApiTestFlowGraphProps> = ({ apiResults }) => {
+const ApiTestFlowGraph: React.FC<ApiTestFlowGraphProps> = ({ results }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
 
   useEffect(() => {
-    if (apiResults.length === 0) return;
+    if (results.length === 0) return;
 
-    const { nodes: newNodes, edges: newEdges } = buildFlowElements(apiResults);
+    const { nodes: newNodes, edges: newEdges } = buildFlowElements(results);
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [apiResults]);
+  }, [results]);
 
   useEffect(() => {
     if (nodes.length > 0) {
