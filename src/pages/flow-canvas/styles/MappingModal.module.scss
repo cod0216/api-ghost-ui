@@ -1,0 +1,202 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.baseUrl {
+  font-size: $font-size-xl;
+}
+
+.label {
+  font-size: $font-size-lg;
+  margin: 0;
+  color: $gray-700;
+}
+.pathGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.methodPathGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal {
+  background-color: $white;
+  border-radius: $radius-md;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba($black, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  padding: 1rem 1.5rem;
+  background-color: $primary-800;
+  border-bottom: 1px solid $gray-200;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $white;
+}
+
+.panels {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.methodButton {
+  font-size: $font-size-2xs;
+  padding: 0px 6px;
+  border: none;
+  border-radius: $radius-2xl;
+}
+
+.DELETEMethod {
+  @extend .methodButton;
+  background-color: $delete-bg;
+  color: $delete-font;
+}
+
+.GETMethod {
+  @extend .methodButton;
+  background-color: $get-bg;
+  color: $get-font;
+}
+
+.POSTMethod {
+  @extend .methodButton;
+  background-color: $post-bg;
+  color: $post-font;
+}
+
+.PUTMethod {
+  @extend .methodButton;
+  background-color: $put-bg;
+  color: $put-font;
+}
+
+.FATCHMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
+}
+
+.STOMPMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
+}
+.pathText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $black;
+  flex: 1;
+  margin: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid $gray-200;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.itemKey {
+  font-weight: $font-weight-medium;
+  color: $gray-800;
+}
+
+.itemValue {
+  color: $gray-600;
+  word-break: break-all;
+  margin-left: 1rem;
+  flex: 1;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.saveButton,
+.cancelButton {
+  margin: 12px 12px 12px 0;
+  padding: 8px 16px;
+  font-size: $font-size-sm;
+  border-radius: $radius-sm;
+  font-weight: $font-weight-semibold;
+}
+
+.saveButton {
+  background-color: $white;
+  color: $primary-700;
+  border: 1.5px solid $primary-700;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primary-700;
+    color: $white;
+  }
+}
+
+.cancelButton {
+  background-color: $gray-200;
+  color: $gray-800;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $gray-300;
+  }
+}

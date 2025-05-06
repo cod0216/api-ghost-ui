@@ -11,12 +11,13 @@ import { ReactFlow, MarkerType, useReactFlow, Handle, Position, NodeProps, Edge 
 import 'reactflow/dist/style.css';
 import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
-import { useMappingController } from '@/pages/flow-canvas/hooks/useMappingController.ts';
+import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
 import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal.tsx';
-import { KeyValue } from '@/pages/flow-canvas/types/mapping.ts';
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
+import { flattenSchema } from '@/common/utils/schemaUtils';
+
 const nodeTypes = { custom: CustomNode };
 
 /**
@@ -30,35 +31,31 @@ const FlowCanvas: React.FC = () => {
     useFlowCanvas();
 
   const {
-    visible,
-    leftData,
-    rightData,
-    leftTitle,
-    rightTitle,
-    rightBaseUrl,
-    leftBaseUrl,
-    open,
-    save,
-    cancel,
-  } = useMappingController();
-  const handleEdgeDoubleClick = (_evt: React.MouseEvent, edge: Edge) => {
-    const src = nodes.find(n => n.id === edge.source);
-    const tgt = nodes.find(n => n.id === edge.target);
+    isModalVisible,
+    leftKeyValueList,
+    rightKeyValueList,
+    leftEndpointTitle,
+    rightEndpointTitle,
+    leftEndpointBaseUrl,
+    rightEndpointBaseUrl,
+    openMappingModal,
+    saveMappingModal,
+    cancelMappingModal,
+  } = useMappingModal();
 
-    const toKV = (data: any): KeyValue[] =>
-      Object.entries(data).map(([k, v]) => ({ key: k, value: String(v) }));
+  const handleEdgeDoubleClick = (_event: React.MouseEvent, edge: Edge) => {
+    const sourceNode = nodes.find(node => node.id === edge.source);
+    const targetNode = nodes.find(node => node.id === edge.target);
 
-    const makeTitle = (data: any): string =>
-      data ? `${data.method.toUpperCase()} ${data.path}` : '';
-
-    open(
-      src ? toKV(src.data) : [],
-      tgt ? toKV(tgt.data) : [],
-      src ? makeTitle(src.data) : '',
-      tgt ? makeTitle(tgt.data) : '',
+    openMappingModal(
+      sourceNode ? flattenSchema(sourceNode.data.responseSchema) : [],
+      targetNode ? flattenSchema(targetNode.data.requestSchema) : [],
+      sourceNode ? `${sourceNode.data.method} ${sourceNode.data.path}` : '',
+      targetNode ? `${targetNode.data.method} ${targetNode.data.path}` : '',
+      sourceNode?.data.baseUrl ?? '',
+      targetNode?.data.baseUrl ?? '',
     );
   };
-
   return (
     <div className={styles.container}>
       <SideBar />
@@ -81,15 +78,15 @@ const FlowCanvas: React.FC = () => {
           }}
         />
         <MappingModal
-          visible={visible}
-          leftTitle={leftTitle}
-          rightTitle={rightTitle}
-          leftData={leftData}
-          rightData={rightData}
-          leftBaseUrl={leftBaseUrl}
-          rightBaseUrl={rightBaseUrl}
-          onSave={save}
-          onCancel={cancel}
+          isVisible={isModalVisible}
+          leftEndpointTitle={leftEndpointTitle}
+          rightEndpointTitle={rightEndpointTitle}
+          leftKeyValueList={leftKeyValueList}
+          rightKeyValueList={rightKeyValueList}
+          leftEndpointBaseUrl={leftEndpointBaseUrl}
+          rightEndpointBaseUrl={rightEndpointBaseUrl}
+          onConfirm={saveMappingModal}
+          onDismiss={cancelMappingModal}
         />
       </div>
     </div>
