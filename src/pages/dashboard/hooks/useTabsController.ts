@@ -1,65 +1,54 @@
-/**
- * useTabsController hook
- *
- * Custom hook that manages the state of tabs in the dashboard, interacting with the TabsController.
- * Provides functionality to select, add, and close tabs while maintaining the list of tabs and the selected tab.
- */
 import { useState } from 'react';
 import { TabsController } from '@/pages/dashboard/controllers/TabsController.ts';
 import { TabItem } from '@/common/types/index.ts';
 
-/**
- * Hook to manage tab state and actions in the dashboard.
- *
- * Uses the TabsController to handle business logic for tab management and provides state and functions
- * to interact with the tabs in the UI.
- *
- * @returns {object} Contains:
- * - `tabs`: List of available tabs.
- * - `selectedTab`: Currently selected tab, or undefined if none.
- * - `selectTab`: Function to select a tab by ID.
- * - `addTab`: Function to add a new tab.
- * - `closeTab`: Function to close a tab by ID.
- */
-export const useTabsController = () => {
-  const [controller] = useState(() => new TabsController()); // Instance of TabsController
-  const [tabs, setTabs] = useState<TabItem[]>([]); // List of tabs
-  const [selectedTab, setSelectedTab] = useState<TabItem | undefined>(undefined); // Selected tab
+export const useTabsController = <T extends { id: string; title: string }>(itemList: T[]) => {
+  const [controller] = useState(() => new TabsController(itemList));
+  const [tabs, setTabs] = useState<TabItem[]>([]);
+  const [selectedTab, setSelectedTab] = useState<TabItem | undefined>(undefined);
+  const [selectedList, setSelectedList] = useState<T | null>(null);
 
-  /**
-   * Select a tab by ID.
-   * @param {string} id - ID of the tab to select.
-   */
+  const updateTabsAndSelection = () => {
+    const updatedTabs = controller.getTabs();
+    const currentTab = controller.getSelectedTab();
+    const currentHistory = currentTab ? (itemList.find(h => h.id === currentTab.id) ?? null) : null;
+
+    setTabs([...updatedTabs]);
+    setSelectedTab(currentTab);
+    setSelectedList(currentHistory);
+  };
+
   const selectTab = (id: string) => {
     controller.selectTab(id);
-    setSelectedTab(controller.getSelectedTab());
+    updateTabsAndSelection();
   };
 
-  /**
-   * Add a new tab to the list.
-   * @param {TabItem} tab - The tab to add.
-   */
   const addTab = (tab: TabItem) => {
     controller.addTab(tab);
-    setTabs([...controller.getTabs()]);
-    setSelectedTab(controller.getSelectedTab());
+    updateTabsAndSelection();
   };
 
-  /**
-   * Close a tab by ID.
-   * @param {string} id - ID of the tab to close.
-   */
   const closeTab = (id: string) => {
     controller.closeTab(id);
-    setTabs([...controller.getTabs()]);
-    setSelectedTab(controller.getSelectedTab());
+    updateTabsAndSelection();
+  };
+
+  const handleSelectList = (item: T) => {
+    const exists = tabs.find(tab => tab.id === item.id);
+    if (exists) {
+      selectTab(item.id);
+    } else {
+      addTab({ id: item.id, title: item.title });
+    }
   };
 
   return {
     tabs,
     selectedTab,
+    selectedList,
     selectTab,
     addTab,
     closeTab,
+    handleSelectList,
   };
 };

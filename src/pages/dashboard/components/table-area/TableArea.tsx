@@ -5,11 +5,12 @@ import TableRow from '@/pages/dashboard/components/table-area/TableRow.tsx';
 
 interface TableAreaProps {
   results: ResultItem[];
+  className: string;
 }
 
-const TableArea: React.FC<TableAreaProps> = ({ results }) => {
+const TableArea: React.FC<TableAreaProps> = ({ results, className }) => {
   return (
-    <div className={styles.tableArea}>
+    <div className={className}>
       <h4>Request / Response Raw Data</h4>
       <div className={styles.tableDataArea}>
         <table>

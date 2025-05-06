@@ -15,12 +15,17 @@ import FlowGraphArea from '@/pages/dashboard/components/flow-graph-area/FlowGrap
 import LatencyGraphArea from '@/pages/dashboard/components/latency-graph-area/LatencyGrahpArea.tsx';
 import TableArea from '@/pages/dashboard/components/table-area/TableArea.tsx';
 
-const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => {
+interface MainContentProps {
+  history: HistoryItem | null;
+  className: string;
+}
+
+const MainContent: React.FC<MainContentProps> = ({ history, className }) => {
   // If no history is selected, empty content.
-  if (!history) return <div className={styles.emptyContent}></div>;
+  if (!history) return <div className={`${styles.emptyContent} ${className}`}></div>;
 
   return (
-    <div className={styles.mainContent}>
+    <div className={className}>
       <div className={styles.historyInfo}>
         <div>
           <h2>{history.title}</h2>
@@ -34,9 +39,9 @@ const MainContent: React.FC<{ history: HistoryItem | null }> = ({ history }) => 
       </div>
 
       <div className={styles.chartContainer}>
-        <FlowGraphArea results={history.results} />
-        <LatencyGraphArea history={history} />
-        <TableArea results={history.results} />
+        <FlowGraphArea className={styles.flowGraphArea} results={history.results} />
+        <LatencyGraphArea className={styles.latencyGraphArea} history={history} />
+        <TableArea className={styles.tableArea} results={history.results} />
       </div>
     </div>
   );
