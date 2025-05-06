@@ -1,3 +1,4 @@
+import React from 'react';
 import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/MainContent.module.scss';
 import FlowGraphArea from '@/pages/dashboard/components/flow-graph-area/FlowGraphArea.tsx';

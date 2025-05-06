@@ -30,7 +30,7 @@ const ApiRequestNode: React.FC<ApiRequestNodeProps> = ({ data, isConnectable }) 
 
       <div className={styles.header}>
         <div className={styles.method}>{data.method}</div>
-        <div className={styles.endpoint}>{data.endpoint}</div>
+        <div className={styles.endpoint}>{data.url}</div>
       </div>
 
       <div className={styles.content}>

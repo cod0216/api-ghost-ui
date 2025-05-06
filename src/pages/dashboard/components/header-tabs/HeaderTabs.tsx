@@ -7,7 +7,7 @@
  *
  * @fileoverview Displays a list of tabs with close buttons, and allows tab selection and closure.
  */
-
+import React from 'react';
 import { TabItem } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/HeaderTabs.module.scss';
 
@@ -33,6 +33,8 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({
 
         return (
           <div
+            data-selected={isSelected}
+            data-testid={`header-tab-${tab.id}`}
             key={tab.id}
             className={`${styles.tab} ${isSelected ? styles.selectedTab : ''}`}
             onClick={() => onSelectTab(tab.id)}
@@ -40,6 +42,7 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({
             <span className={styles.title}>{tab.title}</span>
 
             <span
+              data-testid={`close-button-${tab.id}`}
               className={styles.close}
               onClick={e => {
                 e.stopPropagation();

@@ -7,6 +7,7 @@
  * @component
  * @returns {JSX.Element} A React functional component rendering the flow graph area.
  */
+import React from 'react';
 import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 import { ReactFlowProvider } from 'reactflow';

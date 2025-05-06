@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from '@/pages/dashboard/styles/Dashboard.module.scss';
 import MainContent from '@/pages/dashboard/components/main-content/MainContent.tsx';
 import HeaderTabs from '@/pages/dashboard/components/header-tabs/HeaderTabs.tsx';
@@ -7,10 +8,14 @@ import {
   ScenarioTestResultFileListItem,
   ScenarioTestDetailResponse,
 } from '@/common/types/index.ts';
+import {
+  mockScenarioTestDetailResponse,
+  mockScenarioTestResultFileList,
+} from './__mocks__/mockHistoryList.ts';
 
 const Dashboard: React.FC = () => {
-  const scenarioFileList: ScenarioTestResultFileListItem[] = [];
-  const selectedScenario: ScenarioTestDetailResponse | null = null;
+  const scenarioFileList: ScenarioTestResultFileListItem[] = mockScenarioTestResultFileList;
+  const selectedScenario: ScenarioTestDetailResponse | null = mockScenarioTestDetailResponse;
 
   const onItemSelected = (item: any) => {
     console.log(item);
@@ -40,6 +45,8 @@ const Dashboard: React.FC = () => {
                   const isSelected = item.fileName === selectedTab?.id;
                   return (
                     <div
+                      data-selected={isSelected}
+                      data-testid={`sidebar-item-${item.fileName}`}
                       className={`${styles.scenarioListItem} ${isSelected ? styles.selectedScenarioListItem : ''}`}
                       key={item.fileName}
                       onClick={() => handleSelectItem(item)}
