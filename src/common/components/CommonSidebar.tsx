@@ -2,14 +2,14 @@ import React, { ReactNode } from 'react';
 import styles from './CommonSidebar.module.scss';
 import { SidebarSection } from '@/common/types/index.ts';
 
-interface SidebarProps {
+interface CommonSidebarProps {
   className?: string;
   header?: ReactNode;
   search?: boolean;
   sections?: SidebarSection[];
 }
 
-const CommonSidebar: React.FC<SidebarProps> = ({
+const CommonSidebar: React.FC<CommonSidebarProps> = ({
   className = '',
   header = <h2>Ghost API</h2>,
   search = true,
