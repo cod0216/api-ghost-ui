@@ -6,11 +6,12 @@
  * It also supports toggling a body editor for modifying the request body.
  */
 
-import React, { MouseEvent, useCallback } from 'react';
-import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
+import React from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { NodeEndPoint } from '@/common/types/index.ts';
+import { NodeEndPoint, Field } from '@/common/types/index.ts';
+import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
 
 /**
  * CustomNode component
@@ -18,38 +19,16 @@ import { NodeEndPoint } from '@/common/types/index.ts';
  * @param param0 Props passed by React Flow: node ID and data
  * @returns Rendered node UI component
  */
+
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
-  const { setNodes } = useReactFlow();
-  const { baseUrl, method, path, showBody, body } = data;
-  const upperMethod = method.toUpperCase();
-
-  const handleToggleBody = useCallback(
-    (e: MouseEvent) => {
-      e.stopPropagation();
-      setNodes(nodes =>
-        nodes.map(n =>
-          n.id === id ? { ...n, data: { ...n.data, showBody: !n.data.showBody } } : n,
-        ),
-      );
-    },
-    [id, setNodes],
-  );
-
-  const handleSaveBody = useCallback(
-    (newBody: any) => {
-      setNodes(nodes =>
-        nodes.map(n => (n.id === id ? { ...n, data: { ...n.data, body: newBody } } : n)),
-      );
-    },
-    [id, setNodes],
-  );
+  const { baseUrl, method, path, showBody, requestSchema, responseSchema } = data;
+  const { toggleBody, saveRequestSchema } = useNodeControls(id);
 
   return (
     <div className={`${styles.node} ${styles[method]}`}>
       <div className={styles.header}>{baseUrl}</div>
-      <div className={styles.actions} onClick={handleToggleBody}>
-        {' '}
-        <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{upperMethod}</div>
+      <div className={styles.actions} onClick={toggleBody}>
+        <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
         <span className={styles.path}>{path}</span>
         <div className={styles.menuIcon}>
           <span className={styles.line} />
@@ -59,11 +38,14 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
       </div>
 
       {showBody && (
-        <BodyEditor
-          body={body}
-          onSave={handleSaveBody}
-          onClose={() => handleToggleBody({ stopPropagation: () => {} } as MouseEvent)}
-        />
+        <>
+          <BodyEditor
+            requestSchema={requestSchema ?? []}
+            responseSchema={responseSchema ?? []}
+            onSave={saveRequestSchema}
+            onClose={() => toggleBody()}
+          />
+        </>
       )}
 
       <Handle type="target" position={Position.Left} />
