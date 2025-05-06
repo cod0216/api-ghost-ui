@@ -11,13 +11,13 @@ export default [
 
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
-    
+
     settings: {
       react: {
         version: 'detect',
       },
     },
-    
+
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
@@ -47,20 +47,15 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/jsx-props-no-spreading': 'off',
       'react/require-default-props': 'off',
-      'react/function-component-definition': [
-        'error',
-        { namedComponents: 'arrow-function' },
-      ],
+      'react/function-component-definition': ['error', { namedComponents: 'arrow-function' }],
 
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'off',
     },
-    extends: ['prettier'], 
+    extends: ['prettier'],
   },
 
   {
     ignores: ['node_modules', 'dist', '**/*.config.js', 'vite.config.ts'],
   },
-
-  
 ];

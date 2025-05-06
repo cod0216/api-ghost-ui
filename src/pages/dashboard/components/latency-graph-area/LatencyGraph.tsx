@@ -15,7 +15,16 @@ import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
 interface LatencyGraphProps {
   scenarioTestResult: ScenarioTestDetailResponse;
 }
-
+/**
+ * Renders a latency graph showing the duration of each step in a scenario test.
+ *
+ * Displays an area chart with individual step durations and a reference line indicating the average duration.
+ *
+ * @param props - Component props including scenario test result data.
+ * @returns A chart visualizing the latency of scenario test steps.
+ *
+ * @author haerim-kweon
+ */
 const LatencyGraph: React.FC<LatencyGraphProps> = ({ scenarioTestResult }) => {
   const average = scenarioTestResult.averageDurationMs;
 

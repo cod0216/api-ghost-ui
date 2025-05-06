@@ -1,12 +1,12 @@
 /**
- * @fileoverview FlowGraphArea component displays the graph area for the flow visualization.
+ * Displays a graphical representation of API test results in a flow format.
  *
- * This component renders a section titled "Flow" along with a container
- * (`graphArea`) where a graphical element (such as a chart or flow diagram) can be displayed.
+ * @param props - Component props containing scenario test results and container styling.
+ * @returns A component showing the test flow using a visual graph interface.
  *
- * @component
- * @returns {JSX.Element} A React functional component rendering the flow graph area.
+ * @author haerim-kweon
  */
+import React from 'react';
 import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 import { ReactFlowProvider } from 'reactflow';

@@ -1,19 +1,23 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styles from './CommonSidebar.module.scss';
+import { SidebarSection } from '@/common/types/index.ts';
 
-interface SidebarSection {
-  title?: string;
-  content: ReactNode;
-}
-
-interface SidebarProps {
+interface CommonSidebarProps {
   className?: string;
   header?: ReactNode;
   search?: boolean;
   sections?: SidebarSection[];
 }
 
-const CommonSidebar: React.FC<SidebarProps> = ({
+/**
+ * A sidebar component for displaying a list of sections, with an optional search input and custom header.
+ *
+ * @param {CommonSidebarProps} props - The properties for configuring the sidebar.
+ * @returns JSX.Element - The rendered sidebar component.
+ *
+ * @author haerim-kweon
+ */
+const CommonSidebar: React.FC<CommonSidebarProps> = ({
   className = '',
   header = <h2>Ghost API</h2>,
   search = true,

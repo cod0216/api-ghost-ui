@@ -8,6 +8,17 @@ interface TableRowProps {
   item: ScenarioTestDetailResponseResult;
 }
 
+/**
+ * Renders a single row in the scenario result table.
+ *
+ * Displays summary information such as request method, URL, status, and duration.
+ * When clicked, it toggles the visibility of a detailed view beneath the row.
+ *
+ * @param item - Result data for a single API call in the scenario.
+ * @returns A table row element with expandable details.
+ *
+ * @author haerim-kweon
+ */
 const TableRow: React.FC<TableRowProps> = ({ item }) => {
   const [open, setOpen] = useState(false);
 

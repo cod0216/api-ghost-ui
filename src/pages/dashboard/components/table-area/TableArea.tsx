@@ -8,6 +8,17 @@ interface TableAreaProps {
   className: string;
 }
 
+/**
+ * TableArea component displays a tabular view of raw request/response data.
+ *
+ * Each row shows basic metadata for a request: success status, method, endpoint, status code, and duration.
+ * Data is rendered via the TableRow component.
+ *
+ * @param props - Table data and optional class name for styling.
+ * @returns A styled table of scenario test results.
+ *
+ * @author haerim-kweon
+ */
 const TableArea: React.FC<TableAreaProps> = ({ results, className }) => {
   return (
     <div className={className}>
