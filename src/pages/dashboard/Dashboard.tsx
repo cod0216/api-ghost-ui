@@ -13,6 +13,14 @@ import {
   mockScenarioTestResultFileList,
 } from './__mocks__/mockHistoryList.ts';
 
+/**
+ * Dashboard component renders the main dashboard layout with sidebar, tabs, and main content.
+ * It displays a list of scenario test results and allows selecting and closing tabs.
+ *
+ * @returns JSX.Element - The rendered dashboard component.
+ *
+ * @author haerim-kweon
+ */
 const Dashboard: React.FC = () => {
   const scenarioFileList: ScenarioTestResultFileListItem[] = mockScenarioTestResultFileList;
   const selectedScenario: ScenarioTestDetailResponse | null = mockScenarioTestDetailResponse;

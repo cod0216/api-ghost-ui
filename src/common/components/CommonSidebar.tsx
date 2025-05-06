@@ -9,6 +9,14 @@ interface CommonSidebarProps {
   sections?: SidebarSection[];
 }
 
+/**
+ * A sidebar component for displaying a list of sections, with an optional search input and custom header.
+ *
+ * @param {CommonSidebarProps} props - The properties for configuring the sidebar.
+ * @returns JSX.Element - The rendered sidebar component.
+ *
+ * @author haerim-kweon
+ */
 const CommonSidebar: React.FC<CommonSidebarProps> = ({
   className = '',
   header = <h2>Ghost API</h2>,

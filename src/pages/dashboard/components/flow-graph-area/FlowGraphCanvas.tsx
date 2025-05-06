@@ -14,6 +14,14 @@ interface ApiTestFlowGraphProps {
   results: ScenarioTestDetailResponseResult[];
 }
 
+/**
+ * Renders a dynamic flow graph based on scenario test results.
+ *
+ * @param props - Component props containing the list of scenario test results.
+ * @returns A flow graph component visualizing the API request sequence and result data.
+ *
+ * @author haerim-kweon
+ */
 const ApiTestFlowGraph: React.FC<ApiTestFlowGraphProps> = ({ results }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);

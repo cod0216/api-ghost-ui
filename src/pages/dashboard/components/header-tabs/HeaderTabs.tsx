@@ -1,12 +1,3 @@
-/**
- * HeaderTabs component
- *
- * This component renders a tab interface for managing multiple tabs within a dashboard-like UI.
- * It allows for selecting a tab to view its content and closing tabs when no longer needed.
- * The component receives a list of tabs, the currently selected tab, and functions to handle tab selection and closing.
- *
- * @fileoverview Displays a list of tabs with close buttons, and allows tab selection and closure.
- */
 import React from 'react';
 import { TabItem } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/HeaderTabs.module.scss';
@@ -19,6 +10,16 @@ interface HeaderTabsProps {
   className: string;
 }
 
+/**
+ * Renders a horizontal list of tabs in the header.
+ *
+ * Provides tab selection and close functionality for managing multiple views.
+ *
+ * @param props - Component props containing tab data and event handlers.
+ * @returns A component that displays selectable and closable header tabs.
+ *
+ * @author haerim-kweon
+ */
 const HeaderTabs: React.FC<HeaderTabsProps> = ({
   tabs,
   selectedTab,

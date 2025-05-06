@@ -15,6 +15,14 @@ const nodeStatusClassMap: Record<NodeStatus, string> = {
   [NodeStatus.Unreachable]: styles.unreachable,
 };
 
+/**
+ * A custom React Flow node that visually represents an API request,
+ *
+ * @param props - Component props containing API request data and connectability flag.
+ * @returns The rendered API request node component with connection handles.
+ *
+ * @author haerim-kweon
+ */
 const ApiRequestNode: React.FC<ApiRequestNodeProps> = ({ data, isConnectable }) => {
   const statusClass = getNodeStatusClass(data);
   const statusClassName = nodeStatusClassMap[statusClass];

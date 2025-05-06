@@ -10,6 +10,17 @@ interface MainContentProps {
   className: string;
 }
 
+/**
+ * Displays the main content of the dashboard for a selected scenario test.
+ *
+ * If no scenario test is selected, shows an empty placeholder.
+ * Otherwise, renders scenario metadata, flow graph, latency graph, and result table.
+ *
+ * @param props - Component props including the selected test result and optional class name.
+ * @returns The detailed view of the scenario test results.
+ *
+ * @author haerim-kweon
+ */
 const MainContent: React.FC<MainContentProps> = ({ scenarioTestResult, className }) => {
   // If no scenarioTestResult is selected, empty content.
   if (!scenarioTestResult) return <div className={`${styles.emptyContent} ${className}`}></div>;
