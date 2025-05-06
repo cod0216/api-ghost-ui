@@ -10,14 +10,7 @@ import React, { MouseEvent, useCallback } from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
 import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-
-type FlowNodeData = {
-  baseUrl: string;
-  method: string;
-  path: string;
-  showBody?: boolean;
-  body?: any;
-};
+import { NodeEndPoint } from '@/common/types/index.ts';
 
 /**
  * CustomNode component
@@ -25,7 +18,7 @@ type FlowNodeData = {
  * @param param0 Props passed by React Flow: node ID and data
  * @returns Rendered node UI component
  */
-const CustomNode: React.FC<NodeProps<FlowNodeData>> = ({ id, data }) => {
+const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
   const { setNodes } = useReactFlow();
   const { baseUrl, method, path, showBody, body } = data;
   const upperMethod = method.toUpperCase();
@@ -56,7 +49,7 @@ const CustomNode: React.FC<NodeProps<FlowNodeData>> = ({ id, data }) => {
       <div className={styles.header}>{baseUrl}</div>
       <div className={styles.actions} onClick={handleToggleBody}>
         {' '}
-        <div className={`${styles.methodBtn} ${styles[`${method}Method`]}`}>{upperMethod}</div>
+        <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{upperMethod}</div>
         <span className={styles.path}>{path}</span>
         <div className={styles.menuIcon}>
           <span className={styles.line} />
