@@ -40,37 +40,37 @@
   border-radius: 0px 0px $radius-lg $radius-lg;
 }
 
-.deleteMethod {
+.DELETEMethod {
   @extend .methodButton;
   background-color: $delete-bg;
   color: $delete-font;
 }
 
-.getMethod {
+.GETMethod {
   @extend .methodButton;
   background-color: $get-bg;
   color: $get-font;
 }
 
-.postMethod {
+.POSTMethod {
   @extend .methodButton;
   background-color: $post-bg;
   color: $post-font;
 }
 
-.putMethod {
+.PUTMethod {
   @extend .methodButton;
   background-color: $put-bg;
   color: $put-font;
 }
 
-.fatchMethod {
+.FATCHMethod {
   @extend .methodButton;
   background-color: $fetch-bg;
   color: $fetch-font;
 }
 
-.stompMethod {
+.STOMPMethod {
   @extend .methodButton;
   background-color: $fetch-bg;
   color: $fetch-font;
