@@ -1,24 +1,31 @@
 /**
- * @fileoverview FlowGraphArea component displays the graph area for the flow visualization.
+ * Displays a graphical representation of API test results in a flow format.
  *
- * This component renders a section titled "Flow" along with a container
- * (`graphArea`) where a graphical element (such as a chart or flow diagram) can be displayed.
+ * @param props - Component props containing scenario test results and container styling.
+ * @returns A component showing the test flow using a visual graph interface.
  *
- * @component
- * @returns {JSX.Element} A React functional component rendering the flow graph area.
+ * @author haerim-kweon
  */
-import { ResultItem } from '@/common/types/HistoryItem.ts';
+import React from 'react';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
+import { ReactFlowProvider } from 'reactflow';
+import ApiTestFlowGraph from '@/pages/dashboard/components/flow-graph-area/FlowGraphCanvas.tsx';
 
 interface FlowGraphAreaProps {
-  results: ResultItem[];
+  results: ScenarioTestDetailResponseResult[];
+  className: string;
 }
 
-const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results }) => {
+const FlowGraphArea: React.FC<FlowGraphAreaProps> = ({ results, className }) => {
   return (
-    <div className={styles.flowGraphArea}>
+    <div className={className}>
       <h4>Flow</h4>
-      <div className={styles.graphArea}></div>
+      <div className={styles.graphArea}>
+        <ReactFlowProvider>
+          <ApiTestFlowGraph results={results} />
+        </ReactFlowProvider>
+      </div>
     </div>
   );
 };

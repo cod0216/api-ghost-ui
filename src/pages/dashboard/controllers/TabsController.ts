@@ -1,85 +1,110 @@
-/**
- * TabsController class
- *
- * Manages the state of tabs within the dashboard page, including selecting, adding, and closing tabs.
- * Tabs represent different sections of content that users can interact with.
- *
- * @fileoverview Responsible for managing the collection of tabs, tracking the selected tab,
- * and displaying the corresponding content for that tab.
- */
 import { TabItem } from '@/common/types/index.ts';
 
 /**
- * Controller for managing tabs within the Dashboard.
+ * A controller for managing tabs in a tabbed interface.
+ * It manages the creation, selection, and closing of tabs,
+ * as well as retrieving data associated with the tabs.
  *
- * Provides methods to select, add, and close tabs. Ensures the state of tabs is maintained
- * and the correct content is displayed for the selected tab.
+ * @template T - The type of items that populate the tabs.
+ * @template K - The key of the unique identifier field in the item type.
+ * @template L - The key of the title field in the item type.
+ *
+ * @author haerim-kweon
  */
-export class TabsController {
-  private tabs: TabItem[] = []; // List of tab items in the dashboard
-  private selectedTabId?: string; // ID of the currently selected tab
+export class TabsController<T, K extends keyof T, L extends keyof T> {
+  private tabs: TabItem[] = [];
+  private selectedTabId?: string;
+  private itemList: T[];
 
   /**
-   * Constructor for the TabsController.
-   * Initializes the tabs list and selected tab ID.
+   * Creates an instance of the TabsController.
+   *
+   * @param itemList - The list of items to create tabs for.
+   * @param idField - The field to use as the tab's unique identifier.
+   * @param titleField - The field to use as the tab's title.
    */
-  constructor() {}
+  constructor(
+    itemList: T[],
+    private idField: K,
+    private titleField: L,
+  ) {
+    this.itemList = itemList;
+  }
 
   /**
-   * Gets all tabs in the dashboard.
-   * @returns {TabItem[]} List of all tabs.
+   * Retrieves the list of all current tabs.
+   *
+   * @returns The list of tabs.
    */
   getTabs() {
     return this.tabs;
   }
 
   /**
-   * Gets the currently selected tab.
-   * @returns {TabItem | undefined} The selected tab or undefined if no tab is selected.
+   * Retrieves the currently selected tab.
+   *
+   * @returns The selected tab, or undefined if no tab is selected.
    */
-  getSelectedTab(): TabItem | undefined {
-    return this.findTabById(this.selectedTabId, this.tabs);
+  getSelectedTab() {
+    return this.findTabById(this.selectedTabId);
   }
 
   /**
    * Selects a tab by its ID.
-   * @param {string} id - ID of the tab to select.
+   *
+   * @param id - The ID of the tab to select.
    */
   selectTab(id: string) {
-    const foundTab = this.findTabById(id, this.tabs);
-    if (foundTab) this.selectedTabId = id;
+    const tab = this.findTabById(id);
+    if (tab) this.selectedTabId = id;
   }
 
   /**
-   * Adds a new tab to the dashboard.
-   * @param {TabItem} tab - The tab to add.
+   * Adds a new tab for the provided item.
+   * If the tab already exists, it will not be added again.
+   *
+   * @param item - The item to create a new tab for.
    */
-  addTab(tab: TabItem) {
-    const exists = this.tabs.find(t => t.id === tab.id);
-    if (!exists) this.tabs.push(tab); // Add only if it doesn't exist
-    this.selectedTabId = tab.id; // Set the new tab as selected
-  }
+  addTab(item: T) {
+    const id = String(item[this.idField]);
+    const title = String(item[this.titleField]);
 
-  /**
-   * Closes a tab by its ID.
-   * If the closed tab was selected, updates the selected tab to the first available tab.
-   * @param {string} id - ID of the tab to close.
-   */
-  closeTab(id: string) {
-    this.tabs = this.tabs.filter(tab => tab.id !== id); // Remove the tab
-
-    if (this.selectedTabId === id) {
-      this.selectedTabId = this.tabs.length > 0 ? this.tabs[0].id : undefined; // Select first tab if available
+    if (!this.tabs.some(t => t.id === id)) {
+      this.tabs.push({ id, title });
+      this.selectedTabId = id;
     }
   }
 
   /**
-   * Finds a tab by its ID.
-   * @param {string | undefined} id - ID of the tab to find.
-   * @param {TabItem[]} tabs - The list of tabs to search.
-   * @returns {TabItem | undefined} The tab with the given ID, or undefined if not found.
+   * Closes a tab by its ID.
+   * If the closed tab was selected, the first available tab will be selected.
+   *
+   * @param id - The ID of the tab to close.
    */
-  private findTabById(id: string | undefined, tabs: TabItem[]): TabItem | undefined {
-    return id ? tabs.find(tab => tab.id === id) : undefined;
+  closeTab(id: string) {
+    this.tabs = this.tabs.filter(tab => tab.id !== id);
+    if (this.selectedTabId === id) {
+      this.selectedTabId = this.tabs.length > 0 ? this.tabs[0].id : undefined;
+    }
+  }
+
+  /**
+   * Retrieves the item associated with a specific tab.
+   *
+   * @param tab - The tab to retrieve the associated item for.
+   * @returns The item associated with the tab, or null if no item is found.
+   */
+  getItemForTab(tab?: { id: string; title: string }): T | null {
+    return tab ? (this.itemList.find(item => item[this.idField] === tab.id) ?? null) : null;
+  }
+
+  /**
+   * Finds a tab by its ID.
+   *
+   * @param id - The ID of the tab to find.
+   * @returns The tab with the matching ID, or undefined if not found.
+   */
+  findTabById(id?: string) {
+    return id ? this.tabs.find(tab => tab.id === id) : undefined;
   }
 }

@@ -1,3 +1,13 @@
+$color-border-success: $primary-800;
+$color-border-error: $red-500;
+$color-border-unreachable: $gray-400;
+
+$color-method-success: $primary-800;
+$color-method-error: $red-500;
+$color-method-unreachable: $gray-400;
+
+$color-text-duration: $gray-400;
+
 .apiRequestNode {
   padding: 8px;
   border-radius: $radius-lg;
@@ -7,23 +17,23 @@
   width: 150px;
 
   &.success {
-    border-color: $primary-800;
+    border-color: $color-border-success;
     .method {
-      background-color: $primary-800;
+      background-color: $color-method-success;
     }
   }
 
   &.error {
-    border-color: $red-500;
+    border-color: $color-border-error;
     .method {
-      background-color: $red-500;
+      background-color: $color-method-error;
     }
   }
 
   &.unreachable {
-    border-color: $gray-400;
+    border-color: $color-border-unreachable;
     .method {
-      background-color: $gray-400;
+      background-color: $color-method-unreachable;
     }
   }
 }
@@ -62,9 +72,9 @@
 }
 
 .statusCode {
-  font-weight: 500;
+  font-weight: $font-weight-regular;
 }
 
 .duration {
-  color: $gray-400;
+  color: $color-text-duration;
 }

@@ -1,14 +1,11 @@
-.flowGraphArea {
-  flex: 1 1 45%;
-  min-width: 300px;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .graphArea {
   flex-grow: 1;
   background-color: $primary-50;
-  border-radius: 8px;
+  border-radius: $radius-lg;
+  height: 300px;
+}
+
+.flowGraph {
+  height: 100%;
+  width: 100%;
 }

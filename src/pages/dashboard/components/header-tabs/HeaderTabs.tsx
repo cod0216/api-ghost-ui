@@ -1,56 +1,41 @@
-/**
- * HeaderTabs component
- *
- * This component renders a tab interface for managing multiple tabs within a dashboard-like UI.
- * It allows for selecting a tab to view its content and closing tabs when no longer needed.
- * The component receives a list of tabs, the currently selected tab, and functions to handle tab selection and closing.
- *
- * @fileoverview Displays a list of tabs with close buttons, and allows tab selection and closure.
- */
-
+import React from 'react';
 import { TabItem } from '@/common/types/index.ts';
 import styles from '@/pages/dashboard/styles/HeaderTabs.module.scss';
 
-// Props interface for the HeaderTabs component
 interface HeaderTabsProps {
-  /**
-   * List of tabs to display.
-   */
   tabs: TabItem[];
-
-  /**
-   * The currently selected tab.
-   * Optional, as no tab may be selected initially.
-   */
   selectedTab?: TabItem;
-
-  /**
-   * Function to be called when a tab is selected.
-   * @param id - The id of the selected tab.
-   */
   onSelectTab: (id: string) => void;
-
-  /**
-   * Function to be called when a tab is closed.
-   * @param id - The id of the tab to be closed.
-   */
   onCloseTab: (id: string) => void;
+  className: string;
 }
 
 /**
- * HeaderTabs component
+ * Renders a horizontal list of tabs in the header.
  *
- * Renders a list of tabs and provides functionality to select and close tabs.
- * The selected tab is visually distinguished, and each tab includes a close button.
+ * Provides tab selection and close functionality for managing multiple views.
+ *
+ * @param props - Component props containing tab data and event handlers.
+ * @returns A component that displays selectable and closable header tabs.
+ *
+ * @author haerim-kweon
  */
-const HeaderTabs: React.FC<HeaderTabsProps> = ({ tabs, selectedTab, onSelectTab, onCloseTab }) => {
+const HeaderTabs: React.FC<HeaderTabsProps> = ({
+  tabs,
+  selectedTab,
+  onSelectTab,
+  onCloseTab,
+  className,
+}) => {
   return (
-    <div className={styles.tabs}>
+    <div className={`${styles.tabs} ${className}`}>
       {tabs.map(tab => {
         const isSelected = tab.id === selectedTab?.id;
 
         return (
           <div
+            data-selected={isSelected}
+            data-testid={`header-tab-${tab.id}`}
             key={tab.id}
             className={`${styles.tab} ${isSelected ? styles.selectedTab : ''}`}
             onClick={() => onSelectTab(tab.id)}
@@ -58,6 +43,7 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({ tabs, selectedTab, onSelectTab,
             <span className={styles.title}>{tab.title}</span>
 
             <span
+              data-testid={`close-button-${tab.id}`}
               className={styles.close}
               onClick={e => {
                 e.stopPropagation();

@@ -1,12 +1,24 @@
 import React from 'react';
 import styles from '@/pages/dashboard/styles/TableArea.module.scss';
-import { ResultItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 
 interface DetailRowProps {
   isOpen: boolean;
-  item: ResultItem;
+  item: ScenarioTestDetailResponseResult;
 }
 
+/**
+ * Renders the detailed information for a specific scenario test result.
+ *
+ * This component displays additional details like start and end times.. etc,
+ * It is shown or hidden based on the `isOpen` prop.
+ *
+ * @param isOpen - A flag indicating whether the detailed row should be expanded or not.
+ * @param item - The scenario test result data to be displayed in the detail row.
+ * @returns A table row with expanded detailed content if `isOpen` is true.
+ *
+ * @author haerim-kweon
+ */
 const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
   return (
     <tr className={`${styles.detailRow} ${isOpen ? styles.expanded : ''}`}>
@@ -25,7 +37,7 @@ const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
 
             <div className={styles.detailColumn}>
               <h3>Request Headers</h3>
-              <pre>{JSON.stringify(item.requestHeader || item.requestHeaders, null, 2)}</pre>
+              <pre>{JSON.stringify(item.requestHeader || item.requestHeader, null, 2)}</pre>
             </div>
 
             <div className={styles.detailColumn}>

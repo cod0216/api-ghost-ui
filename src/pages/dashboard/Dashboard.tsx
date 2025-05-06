@@ -1,69 +1,81 @@
-/**
- * Dashboard component
- *
- * This component represents the main dashboard layout which includes a sidebar, header tabs, and main content area.
- * The dashboard allows users to select a history item to view its content, manage multiple tabs, and interact with the UI elements.
- * It uses a custom hook for managing tabs and interacts with a list of history items.
- *
- * @fileoverview Displays the dashboard layout with a sidebar, header tabs, and main content section.
- * The component handles tab management (selecting, adding, and closing tabs) and history item selection.
- */
-
-import { useState } from 'react';
+import React from 'react';
 import styles from '@/pages/dashboard/styles/Dashboard.module.scss';
-import Sidebar from '@/common/sidebar/Sidebar.tsx';
 import MainContent from '@/pages/dashboard/components/main-content/MainContent.tsx';
 import HeaderTabs from '@/pages/dashboard/components/header-tabs/HeaderTabs.tsx';
+import CommonSidebar from '@/common/components/CommonSidebar.tsx';
 import { useTabsController } from '@/pages/dashboard/hooks/useTabsController.ts';
-import { HistoryItem } from '@/common/types/index.ts';
-import { mockHistoryList } from './__mocks__/mockHistoryList.ts';
+import {
+  ScenarioTestResultFileListItem,
+  ScenarioTestDetailResponse,
+} from '@/common/types/index.ts';
+import {
+  mockScenarioTestDetailResponse,
+  mockScenarioTestResultFileList,
+} from './__mocks__/mockHistoryList.ts';
 
+/**
+ * Dashboard component renders the main dashboard layout with sidebar, tabs, and main content.
+ * It displays a list of scenario test results and allows selecting and closing tabs.
+ *
+ * @returns JSX.Element - The rendered dashboard component.
+ *
+ * @author haerim-kweon
+ */
 const Dashboard: React.FC = () => {
-  const { selectedTab, selectTab, addTab, tabs, closeTab } = useTabsController();
-  const [selectedHistory, setSelectedHistory] = useState<HistoryItem | null>(null);
+  const scenarioFileList: ScenarioTestResultFileListItem[] = mockScenarioTestResultFileList;
+  const selectedScenario: ScenarioTestDetailResponse | null = mockScenarioTestDetailResponse;
 
-  /**
-   * Handles the selection of a history item.
-   * When a history item is selected, a new tab is added, and the selected history is updated.
-   *
-   * @param item - The history item to be selected.
-   */
-  const handleSelectHistory = (item: HistoryItem) => {
-    addTab({ id: item.id, title: item.title });
-    setSelectedHistory(item);
+  const onItemSelected = (item: any) => {
+    console.log(item);
   };
 
-  /**
-   * Handles the selection of a tab.
-   * When a tab is selected, the selected tab is updated, and the corresponding history item is set.
-   *
-   * @param id - The id of the tab to be selected.
-   */
-  const handleSelectTab = (id: string) => {
-    selectTab(id);
-    const tab = tabs.find(tab => tab.id === id);
-    if (tab) {
-      const matched = mockHistoryList.find(h => h.id === id);
-      if (matched) setSelectedHistory(matched);
-    }
-  };
+  const { tabs, selectedTab, selectTab, closeTab, handleSelectItem } = useTabsController<
+    ScenarioTestResultFileListItem,
+    'fileName',
+    'fileName'
+  >({
+    itemList: scenarioFileList,
+    idField: 'fileName',
+    titleField: 'fileName',
+    onItemSelected: onItemSelected,
+  });
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <Sidebar historyList={mockHistoryList} onClickItem={handleSelectHistory} />
-      </div>
-      <div className={styles.headerTabs}>
-        <HeaderTabs
-          selectedTab={selectedTab}
-          onSelectTab={handleSelectTab}
-          tabs={tabs}
-          onCloseTab={closeTab}
-        />
-      </div>
-      <div className={styles.mainContent}>
-        <MainContent history={selectedHistory} />
-      </div>
+      <CommonSidebar
+        className={`${styles.sidebar}`}
+        sections={[
+          {
+            title: 'History',
+            content: (
+              <div className={styles.scenarioListContainer}>
+                {scenarioFileList.map(item => {
+                  const isSelected = item.fileName === selectedTab?.id;
+                  return (
+                    <div
+                      data-selected={isSelected}
+                      data-testid={`sidebar-item-${item.fileName}`}
+                      className={`${styles.scenarioListItem} ${isSelected ? styles.selectedScenarioListItem : ''}`}
+                      key={item.fileName}
+                      onClick={() => handleSelectItem(item)}
+                    >
+                      {item.fileName}
+                    </div>
+                  );
+                })}
+              </div>
+            ),
+          },
+        ]}
+      />
+      <HeaderTabs
+        className={styles.headerTabs}
+        tabs={tabs}
+        selectedTab={selectedTab}
+        onSelectTab={selectTab}
+        onCloseTab={closeTab}
+      />
+      <MainContent className={styles.mainContent} scenarioTestResult={selectedScenario} />
     </div>
   );
 };
