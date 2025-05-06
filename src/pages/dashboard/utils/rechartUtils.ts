@@ -1,5 +1,5 @@
 import { Node, Edge, MarkerType } from 'reactflow';
-import { ResultItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import { ApiRequestData, NodeStatus } from '@/pages/dashboard/types/index.ts';
 import { COLORS } from '@/pages/dashboard/constants/colors.ts';
 
@@ -7,7 +7,10 @@ const NODE_SPACING_X = 200;
 const NODE_SPACING_Y = 100;
 const NODE_BASE_Y = 250;
 
-const createNode = (result: ResultItem, index: number): Node<ApiRequestData> => ({
+const createNode = (
+  result: ScenarioTestDetailResponseResult,
+  index: number,
+): Node<ApiRequestData> => ({
   id: `node-${index}`,
   type: 'apiRequest',
   position: {
@@ -33,7 +36,7 @@ const createEdge = (sourceIndex: number, targetIndex: number): Edge => ({
 });
 
 export const buildFlowElements = (
-  results: ResultItem[],
+  results: ScenarioTestDetailResponseResult[],
 ): {
   nodes: Node<ApiRequestData>[];
   edges: Edge[];

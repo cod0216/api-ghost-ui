@@ -9,19 +9,19 @@
  */
 import LatencyGraph from '@/pages/dashboard/components/latency-graph-area/LatencyGraph.tsx';
 import styles from '@/pages/dashboard/styles/LatencyGraphArea.module.scss';
-import { HistoryItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
 
 interface LatencyGraphAreaProps {
-  history: HistoryItem;
+  scenarioTestResult: ScenarioTestDetailResponse;
   className: string;
 }
 
-const LatencyGraphArea: React.FC<LatencyGraphAreaProps> = ({ history, className }) => {
+const LatencyGraphArea: React.FC<LatencyGraphAreaProps> = ({ scenarioTestResult, className }) => {
   return (
     <div className={className}>
       <h4> Latency </h4>
       <div className={styles.graphArea}>
-        <LatencyGraph history={history} />
+        <LatencyGraph scenarioTestResult={scenarioTestResult} />
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styles from '@/pages/dashboard/styles/TableArea.module.scss';
-import { ResultItem } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
 import DetailRow from '@/pages/dashboard/components/table-area/DetailRow.tsx';
 import LightIndicator from '@/common/components/LightIndicator.tsx';
 
 interface TableRowProps {
-  item: ResultItem;
+  item: ScenarioTestDetailResponseResult;
 }
 
 const TableRow: React.FC<TableRowProps> = ({ item }) => {
@@ -18,7 +18,7 @@ const TableRow: React.FC<TableRowProps> = ({ item }) => {
           <LightIndicator isSuccess={item.isRequestSuccess} />
         </td>
         <td>{item.method}</td>
-        <td>{item.endpoint}</td>
+        <td>{item.url}</td>
         <td>{item.statusCode}</td>
         <td>{item.durationMs}</td>
       </tr>

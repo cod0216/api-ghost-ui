@@ -1,10 +1,16 @@
-export class TabsController<T extends { id: string; title: string }> {
-  private tabs: { id: string; title: string }[] = [];
-  private selectedTabId?: string;
-  private historyList: T[];
+import { TabItem } from '@/common/types/index.ts';
 
-  constructor(historyList: T[]) {
-    this.historyList = historyList;
+export class TabsController<T, K extends keyof T, L extends keyof T> {
+  private tabs: TabItem[] = [];
+  private selectedTabId?: string;
+  private itemList: T[];
+
+  constructor(
+    itemList: T[],
+    private idField: K,
+    private titleField: L,
+  ) {
+    this.itemList = itemList;
   }
 
   getTabs() {
@@ -20,10 +26,13 @@ export class TabsController<T extends { id: string; title: string }> {
     if (tab) this.selectedTabId = id;
   }
 
-  addTab(tab: { id: string; title: string }) {
-    if (!this.tabs.some(t => t.id === tab.id)) {
-      this.tabs.push(tab);
-      this.selectedTabId = tab.id;
+  addTab(item: T) {
+    const id = String(item[this.idField]);
+    const title = String(item[this.titleField]);
+
+    if (!this.tabs.some(t => t.id === id)) {
+      this.tabs.push({ id, title });
+      this.selectedTabId = id;
     }
   }
 
@@ -34,11 +43,11 @@ export class TabsController<T extends { id: string; title: string }> {
     }
   }
 
-  getHistoryForTab(tab?: { id: string; title: string }): T | null {
-    return tab ? (this.historyList.find(h => h.id === tab.id) ?? null) : null;
+  getItemForTab(tab?: { id: string; title: string }): T | null {
+    return tab ? (this.itemList.find(item => item[this.idField] === tab.id) ?? null) : null;
   }
 
-  private findTabById(id?: string) {
+  findTabById(id?: string) {
     return id ? this.tabs.find(tab => tab.id === id) : undefined;
   }
 }
