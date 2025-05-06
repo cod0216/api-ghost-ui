@@ -15,7 +15,7 @@
   cursor: pointer;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 6px 6px 0 0;
+  border-radius: $radius-md $radius-md 0 0;
 
   .title {
     font-size: $font-size-sm;
