@@ -1,10 +1,6 @@
 import React, { ReactNode } from 'react';
 import styles from './CommonSidebar.module.scss';
-
-interface SidebarSection {
-  title?: string;
-  content: ReactNode;
-}
+import { SidebarSection } from '@/common/types/index.ts';
 
 interface SidebarProps {
   className?: string;
