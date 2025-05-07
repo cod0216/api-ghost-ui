@@ -1,5 +1,5 @@
 import { Node, Edge, MarkerType } from 'reactflow';
-import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.ts';
 import { ApiRequestData, NodeStatus } from '@/pages/dashboard/types/index.ts';
 import { COLORS } from '@/pages/dashboard/constants/colors.ts';
 

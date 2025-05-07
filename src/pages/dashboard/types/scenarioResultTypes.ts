@@ -34,9 +34,13 @@ export interface ScenarioTestDetailResponseResult {
   }>;
 }
 
+export interface ScenarioTestResultFileListResponse {
+  resultList: ScenarioTestResultFileListItem[];
+}
+
 export interface ScenarioTestResultFileListItem {
   fileName: string;
-  testSummary: string;
+  testSummary: boolean;
   timeStamp: string;
 }
 
