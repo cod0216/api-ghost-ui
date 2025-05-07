@@ -3,7 +3,7 @@ import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
 import { MappingPanel } from './MappingPanel';
 import { KeyValue, MappingPair } from '@/pages/flow-canvas/types/index.ts';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
-export interface MappingModalProps {
+interface MappingModalProps {
   isVisible: boolean;
   modalTitle?: string;
   panelLabels?: [string, string];

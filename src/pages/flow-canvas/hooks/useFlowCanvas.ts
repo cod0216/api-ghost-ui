@@ -4,16 +4,15 @@
  * A custom hook that manages ReactFlow state and drag-and-drop logic
  * for the scenario flow canvas.
  */
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   addEdge,
   Connection,
   Edge,
-  Node,
+  reconnectEdge,
   useReactFlow,
   useNodesState,
   useEdgesState,
-  XYPosition,
 } from 'reactflow';
 import { NodeEndPoint } from '@/common/types/index.ts';
 
@@ -22,7 +21,7 @@ export function useFlowCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeEndPoint>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const { project } = useReactFlow();
-
+  const pendingEdgeRef = useRef<Edge | null>(null);
   /**
    * Adds a new edge when two nodes are connected.
    *
@@ -78,5 +77,48 @@ export function useFlowCanvas() {
     [project, setNodes],
   );
 
-  return { wrapperRef, nodes, edges, onNodesChange, onEdgesChange, onConnect, onDragOver, onDrop };
+  const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {
+    pendingEdgeRef.current = edge;
+  }, []);
+
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge, newConn: Connection) => {
+      if (newConn.target) {
+        setEdges(es => reconnectEdge(oldEdge, newConn, es));
+        pendingEdgeRef.current = null;
+      }
+    },
+    [setEdges],
+  );
+
+  const onEdgeUpdateEnd = useCallback(() => {
+    const edge = pendingEdgeRef.current;
+    if (edge) {
+      setEdges(es => es.filter(e => e.id !== edge.id));
+      pendingEdgeRef.current = null;
+    }
+  }, [setEdges]);
+
+  const onEdgeContextMenu = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      event.preventDefault();
+      setEdges(es => es.filter(e => e.id !== edge.id));
+    },
+    [setEdges],
+  );
+
+  return {
+    wrapperRef,
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    onDragOver,
+    onDrop,
+    onEdgeUpdateStart,
+    onEdgeUpdate,
+    onEdgeUpdateEnd,
+    onEdgeContextMenu,
+  };
 }
