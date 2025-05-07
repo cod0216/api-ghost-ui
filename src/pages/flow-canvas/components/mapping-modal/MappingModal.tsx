@@ -4,7 +4,7 @@ import { MappingPanel } from './MappingPanel';
 import { KeyValue, MappingPair, MappingPanelConfig } from '@/pages/flow-canvas/types/index.ts';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
 
-export interface MappingModalProps {
+interface MappingModalProps {
   isVisible: boolean;
   modalTitle?: string;
   panelLabels?: [string, string];
