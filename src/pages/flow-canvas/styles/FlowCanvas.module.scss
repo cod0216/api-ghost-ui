@@ -20,15 +20,19 @@
 
 :global {
   .react-flow__edge-path {
-    stroke: $primary-700;
-    stroke-width: 2px;
-    stroke-dasharray: 5 5;
-    color: $primary-700;
+    stroke: $primary-700 !important;
+    stroke-width: 2px !important;
+    stroke-dasharray: 5 5 !important;
+    color: $primary-700 !important;
   }
-
-  .react-flow__edge.selected .react-flow__edge-path {
-    stroke: $primary-700;
-    stroke-width: 2px;
-    stroke-dasharray: none;
+  .react-flow__edge.updating .react-flow__edge.animated {
+    stroke: $primary-700 !important;
+    stroke-dasharray: 5 5 !important;
+  }
+  .react-flow__connection .react-flow__connection-path .react-flow__connection.selected {
+    stroke: $primary-700 !important;
+    stroke-width: 2px !important;
+    stroke-dasharray: 5 5 !important;
+    color: $primary-700 !important;
   }
 }
