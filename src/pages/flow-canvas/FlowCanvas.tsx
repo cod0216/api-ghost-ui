@@ -1,13 +1,5 @@
-/**
- * @fileoverview FlowCanvas.tsx
- *
- * FlowCanvas provides a UI where users can construct scenario flows by
- * dragging and dropping selected EndPoints to place nodes and connecting
- * those nodes to define the flow.
- */
-
 import React from 'react';
-import { ReactFlow, MarkerType, useReactFlow, Handle, Position, NodeProps, Edge } from 'reactflow';
+import { ReactFlow, MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
@@ -20,15 +12,21 @@ import { flattenSchema } from '@/common/utils/schemaUtils';
 
 const nodeTypes = { endpointNode: CustomNode };
 
-/**
- * Provides an interface for visualizing scenario flows and
- * allows adding endpoints as nodes via drag-and-drop.
- *
- * @returns Rendered FlowCanvas UI
- */
 const FlowCanvas: React.FC = () => {
-  const { wrapperRef, nodes, edges, onNodesChange, onEdgesChange, onConnect, onDragOver, onDrop } =
-    useFlowCanvas();
+  const {
+    wrapperRef,
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    onDragOver,
+    onDrop,
+    onEdgeUpdateStart,
+    onEdgeUpdate,
+    onEdgeUpdateEnd,
+    onEdgeContextMenu,
+  } = useFlowCanvas();
 
   const {
     isModalVisible,
@@ -43,9 +41,9 @@ const FlowCanvas: React.FC = () => {
     cancelMappingModal,
   } = useMappingModal();
 
-  const handleEdgeDoubleClick = (_event: React.MouseEvent, edge: Edge) => {
-    const sourceNode = nodes.find(node => node.id === edge.source);
-    const targetNode = nodes.find(node => node.id === edge.target);
+  const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
+    const sourceNode = nodes.find(n => n.id === edge.source);
+    const targetNode = nodes.find(n => n.id === edge.target);
 
     openMappingModal(
       sourceNode ? flattenSchema(sourceNode.data.responseSchema) : [],
@@ -56,6 +54,7 @@ const FlowCanvas: React.FC = () => {
       targetNode?.data.baseUrl ?? '',
     );
   };
+
   return (
     <div className={styles.container}>
       <SideBar />
@@ -68,6 +67,10 @@ const FlowCanvas: React.FC = () => {
           nodeTypes={nodeTypes}
           onConnect={onConnect}
           onEdgeDoubleClick={handleEdgeDoubleClick}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdate={onEdgeUpdate}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
           fitView
