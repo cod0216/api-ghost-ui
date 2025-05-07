@@ -3,6 +3,7 @@ import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
 import { MappingPanel } from './MappingPanel';
 import { KeyValue, MappingPair, MappingPanelConfig } from '@/pages/flow-canvas/types/index.ts';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
+import { CommonButton } from '@/common/components/CommonButton';
 
 interface MappingModalProps {
   isVisible: boolean;
@@ -98,21 +99,13 @@ export const MappingModal: React.FC<MappingModalProps> = ({
             },
           )}
         </div>
-
-        <footer className={styles.buttonRow}>
-          <button className={styles.saveButton} onClick={handleSave}>
-            Save
-          </button>
-          <button
-            className={styles.cancelButton}
-            onClick={() => {
-              clearSelection();
-              onDismiss();
-            }}
-          >
-            Cancel
-          </button>
-        </footer>
+        <CommonButton
+          onConfirm={handleSave}
+          onCancel={() => {
+            clearSelection();
+            onDismiss();
+          }}
+        />
       </div>
     </div>
   );
