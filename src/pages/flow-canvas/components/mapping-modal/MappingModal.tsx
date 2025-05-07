@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
 import { MappingPanel } from './MappingPanel';
-import { KeyValue, MappingPair } from '@/pages/flow-canvas/types/index.ts';
+import { KeyValue, MappingPair, MappingPanelConfig } from '@/pages/flow-canvas/types/index.ts';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
 export interface MappingModalProps {
   isVisible: boolean;
@@ -51,7 +51,7 @@ export const MappingModal: React.FC<MappingModalProps> = ({
     clearSelection();
   };
 
-  const panels = [
+  const panels: MappingPanelConfig[] = [
     {
       endpointTitle: leftEndpointTitle,
       baseUrl: leftEndpointBaseUrl,
