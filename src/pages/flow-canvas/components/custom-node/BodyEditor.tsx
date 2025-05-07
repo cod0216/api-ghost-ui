@@ -2,22 +2,31 @@ import React, { MouseEvent } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
 import { BODY_EDITOR_TABS } from '@/pages/flow-canvas/types/bodyEditorTabs.ts';
+import { Field } from '@/common/types/index.ts';
+import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
 
 export interface BodyEditorProps {
-  body: any;
-  onSave: (newBody: any) => void;
+  requestSchema: Field[];
+  responseSchema: Field[];
+  onSave: (newSchema: Field[]) => void;
   onClose: () => void;
 }
-
 /**
  * BodyEditor component
  * Uses a controller and hook to manage its tab state.
  */
-const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
+const BodyEditor: React.FC<BodyEditorProps> = ({
+  requestSchema,
+  responseSchema,
+  onSave,
+  onClose,
+}) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS);
-
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
+
+  const { currentSchema, updateSchema } = useBodyEditor(requestSchema);
+  const handleSave = () => onSave(currentSchema);
 
   return (
     <div className={styles.editorPopover} onClick={stopPropagation}>
@@ -25,7 +34,9 @@ const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
         {BODY_EDITOR_TABS.map(group => (
           <button
             key={group.mainTab.label}
-            className={`${styles.tab} ${mainTab.label === group.mainTab.label ? styles.activeMainTab : ''}`}
+            className={`${styles.tab} ${
+              mainTab.label === group.mainTab.label ? styles.activeMainTab : ''
+            }`}
             onClick={() => selectMainTab(group.mainTab)}
           >
             {group.mainTab.label}
@@ -37,7 +48,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
         {availableSubTabs.map(tab => (
           <button
             key={tab.label}
-            className={`${styles.tab} ${subTab === tab ? styles.activeSubTab : ''}`}
+            className={`${styles.tab} ${subTab.label === tab.label ? styles.activeSubTab : ''}`}
             onClick={() => selectSubTab(tab)}
           >
             {tab.label}
@@ -45,12 +56,21 @@ const BodyEditor: React.FC<BodyEditorProps> = ({ body, onSave, onClose }) => {
         ))}
       </nav>
 
-      <section className={styles.contentArea}>{subTab.label}</section>
+      <section className={styles.contentArea}>
+        {subTab.showSchema &&
+          (mainTab.label === BODY_EDITOR_TABS[0].mainTab.label ? (
+            <pre className={styles.schemaContent}>{JSON.stringify(currentSchema, null, 2)}</pre>
+          ) : (
+            <pre className={styles.schemaContent}>{JSON.stringify(responseSchema, null, 2)}</pre>
+          ))}
+      </section>
 
       <footer className={styles.buttonRow}>
-        <button className={styles.saveButton} onClick={() => onSave(body)}>
-          Save
-        </button>
+        {
+          <button className={styles.saveButton} onClick={handleSave}>
+            Save
+          </button>
+        }
         <button className={styles.closeButton} onClick={onClose}>
           Close
         </button>

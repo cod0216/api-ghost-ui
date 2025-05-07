@@ -1,0 +1,199 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.baseUrl {
+  font-size: $font-size-xl;
+}
+
+.label {
+  font-size: $font-size-lg;
+  margin: 0;
+  color: $gray-700;
+}
+.pathGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.methodPathGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal {
+  background-color: $white;
+  border-radius: $radius-md;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba($black, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  padding: 1rem 1.5rem;
+  background-color: $primary-800;
+  border-bottom: 1px solid $gray-200;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $white;
+}
+
+.mappingPanel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.methodButton {
+  font-size: $font-size-2xs;
+  padding: 0px 6px;
+  border: none;
+  border-radius: $radius-2xl;
+  margin: 0 8px;
+  margin-bottom: 8px;
+}
+
+.DELETEMethod {
+  @extend .methodButton;
+  background-color: $delete-bg;
+  color: $delete-font;
+}
+
+.GETMethod {
+  @extend .methodButton;
+  background-color: $get-bg;
+  color: $get-font;
+}
+
+.POSTMethod {
+  @extend .methodButton;
+  background-color: $post-bg;
+  color: $post-font;
+}
+
+.PUTMethod {
+  @extend .methodButton;
+  background-color: $put-bg;
+  color: $put-font;
+}
+
+.FATCHMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
+}
+
+.STOMPMethod {
+  @extend .methodButton;
+  background-color: $fetch-bg;
+  color: $fetch-font;
+}
+.pathText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $black;
+  flex: 1;
+  margin: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+  margin-bottom: 8px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid $gray-200;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+.itemKey {
+  width: 40%;
+  font-weight: $font-weight-medium;
+  color: $gray-800;
+  padding-right: 1rem;
+  border-right: 1px solid $gray-300;
+}
+
+.itemValue {
+  width: 60%;
+  padding-left: 1rem;
+  color: $gray-600;
+  word-break: break-word;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+  color: $gray-800;
+
+  thead {
+    background-color: $gray-100;
+
+    th {
+      text-align: left;
+      padding: 0.75rem;
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-sm;
+      border-bottom: 2px solid $gray-300;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $gray-200;
+
+      &:hover {
+        background-color: $gray-50;
+      }
+
+      td {
+        padding: 0.75rem;
+        vertical-align: middle;
+      }
+
+      input[type='checkbox'] {
+        transform: scale(1.1);
+        cursor: pointer;
+      }
+    }
+  }
+}
