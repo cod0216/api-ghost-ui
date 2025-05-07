@@ -13,3 +13,12 @@ export interface FieldSchema {
   type: string;
   nestedFields?: FieldSchema[];
 }
+
+export interface MappingPanelConfig {
+  endpointTitle: string;
+  baseUrl: string;
+  dataList: KeyValue[];
+  selectedKeys: string[];
+  onToggleKey: (key: string) => void;
+  label: string;
+}

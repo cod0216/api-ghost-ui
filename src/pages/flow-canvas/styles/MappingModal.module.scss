@@ -54,17 +54,11 @@
   color: $white;
 }
 
-.panels {
-  display: flex;
+.mappingPanel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  flex: 1;
-}
-
-.panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 .panelHeader {
@@ -128,6 +122,7 @@
   align-items: center;
   text-align: center;
   background-color: transparent;
+  margin-bottom: 8px;
 }
 
 .list {
@@ -140,7 +135,7 @@
 
 .item {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 0.5rem 0;
   border-bottom: 1px solid $gray-200;
 
@@ -148,55 +143,55 @@
     border-bottom: none;
   }
 }
-
 .itemKey {
+  width: 40%;
   font-weight: $font-weight-medium;
   color: $gray-800;
+  padding-right: 1rem;
+  border-right: 1px solid $gray-300;
 }
 
 .itemValue {
+  width: 60%;
+  padding-left: 1rem;
   color: $gray-600;
-  word-break: break-all;
-  margin-left: 1rem;
-  flex: 1;
+  word-break: break-word;
 }
-
-.buttonRow {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.saveButton,
-.cancelButton {
-  margin: 12px 12px 12px 0;
-  padding: 8px 16px;
+table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: $font-size-sm;
-  border-radius: $radius-sm;
-  font-weight: $font-weight-semibold;
-}
-
-.saveButton {
-  background-color: $white;
-  color: $primary-700;
-  border: 1.5px solid $primary-700;
-  cursor: pointer;
-
-  &:hover {
-    background-color: $primary-700;
-    color: $white;
-  }
-}
-
-.cancelButton {
-  background-color: $gray-200;
   color: $gray-800;
-  border: none;
-  border-radius: $radius-sm;
-  cursor: pointer;
 
-  &:hover {
-    background-color: $gray-300;
+  thead {
+    background-color: $gray-100;
+
+    th {
+      text-align: left;
+      padding: 0.75rem;
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-sm;
+      border-bottom: 2px solid $gray-300;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $gray-200;
+
+      &:hover {
+        background-color: $gray-50;
+      }
+
+      td {
+        padding: 0.75rem;
+        vertical-align: middle;
+      }
+
+      input[type='checkbox'] {
+        transform: scale(1.1);
+        cursor: pointer;
+      }
+    }
   }
 }

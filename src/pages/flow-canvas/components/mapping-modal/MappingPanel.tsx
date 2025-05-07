@@ -37,14 +37,16 @@ export const MappingPanel: React.FC<MappingPanelProps> = ({
   return (
     <div className={styles.panel}>
       <div className={styles.panelHeader}>
+        <h2 className={styles.label}>{label}</h2>
         <div className={styles.pathGroup}>
-          <div className={styles.baseUrl}>{baseUrl}</div>
           <div className={styles.methodPathGroup}>
             <span className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</span>
-            <span className={styles.pathText}>{path}</span>
+            <span className={styles.pathText}>
+              {baseUrl}
+              {path}
+            </span>
           </div>
         </div>
-        <h2 className={styles.label}>{label}</h2>
       </div>
       <table>
         <thead>

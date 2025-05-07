@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export function useMappingSelection() {
+export const useMappingSelection = () => {
   const [leftSelectedKeys, setLeftSelectedKeys] = useState<string[]>([]);
   const [rightSelectedKeys, setRightSelectedKeys] = useState<string[]>([]);
 
@@ -28,4 +28,4 @@ export function useMappingSelection() {
     toggleRightKey,
     clearSelection,
   };
-}
+};

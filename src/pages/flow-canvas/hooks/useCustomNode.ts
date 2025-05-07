@@ -6,7 +6,7 @@ import { Field, NodeEndPoint } from '@/common/types/index.ts';
  * Hook providing toggle and save handlers for a CustomNode.
  * @param id - Node ID to target
  */
-export function useNodeControls(id: string) {
+export const useNodeControls = (id: string) => {
   const { setNodes } = useReactFlow<NodeEndPoint>();
   /**
    * Toggle the showBody flag on the node.
@@ -39,4 +39,4 @@ export function useNodeControls(id: string) {
   );
 
   return { toggleBody, saveRequestSchema };
-}
+};
