@@ -66,7 +66,7 @@ export function useFlowCanvas() {
         ...ns,
         {
           id: `${endpoint.id}_${Date.now()}`,
-          type: 'custom',
+          type: 'endpointNode',
           position,
           data: {
             ...endpoint,

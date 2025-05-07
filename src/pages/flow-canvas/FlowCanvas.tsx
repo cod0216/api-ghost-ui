@@ -18,7 +18,7 @@ import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
 import { flattenSchema } from '@/common/utils/schemaUtils';
 
-const nodeTypes = { custom: CustomNode };
+const nodeTypes = { endpointNode: CustomNode };
 
 /**
  * Provides an interface for visualizing scenario flows and
