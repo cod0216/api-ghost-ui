@@ -7,7 +7,7 @@ import { useTabsController } from '@/pages/dashboard/hooks/useTabsController.ts'
 import {
   ScenarioTestResultFileListItem,
   ScenarioTestDetailResponse,
-} from '@/common/types/index.ts';
+} from '@/pages/dashboard/types/index.ts';
 import {
   mockScenarioTestDetailResponse,
   mockScenarioTestResultFileList,

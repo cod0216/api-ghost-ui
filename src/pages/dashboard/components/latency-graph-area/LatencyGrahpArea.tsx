@@ -1,7 +1,7 @@
 import React from 'react';
 import LatencyGraph from '@/pages/dashboard/components/latency-graph-area/LatencyGraph.tsx';
 import styles from '@/pages/dashboard/styles/LatencyGraphArea.module.scss';
-import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponse } from '@/pages/dashboard/types/index.ts';
 
 interface LatencyGraphAreaProps {
   scenarioTestResult: ScenarioTestDetailResponse;

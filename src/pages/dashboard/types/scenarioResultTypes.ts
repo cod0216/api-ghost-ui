@@ -1,4 +1,4 @@
-import { HttpMethod, ProtocolType } from './apiTypes.ts';
+import { HttpMethod, ProtocolType } from '@/common/types/apiTypes.ts';
 
 export interface FormData {
   file?: Record<string, string>;
