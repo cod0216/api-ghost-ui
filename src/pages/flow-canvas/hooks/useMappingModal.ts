@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { KeyValue } from '@/pages/flow-canvas/types/mapping.ts';
 
-export function useMappingModal() {
+export const useMappingModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [leftKeyValueList, setLeftKeyValueList] = useState<KeyValue[]>([]);
   const [rightKeyValueList, setRightKeyValueList] = useState<KeyValue[]>([]);
@@ -43,4 +43,4 @@ export function useMappingModal() {
     saveMappingModal: closeMappingModal,
     cancelMappingModal: closeMappingModal,
   };
-}
+};
