@@ -25,7 +25,6 @@ export const useBodyEditorController = (tabs: readonly CombineTab[]) => {
    * Select a new main tab, update controller, state, and derived sub tabs.
    *
    */
-
   const selectMainTab = useCallback(
     (tab: Tab): void => {
       controller.selectMainTab(tab);
