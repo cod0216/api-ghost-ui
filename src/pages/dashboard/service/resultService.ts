@@ -1,8 +1,8 @@
 import { apiClient } from '@/common/service/apiClient.ts';
 import {
   ScenarioTestDetailResponse,
-  ScenarioTestResultFileListItem,
   ScenarioTestResultFileListResponse,
+  ScenarioTestResultFileListItem,
 } from '@/pages/dashboard/types/index.ts';
 
 export const getScenarioResultList = async (): Promise<ScenarioTestResultFileListItem[]> => {

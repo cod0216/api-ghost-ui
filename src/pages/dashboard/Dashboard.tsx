@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '@/pages/dashboard/styles/Dashboard.module.scss';
 import MainContent from '@/pages/dashboard/components/main-content/MainContent.tsx';
 import HeaderTabs from '@/pages/dashboard/components/header-tabs/HeaderTabs.tsx';
@@ -9,9 +9,9 @@ import {
   ScenarioTestDetailResponse,
 } from '@/pages/dashboard/types/index.ts';
 import {
-  mockScenarioTestDetailResponse,
-  mockScenarioTestResultFileList,
-} from './__mocks__/mockHistoryList.ts';
+  getScenarioResultList,
+  getScenarioDetailResult,
+} from '@/pages/dashboard/service/resultService.ts';
 
 /**
  * Dashboard component renders the main dashboard layout with sidebar, tabs, and main content.
@@ -22,12 +22,23 @@ import {
  * @author haerim-kweon
  */
 const Dashboard: React.FC = () => {
-  const scenarioFileList: ScenarioTestResultFileListItem[] = mockScenarioTestResultFileList;
-  const selectedScenario: ScenarioTestDetailResponse | null = mockScenarioTestDetailResponse;
+  const [scenarioFileList, setScenarioFileList] = useState<ScenarioTestResultFileListItem[]>([]);
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioTestDetailResponse | null>(null);
 
-  const onItemSelected = (item: any) => {
-    console.log(item);
+  const onItemSelected = async (item: ScenarioTestResultFileListItem) => {
+    try {
+      const response = await getScenarioDetailResult(item.fileName);
+      setSelectedScenario(response);
+    } catch (err) {
+      console.error('[Dashboard] getScenarioDetailResult Error', err);
+    }
   };
+
+  useEffect(() => {
+    getScenarioResultList()
+      .then(setScenarioFileList)
+      .catch(err => console.error('[Dashboard] getScenarioResultList Error', err));
+  }, []);
 
   const { tabs, selectedTab, selectTab, closeTab, handleSelectItem } = useTabsController<
     ScenarioTestResultFileListItem,
@@ -37,7 +48,7 @@ const Dashboard: React.FC = () => {
     itemList: scenarioFileList,
     idField: 'fileName',
     titleField: 'fileName',
-    onItemSelected: onItemSelected,
+    onItemSelected,
   });
 
   return (
