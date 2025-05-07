@@ -17,7 +17,7 @@ import {
 } from 'reactflow';
 import { NodeEndPoint } from '@/common/types/index.ts';
 
-export function useFlowCanvas() {
+export const useFlowCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeEndPoint>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
@@ -79,4 +79,4 @@ export function useFlowCanvas() {
   );
 
   return { wrapperRef, nodes, edges, onNodesChange, onEdgesChange, onConnect, onDragOver, onDrop };
-}
+};

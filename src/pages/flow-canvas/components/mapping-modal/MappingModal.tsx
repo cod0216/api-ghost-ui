@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
 import { MappingPanel } from './MappingPanel';
-import { KeyValue, MappingPair } from '@/pages/flow-canvas/types/index.ts';
+import { KeyValue, MappingPair, MappingPanelConfig } from '@/pages/flow-canvas/types/index.ts';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
-export interface MappingModalProps {
+import { CommonButton } from '@/common/components/CommonButton';
+
+interface MappingModalProps {
   isVisible: boolean;
   modalTitle?: string;
   panelLabels?: [string, string];
@@ -51,7 +53,7 @@ export const MappingModal: React.FC<MappingModalProps> = ({
     clearSelection();
   };
 
-  const panels = [
+  const mappingConfigs: MappingPanelConfig[] = [
     {
       endpointTitle: leftEndpointTitle,
       baseUrl: leftEndpointBaseUrl,
@@ -77,39 +79,33 @@ export const MappingModal: React.FC<MappingModalProps> = ({
           <h2 className={styles.title}>{modalTitle}</h2>
         </header>
 
-        <div className={styles.panels}>
-          {panels.map(({ endpointTitle, baseUrl, dataList, selectedKeys, onToggleKey, label }) => {
-            const [method, ...parts] = endpointTitle.split(' ');
-            const path = parts.join(' ');
-            return (
-              <MappingPanel
-                key={label}
-                method={method}
-                path={path}
-                baseUrl={baseUrl}
-                label={label}
-                dataList={dataList}
-                selectedKeys={selectedKeys}
-                onToggleKey={onToggleKey}
-              />
-            );
-          })}
+        <div className={styles.mappingPanel}>
+          {mappingConfigs.map(
+            ({ endpointTitle, baseUrl, dataList, selectedKeys, onToggleKey, label }) => {
+              const [method, ...parts] = endpointTitle.split(' ');
+              const path = parts.join(' ');
+              return (
+                <MappingPanel
+                  key={label}
+                  method={method}
+                  path={path}
+                  baseUrl={baseUrl}
+                  label={label}
+                  dataList={dataList}
+                  selectedKeys={selectedKeys}
+                  onToggleKey={onToggleKey}
+                />
+              );
+            },
+          )}
         </div>
-
-        <footer className={styles.buttonRow}>
-          <button className={styles.saveButton} onClick={handleSave}>
-            Save
-          </button>
-          <button
-            className={styles.cancelButton}
-            onClick={() => {
-              clearSelection();
-              onDismiss();
-            }}
-          >
-            Cancel
-          </button>
-        </footer>
+        <CommonButton
+          onConfirm={handleSave}
+          onCancel={() => {
+            clearSelection();
+            onDismiss();
+          }}
+        />
       </div>
     </div>
   );
