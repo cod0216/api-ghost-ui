@@ -7,29 +7,46 @@
 
 import React from 'react';
 import styles from '@/pages/flow-canvas/styles/ApiList.module.scss';
-import { mockEndpoints } from '../../__mocks__/mockNodeData.ts';
-
+import { mockApi } from '../../__mocks__/mockNodeData.ts';
+import { ApiEndpoint, NodeEndPoint } from '@/common/types/NodeEndPoint.ts';
+import { nanoid } from 'nanoid';
 /**
  * ApiList component
  *
  *  @returns Renders a list of endpoints available for dragging onto the flow canvas.
  */
-const ApiList: React.FC = () => (
-  <ul className={styles.list}>
-    {mockEndpoints.map(ep => (
-      <li
-        key={ep.id}
-        className={styles.item}
-        draggable
-        onDragStart={e => {
-          e.dataTransfer.setData('application/reactflow', JSON.stringify(ep));
-          e.dataTransfer.effectAllowed = 'move';
-        }}
-      >
-        <span className={styles.method}>{ep.method}</span> {ep.path}
-      </li>
-    ))}
-  </ul>
-);
+
+const toNodeEndPoint = (ep: ApiEndpoint): NodeEndPoint => ({
+  endpointId: nanoid(),
+  method: ep.httpMethod,
+  path: ep.path,
+  baseUrl: ep.baseUrl,
+  requestSchema: ep.requestSchema ?? [],
+  responseSchema: ep.responseSchema ?? [],
+  showBody: false,
+});
+
+const ApiList: React.FC = () => {
+  return (
+    <ul className={styles.list}>
+      {mockApi.map(api => {
+        const spec = toNodeEndPoint(api);
+        return (
+          <li
+            key={spec.endpointId}
+            className={styles.item}
+            draggable
+            onDragStart={e => {
+              e.dataTransfer.setData('application/json', JSON.stringify(spec));
+              e.dataTransfer.effectAllowed = 'move';
+            }}
+          >
+            <span className={styles[`${spec.method}Method`]}>{spec.method}</span> {spec.path}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 export default ApiList;
