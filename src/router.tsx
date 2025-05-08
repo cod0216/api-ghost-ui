@@ -6,10 +6,10 @@ import AppLayout from './AppLayout.tsx';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/apighost-ui/',
     element: <AppLayout />,
     children: [
-      { path: '/', element: <Navigate to={ROUTES.FLOW_CANVAS.path} /> },
+      { path: '', element: <Navigate to={ROUTES.FLOW_CANVAS.path} /> },
       { path: ROUTES.FLOW_CANVAS.path, element: <FlowCanvasMain /> },
       { path: ROUTES.DASHBOARD.path, element: <Dashboard /> },
     ],

@@ -3,12 +3,12 @@ import dashboardIcon from '@/assets/icons/dashboard.svg';
 
 export const ROUTES = {
   FLOW_CANVAS: {
-    path: '/flow-canvas',
+    path: 'flow-canvas',
     icon: flowIcon,
     label: 'canvas',
   },
   DASHBOARD: {
-    path: '/dashboard',
+    path: 'dashboard',
     icon: dashboardIcon,
     label: 'dashboard',
   },
