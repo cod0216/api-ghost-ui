@@ -1,5 +1,6 @@
 export type Tab = { label: string; showSchema?: boolean; showSave?: boolean };
 export type CombineTab = { mainTab: Tab; subTabs: Tab[] };
+export type Path = number[];
 
 export const BODY_EDITOR_TABS: readonly CombineTab[] = [
   {
