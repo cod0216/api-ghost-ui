@@ -1,8 +1,8 @@
 import {
   ScenarioTestDetailResponse,
   ScenarioTestResultFileListItem,
-} from '@/pages/dashboard/types/index.ts';
-import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
+} from '@/pages/dashboard/types';
+import { HttpMethod, ProtocolType } from '@/common/types';
 
 const mockScenarioTestDetailResponse: ScenarioTestDetailResponse = {
   name: 'User Signup Scenario',
