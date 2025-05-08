@@ -21,3 +21,22 @@ export interface ApiEndpoint {
   requestParams?: { key: string; value: string }[];
   pathVariables?: { key: string; value: string }[];
 }
+
+export interface NodeEndPoint {
+  endpointId: string;
+  header?: string;
+  method: HttpMethod | string;
+  path: string;
+  baseUrl: string;
+
+  requestSchema?: Field[];
+  responseSchema?: Field[];
+
+  showBody: boolean;
+}
+
+export interface FlowNode {
+  nodeId: string;
+  spec: NodeEndPoint;
+  position: { x: number; y: number };
+}

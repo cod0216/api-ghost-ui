@@ -7,8 +7,7 @@ export const getScenarioList = async (): Promise<string[]> => {
 };
 
 export const getScenarioInfo = async (fileName: string): Promise<ScenarioInfo> => {
-  const response: ScenarioInfo = await apiClient.get('/apighost/scenario-info', {
+  return await apiClient.get('/apighost/scenario-info', {
     scenarioName: fileName,
   });
-  return response;
 };
