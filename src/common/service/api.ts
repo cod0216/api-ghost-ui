@@ -1,55 +1,14 @@
-import { HttpMethod } from '@/common/types/index.ts';
+import { HttpMethod, RequestOptions } from '@/common/types';
+import { buildQueryString, buildHeaders, buildFetchOptions } from '@/common/utils/apiUtils';
 
-export interface RequestOptions {
-  method?: HttpMethod;
-  headers?: HeadersInit;
-  body?: any;
-  params?: Record<string, string | number | boolean>;
-  withDefaultHeaders?: boolean;
-  isFormData?: boolean;
-  authToken?: string;
-}
+let baseUrl = '';
 
-const BASE_URL = 'http://localhost:8080';
-
-const buildQueryString = (params?: Record<string, string | number | boolean>): string =>
-  params ? `?${new URLSearchParams(params as any).toString()}` : '';
-
-const buildHeaders = (
-  headers: HeadersInit,
-  withDefaultHeaders: boolean,
-  isFormData: boolean,
-  authToken?: string,
-): HeadersInit => {
-  const defaultHeaders: Record<string, string> = {};
-
-  if (!isFormData) {
-    defaultHeaders['Content-Type'] = 'application/json';
-  }
-
-  if (authToken) {
-    defaultHeaders['Authorization'] = `Bearer ${authToken}`;
-  }
-
-  return withDefaultHeaders ? { ...defaultHeaders, ...headers } : headers;
+export const setBaseUrl = (url: string) => {
+  baseUrl = url.replace(/\/+$/, '');
 };
 
-const buildFetchOptions = (
-  method: HttpMethod,
-  headers: HeadersInit,
-  body: any,
-  isFormData: boolean,
-): RequestInit => {
-  const options: RequestInit = {
-    method,
-    headers,
-  };
-
-  if (body && method !== HttpMethod.GET) {
-    options.body = isFormData ? body : JSON.stringify(body);
-  }
-
-  return options;
+export const getBaseUrl = () => {
+  return baseUrl;
 };
 
 export const request = async <T = any>(
@@ -64,7 +23,7 @@ export const request = async <T = any>(
     authToken,
   }: RequestOptions = {},
 ): Promise<T> => {
-  const fullUrl = `${BASE_URL}${url}${buildQueryString(params)}`;
+  const fullUrl = `${baseUrl}${url}${buildQueryString(params)}`;
 
   const finalHeaders = buildHeaders(headers, withDefaultHeaders, isFormData, authToken);
   const fetchOptions = buildFetchOptions(method, finalHeaders, body, isFormData);

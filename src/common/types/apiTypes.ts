@@ -23,3 +23,13 @@ export interface RequestBody {
   formdata?: any;
   json?: string;
 }
+
+export interface RequestOptions {
+  method?: HttpMethod;
+  headers?: HeadersInit;
+  body?: any;
+  params?: Record<string, string | number | boolean>;
+  withDefaultHeaders?: boolean;
+  isFormData?: boolean;
+  authToken?: string;
+}

@@ -30,3 +30,4 @@ dist-ssr
 
 # mock file
 **/__mocks__/
+public/config.json
