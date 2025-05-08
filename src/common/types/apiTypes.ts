@@ -1,6 +1,6 @@
 export enum ProtocolType {
   HTTP = 'HTTP',
-  WS = 'WS',
+  STOMP = 'STOMP',
 }
 
 export enum HttpMethod {

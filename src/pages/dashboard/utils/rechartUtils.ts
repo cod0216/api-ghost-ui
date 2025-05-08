@@ -76,6 +76,6 @@ export const buildFlowElements = (
 export const getNodeStatusClass = (data: ApiRequestData): NodeStatus =>
   data.isRequestSuccess
     ? NodeStatus.Success
-    : data.statusCode
+    : data.status
       ? NodeStatus.Error
       : NodeStatus.Unreachable;
