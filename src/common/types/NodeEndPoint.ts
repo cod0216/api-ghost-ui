@@ -15,12 +15,12 @@ export interface ApiEndpoint {
   path: string;
   produces: string[];
   consumes: string[];
-  requestSchema: Field[] | null;
-  responseSchema: Field[] | null;
-  headers?: { key: string; value: string }[] | null;
-  cookies?: { key: string; value: string }[] | null;
-  requestParams?: { key: string; value: string }[] | null;
-  pathVariables?: { key: string; value: string }[] | null;
+  requestSchema?: Field[];
+  responseSchema?: Field[];
+  headers?: { key: string; value: string }[];
+  cookies?: { key: string; value: string }[];
+  requestParams?: { key: string; value: string }[];
+  pathVariables?: { key: string; value: string }[];
 }
 
 export interface NodeEndPoint {

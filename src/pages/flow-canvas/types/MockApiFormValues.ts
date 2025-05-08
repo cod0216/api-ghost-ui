@@ -4,8 +4,8 @@ export interface MockApiFormValues {
   baseUrl: string;
   method: string;
   path: string;
-  requestSchema: Field[] | boolean;
-  responseSchema: Field[] | boolean;
+  requestSchema: Field[];
+  responseSchema: Field[];
   x: number;
   y: number;
 }
