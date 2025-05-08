@@ -11,3 +11,11 @@ export const getScenarioInfo = async (fileName: string): Promise<ScenarioInfo> =
     scenarioName: fileName,
   });
 };
+
+export const exportScenario = async (
+  scenario: ScenarioInfo,
+): Promise<{
+  status: boolean;
+}> => {
+  return await apiClient.post('/scenario-export', scenario);
+};
