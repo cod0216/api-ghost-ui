@@ -5,6 +5,7 @@
  * Includes layout for node boxes, method buttons, path display,
  * body section, and editor popover.
  */
+@use '@/styles/mixins/httpMethod';
 
 .node {
   position: relative;
@@ -20,6 +21,27 @@
   padding: 0px 6px;
   border: none;
   border-radius: $radius-2xl;
+}
+
+.DELETEMethod {
+  @include httpMethod.method-button($delete-bg, $delete-font);
+}
+
+.GETMethod {
+  @include httpMethod.method-button($get-bg, $get-font);
+}
+
+.POSTMethod {
+  @include httpMethod.method-button($post-bg, $post-font);
+}
+
+.PUTMethod {
+  @include httpMethod.method-button($put-bg, $put-font);
+}
+
+.FETCHMethod,
+.STOMPMethod {
+  @include httpMethod.method-button($fetch-bg, $fetch-font);
 }
 
 .header {
@@ -38,42 +60,6 @@
   background: $white;
   padding: 4px 8px;
   border-radius: 0px 0px $radius-lg $radius-lg;
-}
-
-.DELETEMethod {
-  @extend .methodButton;
-  background-color: $delete-bg;
-  color: $delete-font;
-}
-
-.GETMethod {
-  @extend .methodButton;
-  background-color: $get-bg;
-  color: $get-font;
-}
-
-.POSTMethod {
-  @extend .methodButton;
-  background-color: $post-bg;
-  color: $post-font;
-}
-
-.PUTMethod {
-  @extend .methodButton;
-  background-color: $put-bg;
-  color: $put-font;
-}
-
-.FATCHMethod {
-  @extend .methodButton;
-  background-color: $fetch-bg;
-  color: $fetch-font;
-}
-
-.STOMPMethod {
-  @extend .methodButton;
-  background-color: $fetch-bg;
-  color: $fetch-font;
 }
 
 .path {
