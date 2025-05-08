@@ -5,7 +5,7 @@
  */
 import { useState, useCallback, useMemo } from 'react';
 import { BodyEditorController } from '@/pages/flow-canvas/controllers/BodyEditorTabsController.ts';
-import { CombineTab, Tab } from '@/pages/flow-canvas/types/bodyEditorTabs.ts';
+import { CombineTab, Tab } from '@/pages/flow-canvas/types/index';
 
 export const useBodyEditorController = (tabs: readonly CombineTab[]) => {
   const [controller] = useState(() => new BodyEditorController(tabs));
