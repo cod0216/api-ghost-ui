@@ -12,6 +12,7 @@ import {
   getScenarioResultList,
   getScenarioDetailResult,
 } from '@/pages/dashboard/service/resultService.ts';
+import { useSearchParams } from 'react-router-dom';
 
 /**
  * Dashboard component renders the main dashboard layout with sidebar, tabs, and main content.
@@ -24,6 +25,8 @@ import {
 const Dashboard: React.FC = () => {
   const [scenarioFileList, setScenarioFileList] = useState<ScenarioTestResultFileListItem[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioTestDetailResponse | null>(null);
+  const [searchParams] = useSearchParams();
+  const fileName = searchParams.get('fileName');
 
   const onItemSelected = async (item: ScenarioTestResultFileListItem) => {
     try {
@@ -50,6 +53,14 @@ const Dashboard: React.FC = () => {
     titleField: 'fileName',
     onItemSelected,
   });
+
+  useEffect(() => {
+    if (!fileName || scenarioFileList.length === 0) return;
+    const foundItem = scenarioFileList.find(item => item.fileName === fileName);
+    if (foundItem) {
+      handleSelectItem(foundItem);
+    }
+  }, [fileName, scenarioFileList]);
 
   return (
     <div className={styles.container}>
