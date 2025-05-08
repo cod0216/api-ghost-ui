@@ -1,0 +1,27 @@
+.container {
+  border-radius: $radius-xl;
+  background-color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 20px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  gap: 10px;
+  z-index: 1000;
+  box-shadow: 0px 0px 5px $gray-300;
+}
+
+.button {
+  padding: 10px;
+  border-radius: $radius-lg;
+  text-align: center;
+  border: none;
+  background-color: $white;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: $gray-50;
+}
