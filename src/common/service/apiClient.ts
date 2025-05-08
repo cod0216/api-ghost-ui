@@ -5,8 +5,6 @@ type Params = Record<string, string | number | boolean>;
 
 interface ClientOptions extends Omit<RequestOptions, 'method' | 'body' | 'params'> {}
 
-const BASE_URL = '';
-
 export const apiClient = {
   get: <T>(url: string, params?: Params, options: ClientOptions = {}): Promise<T> =>
     request<T>(url, {
@@ -61,7 +59,7 @@ export const apiClient = {
       Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
     ).toString();
 
-    const fullUrl = `${BASE_URL}${url}?${queryString}`;
+    const fullUrl = `${url}?${queryString}`;
     const eventSource = new EventSource(fullUrl);
 
     eventSource.onmessage = onMessage;

@@ -10,7 +10,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 import styles from '@/pages/dashboard/styles/LatencyGraph.module.scss';
-import { ScenarioTestDetailResponse } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponse } from '@/pages/dashboard/types/index.ts';
 
 interface LatencyGraphProps {
   scenarioTestResult: ScenarioTestDetailResponse;
