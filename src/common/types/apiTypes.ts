@@ -11,3 +11,15 @@ export enum HttpMethod {
   FETCH = 'FETCH',
   STOMP = 'STOMP',
 }
+
+export interface HttpRequest {
+  method: HttpMethod;
+  url: string;
+  header: Record<string, string>;
+  body?: RequestBody;
+}
+
+export interface RequestBody {
+  formdata?: any;
+  json?: string;
+}
