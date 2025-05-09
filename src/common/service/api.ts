@@ -3,14 +3,6 @@ import { buildQueryString, buildHeaders, buildFetchOptions } from '@/common/util
 
 let baseUrl = '';
 
-export const setBaseUrl = (url: string) => {
-  baseUrl = url.replace(/\/+$/, '');
-};
-
-export const getBaseUrl = () => {
-  return baseUrl;
-};
-
 export const request = async <T = any>(
   url: string,
   {

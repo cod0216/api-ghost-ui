@@ -1,4 +1,4 @@
-import { getBaseUrl, request } from '@/common/service/api';
+import { request } from '@/common/service/api';
 import { RequestOptions, HttpMethod } from '@/common/types';
 
 type Params = Record<string, string | number | boolean>;
@@ -59,7 +59,7 @@ export const apiClient = {
       Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
     ).toString();
 
-    const fullUrl = `${getBaseUrl()}${url}?${queryString}`;
+    const fullUrl = `${url}?${queryString}`;
     const eventSource = new EventSource(fullUrl);
 
     eventSource.onmessage = onMessage;
