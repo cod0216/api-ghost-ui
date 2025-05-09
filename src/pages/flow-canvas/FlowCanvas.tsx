@@ -9,8 +9,6 @@ import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/Mappi
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
 import { flattenSchema } from '@/common/utils/schemaUtils';
-import ApiList from '@/pages/flow-canvas/components/api-list/ApiList.tsx';
-import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList.tsx';
 import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import CommonSidebar from '@/common/components/CommonSidebar';

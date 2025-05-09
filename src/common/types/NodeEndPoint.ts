@@ -8,7 +8,7 @@ export interface Field {
 }
 
 export interface ApiEndpoint {
-  protocolType: 'HTTP' | 'STOMP' | string;
+  protocolType: 'HTTP' | 'WEBSOCKET' | string;
   baseUrl: string;
   methodName: string;
   httpMethod: HttpMethod;
