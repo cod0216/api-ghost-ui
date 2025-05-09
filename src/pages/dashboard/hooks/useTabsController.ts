@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { TabsController } from '@/pages/dashboard/controllers/TabsController.ts';
 import { TabItem } from '@/common/types/index.ts';
 
@@ -16,7 +16,7 @@ interface UseTabsControllerProps<T, K extends keyof T, L extends keyof T> {
   itemList: T[];
   idField: K;
   titleField: L;
-  onItemSelected?: (item: T) => void;
+  onItemSelected?: (item: any) => void;
 }
 
 /**
@@ -100,11 +100,13 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
     } else {
       addTab(item);
     }
-
-    if (onItemSelected) {
-      onItemSelected(item);
-    }
   };
+
+  useEffect(() => {
+    if (onItemSelected) {
+      selectedTab ? onItemSelected(selectedTab.id) : onItemSelected(null);
+    }
+  }, [selectedTab]);
 
   return {
     tabs,
