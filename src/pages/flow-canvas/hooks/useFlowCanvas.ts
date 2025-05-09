@@ -108,6 +108,7 @@ export const useFlowCanvas = () => {
   const onEdgeContextMenu = useCallback(
     (event: React.MouseEvent, edge: Edge) => {
       event.preventDefault();
+      event.stopPropagation();
       setEdges(es => es.filter(e => e.id !== edge.id));
     },
     [setEdges],
@@ -143,6 +144,13 @@ export const useFlowCanvas = () => {
     [setNodes],
   );
 
+  const removeNode = useCallback(
+    (nodeId: String) => {
+      setNodes(ns => ns.filter(n => n.id !== nodeId));
+    },
+    [setNodes],
+  );
+
   return {
     wrapperRef,
     nodes,
@@ -157,5 +165,6 @@ export const useFlowCanvas = () => {
     onEdgeUpdateEnd,
     onEdgeContextMenu,
     addNode,
+    removeNode,
   };
 };
