@@ -1,0 +1,12 @@
+@use '../colors' as *;
+@use '../fonts' as *;
+@use '../radius' as *;
+
+@mixin method-button($bg-color, $font-color) {
+  font-size: $font-size-2xs;
+  padding: 0px 6px;
+  border: none;
+  border-radius: $radius-2xl;
+  background-color: $bg-color;
+  color: $font-color;
+}

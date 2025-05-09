@@ -1,3 +1,6 @@
+@use '@/styles/mixins/httpMethod';
+@use '@/styles/mixins/scrollbar';
+
 /**
  * Styles for ApiList component.
 */
@@ -5,6 +8,9 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .item {
@@ -16,4 +22,32 @@
   &:hover {
     background-color: $primary-100;
   }
+}
+
+.methodButton {
+  font-size: $font-size-2xs;
+  padding: 0px 6px;
+  border: none;
+  border-radius: $radius-2xl;
+}
+
+.DELETEMethod {
+  @include httpMethod.method-button($delete-bg, $delete-font);
+}
+
+.GETMethod {
+  @include httpMethod.method-button($get-bg, $get-font);
+}
+
+.POSTMethod {
+  @include httpMethod.method-button($post-bg, $post-font);
+}
+
+.PUTMethod {
+  @include httpMethod.method-button($put-bg, $put-font);
+}
+
+.FETCHMethod,
+.WEBSOCKETMethod {
+  @include httpMethod.method-button($fetch-bg, $fetch-font);
 }

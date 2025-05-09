@@ -4,9 +4,10 @@ import { Field, NodeEndPoint } from '@/common/types/index.ts';
 
 /**
  * Hook providing toggle and save handlers for a CustomNode.
- * @param id - Node ID to target
+ * @param nodeId - Node ID to target
+ * @param endpointId API spac ID
  */
-export const useNodeControls = (id: string) => {
+export const useNodeControls = (nodeId: string, endpointId?: string) => {
   const { setNodes } = useReactFlow<NodeEndPoint>();
   /**
    * Toggle the showBody flag on the node.
@@ -19,11 +20,11 @@ export const useNodeControls = (id: string) => {
       }
       setNodes(nodes =>
         nodes.map(n =>
-          n.id === id ? { ...n, data: { ...n.data, showBody: !n.data.showBody } } : n,
+          n.id === nodeId ? { ...n, data: { ...n.data, showBody: !n.data.showBody } } : n,
         ),
       );
     },
-    [id, setNodes],
+    [nodeId, setNodes],
   );
 
   /**
@@ -32,11 +33,24 @@ export const useNodeControls = (id: string) => {
   const saveRequestSchema = useCallback(
     (newSchema: Field[]) => {
       setNodes(nodes =>
-        nodes.map(n => (n.id === id ? { ...n, data: { ...n.data, requestSchema: newSchema } } : n)),
+        nodes.map(n =>
+          n.id === nodeId ? { ...n, data: { ...n.data, requestSchema: newSchema } } : n,
+        ),
       );
     },
-    [id, setNodes],
+    [nodeId, setNodes],
   );
 
-  return { toggleBody, saveRequestSchema };
+  const saveResponseSchema = useCallback(
+    (newSchema: Field[]) => {
+      setNodes(nodes =>
+        nodes.map(n =>
+          n.id === nodeId ? { ...n, data: { ...n.data, requestSchema: newSchema } } : n,
+        ),
+      );
+    },
+    [nodeId, setNodes],
+  );
+
+  return { toggleBody, saveRequestSchema, saveResponseSchema };
 };
