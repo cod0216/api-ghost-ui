@@ -25,7 +25,7 @@ export interface FlowStep {
 export interface FlowRoute {
   expected: {
     status: string;
-    value?: any;
+    value?: Record<string, any> | null;
   };
   then: {
     store: Record<string, any>;

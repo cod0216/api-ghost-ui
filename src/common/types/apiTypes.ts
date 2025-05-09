@@ -16,12 +16,12 @@ export interface HttpRequest {
   method: HttpMethod;
   url: string;
   header: Record<string, string>;
-  body?: RequestBody;
+  body?: RequestBody | null;
 }
 
 export interface RequestBody {
-  formdata?: any;
-  json?: string;
+  formdata?: FormData | null;
+  json?: string | null;
 }
 
 export interface RequestOptions {
