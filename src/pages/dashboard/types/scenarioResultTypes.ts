@@ -1,4 +1,4 @@
-import { HttpMethod, ProtocolType } from './apiTypes.ts';
+import { HttpMethod, ProtocolType } from '@/common/types/apiTypes.ts';
 
 export interface FormData {
   file?: Record<string, string>;
@@ -34,9 +34,13 @@ export interface ScenarioTestDetailResponseResult {
   }>;
 }
 
+export interface ScenarioTestResultFileListResponse {
+  resultList: ScenarioTestResultFileListItem[];
+}
+
 export interface ScenarioTestResultFileListItem {
   fileName: string;
-  testSummary: string;
+  testSummary: boolean;
   timeStamp: string;
 }
 

@@ -1,0 +1,34 @@
+import { HttpRequest, ProtocolType } from '@/common/types/index.ts';
+
+export interface ScenarioNameListResponse {
+  scenarioNameList: string[];
+}
+
+export interface ScenarioInfo {
+  name: string;
+  description: string;
+  timeoutMs: number;
+  store: Record<string, any> | null;
+  steps: Record<string, FlowStep>;
+}
+
+export interface FlowStep {
+  type: ProtocolType;
+  position: {
+    x: number;
+    y: number;
+  };
+  request: HttpRequest;
+  route: FlowRoute[];
+}
+
+export interface FlowRoute {
+  expected: {
+    status: string;
+    value?: any;
+  };
+  then: {
+    store: Record<string, any>;
+    step: string;
+  };
+}

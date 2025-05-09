@@ -7,7 +7,7 @@
  * @author haerim-kweon
  */
 import React from 'react';
-import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 import { ReactFlowProvider } from 'reactflow';
 import ApiTestFlowGraph from '@/pages/dashboard/components/flow-graph-area/FlowGraphCanvas.tsx';

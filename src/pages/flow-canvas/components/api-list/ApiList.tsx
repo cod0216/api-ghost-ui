@@ -5,11 +5,12 @@
  * Each list item is draggable and provides endpoint metadata via drag event.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/ApiList.module.scss';
-import { mockApi } from '../../__mocks__/mockNodeData.ts';
-import { ApiEndpoint, NodeEndPoint } from '@/common/types/NodeEndPoint.ts';
+import { ApiEndpoint, NodeEndPoint } from '@/pages/flow-canvas/types';
 import { nanoid } from 'nanoid';
+import { getEndpointList } from '@/pages/flow-canvas/service/endPointService';
+
 /**
  * ApiList component
  *
@@ -27,9 +28,17 @@ const toNodeEndPoint = (ep: ApiEndpoint): NodeEndPoint => ({
 });
 
 const ApiList: React.FC = () => {
+  const [apiList, setApiList] = useState<ApiEndpoint[]>([]);
+
+  useEffect(() => {
+    getEndpointList()
+      .then(setApiList)
+      .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
+  }, []);
+
   return (
     <ul className={styles.list}>
-      {mockApi.map(api => {
+      {apiList.map(api => {
         const spec = toNodeEndPoint(api);
         return (
           <li

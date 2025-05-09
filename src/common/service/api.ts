@@ -10,7 +10,7 @@ export interface RequestOptions {
   authToken?: string;
 }
 
-const BASE_URL = '';
+const BASE_URL = 'http://localhost:8080';
 
 const buildQueryString = (params?: Record<string, string | number | boolean>): string =>
   params ? `?${new URLSearchParams(params as any).toString()}` : '';

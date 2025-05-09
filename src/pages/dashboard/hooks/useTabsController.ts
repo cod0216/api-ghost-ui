@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { TabsController } from '@/pages/dashboard/controllers/TabsController.ts';
 import { TabItem } from '@/common/types/index.ts';
 
@@ -33,21 +33,21 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
   props: UseTabsControllerProps<T, K, L>,
 ) => {
   const { itemList, idField, titleField, onItemSelected } = props;
-  const [controller] = useState(() => new TabsController<T, K, L>(itemList, idField, titleField));
-
   const [tabs, setTabs] = useState<TabItem[]>([]);
   const [selectedTab, setSelectedTab] = useState<TabItem | undefined>(undefined);
+
+  const controller = useMemo(() => {
+    return new TabsController<T, K, L>(itemList, idField, titleField);
+  }, [itemList]);
 
   /**
    * Updates the state of tabs and selected tab.
    * This function is called after any tab modification.
    */
-  const updateTabsAndSelection = () => {
-    const updatedTabs = controller.getTabs();
-    const currentTab = controller.getSelectedTab();
-
+  const updateTabsAndSelection = (updatedTab: TabItem | undefined, updatedTabs: TabItem[]) => {
+    const fallbackTab = updatedTab ?? updatedTabs[0];
     setTabs([...updatedTabs]);
-    setSelectedTab(currentTab);
+    setSelectedTab(fallbackTab);
   };
 
   /**
@@ -56,8 +56,8 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
    * @param id - The ID of the tab to select.
    */
   const selectTab = (id: string) => {
-    controller.selectTab(id);
-    updateTabsAndSelection();
+    const updatedTab: TabItem | undefined = controller.selectTab(id, tabs);
+    setSelectedTab(updatedTab);
   };
 
   /**
@@ -66,8 +66,13 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
    * @param item - The item to create a new tab for.
    */
   const addTab = (item: T) => {
-    controller.addTab(item);
-    updateTabsAndSelection();
+    const updatedTabs: TabItem[] = controller.addTab(item, tabs);
+    const updatedTab: TabItem | undefined = controller.selectTab(
+      item[idField] as string,
+      updatedTabs,
+    );
+
+    updateTabsAndSelection(updatedTab, updatedTabs);
   };
 
   /**
@@ -76,8 +81,9 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
    * @param id - The ID of the tab to close.
    */
   const closeTab = (id: string) => {
-    controller.closeTab(id);
-    updateTabsAndSelection();
+    const updatedTabs: TabItem[] = controller.closeTab(id, tabs);
+    const newSelected = selectedTab?.id === id ? updatedTabs[0] : selectedTab;
+    updateTabsAndSelection(newSelected, updatedTabs);
   };
 
   /**
@@ -88,6 +94,7 @@ export const useTabsController = <T, K extends keyof T, L extends keyof T>(
    */
   const handleSelectItem = (item: T) => {
     const exists = tabs.find(tab => tab.id === item[idField]);
+
     if (exists) {
       selectTab(item[idField] as string);
     } else {
