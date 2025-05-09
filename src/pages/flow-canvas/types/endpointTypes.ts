@@ -1,15 +1,13 @@
-/** API Endpoint interface */
-import { HttpMethod } from './index';
+import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
 
 export interface Field {
   type: string;
   name: string;
   nestedFields?: Field[];
-  value?: string | number | boolean;
 }
 
 export interface ApiEndpoint {
-  protocolType: 'HTTP' | 'WEBSOCKET' | string;
+  protocolType: ProtocolType | string;
   baseUrl: string;
   methodName: string;
   httpMethod: HttpMethod;

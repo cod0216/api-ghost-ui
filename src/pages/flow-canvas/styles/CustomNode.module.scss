@@ -40,7 +40,7 @@
 }
 
 .FETCHMethod,
-.STOMPMethod {
+.WEBSOCKETMethod {
   @include httpMethod.method-button($fetch-bg, $fetch-font);
 }
 

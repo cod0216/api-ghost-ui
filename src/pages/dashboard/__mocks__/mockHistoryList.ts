@@ -1,9 +1,8 @@
 import {
-  HttpMethod,
-  ProtocolType,
   ScenarioTestDetailResponse,
   ScenarioTestResultFileListItem,
-} from '@/common/types/index.ts';
+} from '@/pages/dashboard/types/index.ts';
+import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
 
 const mockScenarioTestDetailResponse: ScenarioTestDetailResponse = {
   name: 'User Signup Scenario',
@@ -67,12 +66,12 @@ const mockScenarioTestDetailResponse: ScenarioTestDetailResponse = {
 const mockScenarioTestResultFileList: ScenarioTestResultFileListItem[] = [
   {
     fileName: 'user-scenario-result-01',
-    testSummary: 'success',
+    testSummary: true,
     timeStamp: '2025-04-23T07:57:59',
   },
   {
     fileName: 'user-scenario-result-02',
-    testSummary: 'fail',
+    testSummary: false,
     timeStamp: '2025-04-24T08:22:59',
   },
 ];

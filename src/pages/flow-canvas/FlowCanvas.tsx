@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactFlow, MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
-import CommonSidebar from '@/common/components/CommonSidebar.tsx';
+import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
@@ -9,10 +9,12 @@ import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/Mappi
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
 import { flattenSchema } from '@/common/utils/schemaUtils';
-import ApiList from '@/pages/flow-canvas/components/api-list/ApiList.tsx';
-import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList.tsx';
 import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
+import CommonSidebar from '@/common/components/CommonSidebar';
+import ApiList from '@/pages/flow-canvas/components/api-list/ApiList.tsx';
+import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList.tsx';
+
 const nodeTypes = { endpointNode: CustomNode };
 
 const FlowCanvas: React.FC = () => {

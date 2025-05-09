@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, useReactFlow, NodeTypes } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ApiRequestNode from '@/pages/dashboard/components/flow-graph-area/ApiRequestNode.tsx';
-import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.ts';
 import { buildFlowElements } from '@/pages/dashboard/utils/rechartUtils.ts';
 import styles from '@/pages/dashboard/styles/FlowGraphArea.module.scss';
 

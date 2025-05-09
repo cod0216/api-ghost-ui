@@ -9,5 +9,17 @@ export enum HttpMethod {
   PUT = 'PUT',
   DELETE = 'DELETE',
   FETCH = 'FETCH',
-  STOMP = 'STOMP',
+  WEBSOCKET = 'WEBSOCKET',
+}
+
+export interface HttpRequest {
+  method: HttpMethod;
+  url: string;
+  header: Record<string, string>;
+  body?: RequestBody;
+}
+
+export interface RequestBody {
+  formdata?: any;
+  json?: string;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '@/pages/dashboard/styles/TableArea.module.scss';
-import { ScenarioTestDetailResponseResult } from '@/common/types/index.ts';
+import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.ts';
 
 interface DetailRowProps {
   isOpen: boolean;
