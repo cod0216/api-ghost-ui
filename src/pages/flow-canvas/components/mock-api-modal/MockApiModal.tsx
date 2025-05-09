@@ -2,10 +2,23 @@ import React, { MouseEvent, useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
 import { MockApiFormValues } from '@/pages/flow-canvas/types/index';
 import { CommonButton } from '@/common/components/CommonButton';
+import { HttpMethod } from '@/common/types/index';
 
-interface Props {
+interface MockApiModalProps {
   isVisible: boolean;
   formValues: MockApiFormValues;
+  resSchemaText: string;
+  reqSchemaText: string;
+  baseUrl: string;
+  path: string;
+  method: HttpMethod;
+  isSchemaValid: boolean;
+  setBaseUrl: (v: string) => void;
+  setMethod: (v: HttpMethod) => void;
+  setPath: (v: string) => void;
+  setIsSchemaValid: (v: boolean) => void;
+  setReqSchemaText: (v: string) => void;
+  setResSchemaText: (v: string) => void;
   onConfirm: (
     values: MockApiFormValues & {
       requestSchemaText: string;
@@ -14,57 +27,38 @@ interface Props {
     },
   ) => void;
   onCancel: () => void;
+  validateSchemas: (reqText: string, resText: string) => void;
 }
 
-const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+const methods = Object.values(HttpMethod).filter(m =>
+  ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(m),
+);
 
-export const MockApiModal: React.FC<Props> = ({ isVisible, formValues, onConfirm, onCancel }) => {
-  const [baseUrl, setBaseUrl] = useState(formValues.baseUrl);
-  const [method, setMethod] = useState(formValues.method);
-  const [path, setPath] = useState(formValues.path);
-
-  const [reqSchemaText, setReqSchemaText] = useState(
-    JSON.stringify(formValues.requestSchema, null, 2),
-  );
-  const [resSchemaText, setResSchemaText] = useState(
-    JSON.stringify(formValues.responseSchema, null, 2),
-  );
-
-  const [isSchemaValid, setIsSchemaValid] = useState(true);
-
-  const validateSchemas = (reqText: string, resText: string) => {
-    try {
-      JSON.parse(reqText);
-      JSON.parse(resText);
-      setIsSchemaValid(true);
-    } catch {
-      setIsSchemaValid(false);
-    }
-  };
-
-  useEffect(() => {
-    setBaseUrl(formValues.baseUrl);
-    setMethod(formValues.method);
-    setPath(formValues.path);
-
-    const initialReq = JSON.stringify(formValues.requestSchema, null, 2);
-    const initialRes = JSON.stringify(formValues.responseSchema, null, 2);
-    setReqSchemaText(initialReq);
-    setResSchemaText(initialRes);
-
-    validateSchemas(initialReq, initialRes);
-  }, [formValues]);
-
+export const MockApiModal: React.FC<MockApiModalProps> = ({
+  isVisible,
+  formValues,
+  resSchemaText,
+  reqSchemaText,
+  baseUrl,
+  path,
+  method,
+  isSchemaValid,
+  setResSchemaText,
+  setReqSchemaText,
+  setPath,
+  setMethod,
+  setBaseUrl,
+  onConfirm,
+  onCancel,
+}) => {
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   const handleReqChange = (text: string) => {
     setReqSchemaText(text);
-    validateSchemas(text, resSchemaText);
   };
 
   const handleResChange = (text: string) => {
     setResSchemaText(text);
-    validateSchemas(reqSchemaText, text);
   };
 
   const handleConfirm = () => {
@@ -94,7 +88,7 @@ export const MockApiModal: React.FC<Props> = ({ isVisible, formValues, onConfirm
 
         <label>
           Method:
-          <select value={method} onChange={e => setMethod(e.target.value)}>
+          <select value={method} onChange={e => setMethod(e.target.value as HttpMethod)}>
             {methods.map(m => (
               <option key={m} value={m}>
                 {m}

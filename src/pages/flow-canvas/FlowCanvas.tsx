@@ -51,8 +51,21 @@ const FlowCanvas: React.FC = () => {
   const {
     isVisible: isMockVisible,
     formValues,
+    baseUrl,
+    path,
+    method,
+    isSchemaValid,
     openMockApiModal,
     closeMockApiModal,
+    reqSchemaText,
+    resSchemaText,
+    setBaseUrl,
+    setMethod,
+    setPath,
+    setIsSchemaValid,
+    setReqSchemaText,
+    setResSchemaText,
+    validateSchemas,
   } = useMockApiModal();
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
@@ -126,8 +139,21 @@ const FlowCanvas: React.FC = () => {
         <MockApiModal
           isVisible={isMockVisible}
           formValues={formValues}
+          baseUrl={baseUrl}
+          path={path}
+          method={method}
+          isSchemaValid={isSchemaValid}
+          reqSchemaText={reqSchemaText}
+          resSchemaText={resSchemaText}
+          setBaseUrl={setBaseUrl}
+          setMethod={setMethod}
+          setPath={setPath}
+          setIsSchemaValid={setIsSchemaValid}
+          setReqSchemaText={setReqSchemaText}
+          setResSchemaText={setResSchemaText}
           onConfirm={addNode}
           onCancel={closeMockApiModal}
+          validateSchemas={validateSchemas}
         />
       </div>
     </div>
