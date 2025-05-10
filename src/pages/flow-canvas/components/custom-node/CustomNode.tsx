@@ -10,8 +10,9 @@ import React from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
+import { MainTabType, NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
 import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
+import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 
 /**
  * CustomNode component
@@ -23,7 +24,6 @@ import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
   const {
     endpointId,
-    header,
     baseUrl,
     method,
     path,
@@ -32,7 +32,11 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
     responseSchema = [],
   } = data;
 
-  const { toggleBody, saveRequestSchema, saveResponseSchema } = useNodeControls(id, endpointId);
+  const { toggleBody } = useNodeControls(id, endpointId);
+  const { requestSchema: saveReq, responseSchema: saveRes, save } = useSchemaEditor(id);
+
+  const handleSaveRequest = (newSchema: typeof saveReq) => save(MainTabType.REQUEST, newSchema);
+  const handleSaveResponse = (newSchema: typeof saveRes) => save(MainTabType.RESPONSE, newSchema);
 
   return (
     <div className={`${styles.node} ${styles[method]}`}>
@@ -52,8 +56,8 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
           <BodyEditor
             requestSchema={requestSchema}
             responseSchema={responseSchema}
-            onSaveRequestSchema={saveRequestSchema}
-            onSaveResponseSchema={saveResponseSchema}
+            onSaveRequestSchema={handleSaveRequest}
+            onSaveResponseSchema={handleSaveResponse}
             onClose={() => toggleBody()}
           />
         </>

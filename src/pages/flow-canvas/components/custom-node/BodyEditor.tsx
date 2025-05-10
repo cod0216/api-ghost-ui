@@ -55,6 +55,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
     else {
       onSaveResponseSchema(resSchema);
     }
+    onClose();
   };
 
   const startEdit = (path: Path, rawValue: string) => {
