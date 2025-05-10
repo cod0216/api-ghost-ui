@@ -1,47 +1,62 @@
-/**
- * @fileoverview CustomNode.tsx
- *
- * This component defines a custom node used in React Flow.
- * Each node represents an API endpoint with its baseUrl, method, and path.
- * It also supports toggling a body editor for modifying the request body.
- */
-
 import React from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
-import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
+import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
+import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { MainTabType, NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
-import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
+import { MainTabType, NodeEndPoint, Field } from '@/pages/flow-canvas/types';
 import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 
-/**
- * CustomNode component
- *
- * @param param0 Props passed by React Flow: node ID and data
- * @returns Rendered node UI component
- */
-
-const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
+const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos }) => {
+  const { setNodes } = useReactFlow();
   const {
-    endpointId,
     baseUrl,
     method,
     path,
     showBody,
-    requestSchema = [],
-    responseSchema = [],
+    requestSchema: dataReq = [],
+    responseSchema: dataRes = [],
   } = data;
 
-  const { toggleBody } = useNodeControls(id, endpointId);
-  const { requestSchema: saveReq, responseSchema: saveRes, save } = useSchemaEditor(id);
+  const { requestSchema, responseSchema, save } = useSchemaEditor(id, dataReq, dataRes);
 
-  const handleSaveRequest = (newSchema: typeof saveReq) => save(MainTabType.REQUEST, newSchema);
-  const handleSaveResponse = (newSchema: typeof saveRes) => save(MainTabType.RESPONSE, newSchema);
+  const handleToggleBody = (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setNodes(nodes =>
+      nodes.map(n => (n.id === id ? { ...n, data: { ...n.data, showBody: !showBody } } : n)),
+    );
+  };
 
+  const handleSave = (type: MainTabType, newSchema: Field[]) => {
+    save(type, newSchema);
+
+    setNodes(nodes =>
+      nodes.map(n =>
+        n.id === id
+          ? {
+              ...n,
+              data: {
+                ...n.data,
+                requestSchema: type === MainTabType.REQUEST ? newSchema : n.data.requestSchema,
+                responseSchema: type === MainTabType.RESPONSE ? newSchema : n.data.responseSchema,
+                showBody: false,
+              },
+            }
+          : n,
+      ),
+    );
+  };
+  const handleSaveRequest = (schema: Field[]) => handleSave(MainTabType.REQUEST, schema);
+  const handleSaveResponse = (schema: Field[]) => handleSave(MainTabType.RESPONSE, schema);
   return (
     <div className={`${styles.node} ${styles[method]}`}>
       <div className={styles.header}>{baseUrl}</div>
-      <div className={styles.actions} onClick={toggleBody}>
+
+      <div
+        className={styles.actions}
+        onClick={e => {
+          e.stopPropagation();
+          handleToggleBody();
+        }}
+      >
         <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
         <span className={styles.path}>{path}</span>
         <div className={styles.menuIcon}>
@@ -52,15 +67,13 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
       </div>
 
       {showBody && (
-        <>
-          <BodyEditor
-            requestSchema={requestSchema}
-            responseSchema={responseSchema}
-            onSaveRequestSchema={handleSaveRequest}
-            onSaveResponseSchema={handleSaveResponse}
-            onClose={() => toggleBody()}
-          />
-        </>
+        <BodyEditor
+          requestSchema={requestSchema}
+          responseSchema={responseSchema}
+          onSaveRequestSchema={handleSaveRequest}
+          onSaveResponseSchema={handleSaveResponse}
+          onClose={handleToggleBody}
+        />
       )}
 
       <Handle type="target" position={Position.Left} />

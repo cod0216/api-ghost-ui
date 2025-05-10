@@ -45,7 +45,7 @@ export const useNodeControls = (nodeId: string, endpointId?: string) => {
     (newSchema: Field[]) => {
       setNodes(nodes =>
         nodes.map(n =>
-          n.id === nodeId ? { ...n, data: { ...n.data, requestSchema: newSchema } } : n,
+          n.id === nodeId ? { ...n, data: { ...n.data, responseSchema: newSchema } } : n,
         ),
       );
     },

@@ -25,7 +25,7 @@ const schemaEditorSlice = createSlice({
         state[nodeId] = { requestSchema: [], responseSchema: [] };
       }
 
-      const key = MainTabType.REQUEST ? 'requestSchema' : 'responseSchema';
+      const key = type === MainTabType.REQUEST ? 'requestSchema' : 'responseSchema';
       state[nodeId][key] = schema;
     },
     clearSchema(state, action: PayloadAction<string>) {

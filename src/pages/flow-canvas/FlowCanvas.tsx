@@ -1,7 +1,6 @@
 import React from 'react';
 import { ReactFlow, MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
-import SideBar from '@/common/side-bar/Sidebar.tsx';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
@@ -33,6 +32,8 @@ const FlowCanvas: React.FC = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
+    viewport,
+    onMove,
   } = useFlowCanvas();
 
   const {
@@ -118,6 +119,8 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
+          defaultViewport={viewport}
+          onMove={onMove}
           fitView
           defaultEdgeOptions={{
             type: 'smoothstep',

@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
 import { BODY_EDITOR_TABS, Path } from '@/pages/flow-canvas/types/index';
@@ -45,6 +45,14 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
   const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
   const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
 
+  useEffect(() => {
+    setReqSchema(requestSchema);
+  }, [requestSchema, setReqSchema]);
+
+  useEffect(() => {
+    setResSchema(responseSchema);
+  }, [responseSchema, setResSchema]);
+
   const [editingPath, setEditingPath] = useState<Path | null>(null);
   const [editingValue, setEditingValue] = useState<string>('');
 
@@ -71,9 +79,9 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
       cursor = cursor[path[i]].nestedFields!;
     }
     const idx = path[path.length - 1];
-    const field = cursor[idx] as Field;
+    const oldField = cursor[idx] as Field;
     let newVal: string | number | boolean;
-    const typeName = field.type;
+    const typeName = oldField.type;
     // Empty input handling
     if (editingValue.trim() === '') {
       if (numericTypes.has(typeName)) newVal = 0;
@@ -93,7 +101,12 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
       newVal = editingValue;
     }
 
-    field.value = newVal;
+    const newField: Field = {
+      ...oldField,
+      value: newVal,
+      nestedFields: oldField.nestedFields,
+    };
+    cursor[idx] = newField;
     if (isRequestTab) setReqSchema(updated);
     else setResSchema(updated);
     setEditingPath(null);
@@ -143,7 +156,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
               </>
             );
           } else {
-            const raw = f.value != null ? String(f.value) : 'empty';
+            const raw = String(f.value);
             if (isEditing) {
               valueNode = (
                 <input
