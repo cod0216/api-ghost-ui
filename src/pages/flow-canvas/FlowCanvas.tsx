@@ -1,5 +1,5 @@
-import React from 'react';
-import { ReactFlow, MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
+import React, { useEffect } from 'react';
+import ReactFlow, { MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
@@ -13,6 +13,8 @@ import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/Mock
 import CommonSidebar from '@/common/components/CommonSidebar';
 import ApiList from '@/pages/flow-canvas/components/api-list/ApiList.tsx';
 import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList.tsx';
+import { useAppSelector } from '@/store/hooks';
+import { useReactFlow } from 'reactflow';
 
 const nodeTypes = { endpointNode: CustomNode };
 
@@ -32,7 +34,6 @@ const FlowCanvas: React.FC = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
-    viewport,
     onMove,
   } = useFlowCanvas();
 
@@ -69,6 +70,9 @@ const FlowCanvas: React.FC = () => {
     validateSchemas,
   } = useMockApiModal();
 
+  const viewport = useAppSelector(state => state.flow.viewport);
+  const { setViewport: instSetViewport } = useReactFlow();
+
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
     const sourceNode = nodes.find(n => n.id === edge.source);
     const targetNode = nodes.find(n => n.id === edge.target);
@@ -90,6 +94,14 @@ const FlowCanvas: React.FC = () => {
     const bounds = (wrapperRef.current as HTMLDivElement).getBoundingClientRect();
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
   };
+
+  useEffect(() => {
+    // console.log('[FlowCanvas] useEffect sync viewport, from store:', viewport);
+    if (viewport) {
+      instSetViewport(viewport, { duration: 0 });
+      // console.log('[FlowCanvas] instSetViewport called with:', viewport);
+    }
+  }, [viewport, instSetViewport]);
 
   return (
     <div className={styles.container}>

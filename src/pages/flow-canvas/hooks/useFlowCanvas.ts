@@ -7,13 +7,17 @@
 import { useCallback, useRef, useEffect } from 'react';
 import {
   addEdge,
+  applyNodeChanges,
+  applyEdgeChanges,
   Connection,
   Edge,
+  NodeChange,
   reconnectEdge,
   useReactFlow,
   useNodesState,
   useEdgesState,
   Node,
+  EdgeChange,
   Edge as ReactEdge,
 } from 'reactflow';
 import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
@@ -31,9 +35,10 @@ export const useFlowCanvas = () => {
   const dispatch = useAppDispatch();
   const storedNodes = useAppSelector(state => state.flow.nodes);
   const storedEdges = useAppSelector(state => state.flow.edges);
+  const viewport = useAppSelector(state => state.flow.viewport);
 
-  const [nodes, _setNodes, onNodesChange] = useNodesState<NodeEndPoint>(storedNodes);
-  const [edges, _setEdges, onEdgesChange] = useEdgesState<ReactEdge>(storedEdges);
+  const [nodes, _setNodes, internalOnNodesChange] = useNodesState<NodeEndPoint>(storedNodes);
+  const [edges, _setEdges, internalOnEdgesChange] = useEdgesState<ReactEdge>(storedEdges);
   const { project } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
@@ -57,6 +62,20 @@ export const useFlowCanvas = () => {
       });
     },
     [dispatch, _setEdges],
+  );
+
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      setNodes(ns => applyNodeChanges(changes, ns));
+    },
+    [setNodes],
+  );
+
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      setEdges(es => applyEdgeChanges(changes, es));
+    },
+    [setEdges],
   );
 
   const updateNode = useCallback(
@@ -203,16 +222,8 @@ export const useFlowCanvas = () => {
     [setNodes],
   );
 
-  const viewport = useAppSelector(state => state.flow.viewport);
-
-  useEffect(() => {
-    console.log('debug Redux-stored nodes:', storedNodes);
-    console.log('debug Redux-stored viewport:', viewport);
-  }, [storedNodes, viewport]);
-
   const onMove = useCallback(
     (_event: any, vp: { x: number; y: number; zoom: number }) => {
-      console.log('onMove:', vp);
       dispatch(setViewport(vp));
     },
     [dispatch],
