@@ -1,0 +1,16 @@
+import { AppDispatch } from '@/store/index';
+import { Field, MainTabType } from '@/pages/flow-canvas/types';
+import { setSchema } from '@/store/slices/schemaEditorSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
+export const useSchemaEditor = (nodeId: string) => {
+  const dispatch = useAppDispatch();
+  const entry = useAppSelector(state => state.schemaEditor[nodeId]);
+  const requestSchema = entry?.requestSchema ?? [];
+  const responseSchema = entry?.responseSchema ?? [];
+
+  const save = (type: MainTabType, schema: Field[]) =>
+    dispatch(setSchema({ nodeId, type, schema }));
+
+  return { requestSchema, responseSchema, save };
+};

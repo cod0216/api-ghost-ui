@@ -18,11 +18,11 @@ const nodeSlice = createSlice({
     selectNode(state, action: PayloadAction<string>) {
       state.selectedNodeId = action.payload;
     },
-    selectActiveTab(state, action: PayloadAction<MainTabType>) {
+    setActiveTab(state, action: PayloadAction<MainTabType>) {
       state.activeTab = action.payload;
     },
   },
 });
 
-export const { selectNode, selectActiveTab } = nodeSlice.actions;
+export const { selectNode, setActiveTab } = nodeSlice.actions;
 export default nodeSlice.reducer;

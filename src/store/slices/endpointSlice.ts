@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ApiEndpoint } from '@/pages/flow-canvas/types/index';
-import { fetchEndpoints } from '@/store/thunks/fetchendpoints';
+import { fetchEndpoints } from '@/store/thunks/fetchEndpoints';
 
 interface EndpointState {
   endpoints: ApiEndpoint[];
