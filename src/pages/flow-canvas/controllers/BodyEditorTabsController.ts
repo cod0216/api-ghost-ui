@@ -3,7 +3,7 @@
  *
  * Manages the active main tab and tracks the last-selected sub tab for each main tab.
  */
-import { CombineTab, Tab } from '@/pages/flow-canvas/types/bodyEditorTabs.ts';
+import { CombineTab, Tab } from '@/pages/flow-canvas/types/bodyEditor';
 
 export class BodyEditorController {
   private tabs: readonly CombineTab[];

@@ -32,6 +32,7 @@ const FlowCanvas: React.FC = () => {
     onEdgeUpdateEnd,
     onEdgeContextMenu,
     addNode,
+    removeNode,
   } = useFlowCanvas();
 
   const {
@@ -70,6 +71,7 @@ const FlowCanvas: React.FC = () => {
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!wrapperRef.current) return;
     const bounds = (wrapperRef.current as HTMLDivElement).getBoundingClientRect();
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
@@ -89,6 +91,11 @@ const FlowCanvas: React.FC = () => {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeContextMenu={(event, node) => {
+            event.preventDefault();
+            event.stopPropagation();
+            removeNode(node.id);
+          }}
           nodeTypes={nodeTypes}
           onConnect={onConnect}
           onEdgeDoubleClick={handleEdgeDoubleClick}
