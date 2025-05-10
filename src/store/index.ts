@@ -3,6 +3,7 @@ import endpointReducer from './slices/endpointSlice';
 import nodeReducer from './slices/nodeSlice';
 import schemaEditorReducer from './slices/schemaEditorSlice';
 import flowReducer from './slices/flowSlice';
+import nodeTabReducer from './slices/nodeTabSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     node: nodeReducer,
     schemaEditor: schemaEditorReducer,
     flow: flowReducer,
+    nodeTab: nodeTabReducer,
   },
 });
 

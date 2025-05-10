@@ -7,9 +7,25 @@ import { useState, useCallback, useMemo } from 'react';
 import { BodyEditorController } from '@/pages/flow-canvas/controllers/BodyEditorTabsController.ts';
 import { CombineTab, Tab } from '@/pages/flow-canvas/types/index';
 
-export const useBodyEditorController = (tabs: readonly CombineTab[]) => {
-  const [controller] = useState(() => new BodyEditorController(tabs));
-  const [mainTab, setMainTab] = useState<Tab>(controller.getMainTab()); //Tab
+export const useBodyEditorController = (
+  tabs: readonly CombineTab[],
+  initialMainLabel?: string,
+  initialSubLabel?: string,
+) => {
+  const [controller] = useState(() => {
+    const ctrl = new BodyEditorController(tabs);
+    if (initialMainLabel) {
+      const main = tabs.find(g => g.mainTab.label === initialMainLabel)?.mainTab;
+      if (main) ctrl.selectMainTab(main);
+    }
+    if (initialSubLabel) {
+      const group = tabs.find(g => g.mainTab.label === ctrl.getMainTab().label);
+      const sub = group?.subTabs.find(s => s.label === initialSubLabel);
+      if (sub) ctrl.selectSubTab(sub);
+    }
+    return ctrl;
+  });
+  const [mainTab, setMainTab] = useState<Tab>(controller.getMainTab());
   const [subTab, setSubTab] = useState<Tab>(controller.getSubTab());
   const allowedMap = useMemo(
     () =>
@@ -51,5 +67,11 @@ export const useBodyEditorController = (tabs: readonly CombineTab[]) => {
     [controller],
   );
 
-  return { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab };
+  return {
+    mainTab,
+    subTab,
+    availableSubTabs,
+    selectMainTab,
+    selectSubTab,
+  };
 };

@@ -1,13 +1,16 @@
 import React, { MouseEvent, useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
-import { BODY_EDITOR_TABS, Path } from '@/pages/flow-canvas/types/index';
-import { Field } from '@/pages/flow-canvas/types/index.ts';
+import { BODY_EDITOR_TABS, Path, Tab } from '@/pages/flow-canvas/types/index';
+import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types/index.ts';
 import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
 
 export interface BodyEditorProps {
   requestSchema: Field[];
   responseSchema: Field[];
+  initialMainTabLabel?: MainTabType;
+  initialSubTabLabel?: SubTabType;
+  onTabChange?: (main: MainTabType, sub: SubTabType) => void;
   onSaveRequestSchema: (newSchema: Field[]) => void;
   onSaveResponseSchema: (newSchema: Field[]) => void;
   onClose: () => void;
@@ -35,12 +38,15 @@ const booleanTypes = new Set(['boolean', 'Boolean']);
 const BodyEditor: React.FC<BodyEditorProps> = ({
   requestSchema,
   responseSchema,
+  initialMainTabLabel,
+  initialSubTabLabel,
+  onTabChange,
   onSaveRequestSchema,
   onSaveResponseSchema,
   onClose,
 }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
-    useBodyEditorController(BODY_EDITOR_TABS);
+    useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
   const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
   const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
@@ -202,7 +208,15 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
   };
 
   const updateSchema = isRequestTab ? setReqSchema : setResSchema;
+  const handleMainTab = (tab: Tab) => {
+    selectMainTab(tab);
+    if (onTabChange) onTabChange(tab.label as MainTabType, subTab.label as SubTabType);
+  };
 
+  const handleSubTab = (tab: Tab) => {
+    selectSubTab(tab);
+    if (onTabChange) onTabChange(mainTab.label as MainTabType, tab.label as SubTabType);
+  };
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
   const schemaToRender = isRequestTab ? reqSchema : resSchema;
 
@@ -215,7 +229,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
             className={`${styles.tab} ${
               mainTab.label === group.mainTab.label ? styles.activeMainTab : ''
             }`}
-            onClick={() => selectMainTab(group.mainTab)}
+            onClick={() => handleMainTab(group.mainTab)}
           >
             {group.mainTab.label}
           </button>
@@ -227,7 +241,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
           <button
             key={tab.label}
             className={`${styles.tab} ${subTab.label === tab.label ? styles.activeSubTab : ''}`}
-            onClick={() => selectSubTab(tab)}
+            onClick={() => handleSubTab(tab)}
           >
             {tab.label}
           </button>
