@@ -8,7 +8,7 @@ export enum HttpMethod {
   POST = 'POST',
   PUT = 'PUT',
   DELETE = 'DELETE',
-  FETCH = 'FETCH',
+  PATCH = 'PATCH',
   WEBSOCKET = 'WEBSOCKET',
 }
 

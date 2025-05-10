@@ -39,9 +39,9 @@
   @include httpMethod.method-button($put-bg, $put-font);
 }
 
-.FETCHMethod,
+.PATCHMethod,
 .WEBSOCKETMethod {
-  @include httpMethod.method-button($fetch-bg, $fetch-font);
+  @include httpMethod.method-button($patch-bg, $patch-font);
 }
 
 .header {

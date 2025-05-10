@@ -42,9 +42,9 @@ export const apiClient = {
       ...options,
     }),
 
-  fetch: <T>(url: string, body?: any, options: ClientOptions = {}): Promise<T> =>
+  patch: <T>(url: string, body?: any, options: ClientOptions = {}): Promise<T> =>
     request<T>(url, {
-      method: HttpMethod.FETCH,
+      method: HttpMethod.PATCH,
       body,
       ...options,
     }),
