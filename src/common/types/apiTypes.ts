@@ -9,7 +9,7 @@ export enum HttpMethod {
   PUT = 'PUT',
   DELETE = 'DELETE',
   FETCH = 'FETCH',
-  STOMP = 'STOMP',
+  WEBSOCKET = 'WEBSOCKET',
 }
 
 export interface HttpRequest {

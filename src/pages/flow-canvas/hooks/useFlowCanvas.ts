@@ -14,7 +14,7 @@ import {
   useNodesState,
   useEdgesState,
 } from 'reactflow';
-import { NodeEndPoint } from '@/common/types/index.ts';
+import { NodeEndPoint, Field } from '@/common/types/index.ts';
 
 export const useFlowCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -53,7 +53,7 @@ export const useFlowCanvas = () => {
       e.preventDefault();
       if (!wrapperRef.current) return;
       const bounds = wrapperRef.current.getBoundingClientRect();
-      const data = e.dataTransfer.getData('application/reactflow');
+      const data = e.dataTransfer.getData('application/json');
       if (!data) return;
 
       const endpoint: NodeEndPoint = JSON.parse(data);
@@ -64,11 +64,17 @@ export const useFlowCanvas = () => {
       setNodes(ns => [
         ...ns,
         {
-          id: `${endpoint.id}_${Date.now()}`,
+          id: `${endpoint.endpointId}_${Date.now()}`,
           type: 'endpointNode',
           position,
           data: {
-            ...endpoint,
+            endpointId: endpoint.endpointId,
+            header: endpoint.header,
+            baseUrl: endpoint.baseUrl,
+            method: endpoint.method,
+            path: endpoint.path,
+            requestSchema: endpoint.requestSchema,
+            responseSchema: endpoint.responseSchema,
             showBody: false,
           },
         },
@@ -107,6 +113,36 @@ export const useFlowCanvas = () => {
     [setEdges],
   );
 
+  const addNode = useCallback(
+    (vals: {
+      baseUrl: string;
+      method: string;
+      path: string;
+      requestSchema: Field[];
+      responseSchema: Field[];
+      x: number;
+      y: number;
+    }) => {
+      const id = `mock-${Date.now()}`;
+      const newNode = {
+        id,
+        type: 'endpointNode',
+        position: { x: vals.x, y: vals.y },
+        data: {
+          endpointId: id,
+          baseUrl: vals.baseUrl,
+          method: vals.method,
+          path: vals.path,
+          requestSchema: vals.requestSchema,
+          responseSchema: vals.responseSchema,
+          showBody: false,
+        } as NodeEndPoint,
+      };
+      setNodes(ns => ns.concat(newNode));
+    },
+    [setNodes],
+  );
+
   return {
     wrapperRef,
     nodes,
@@ -120,5 +156,6 @@ export const useFlowCanvas = () => {
     onEdgeUpdate,
     onEdgeUpdateEnd,
     onEdgeContextMenu,
+    addNode,
   };
 };

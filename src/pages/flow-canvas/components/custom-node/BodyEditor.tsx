@@ -8,7 +8,8 @@ import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
 export interface BodyEditorProps {
   requestSchema: Field[];
   responseSchema: Field[];
-  onSave: (newSchema: Field[]) => void;
+  onSaveRequestSchema: (newSchema: Field[]) => void;
+  onSaveResponseSchema: (newSchema: Field[]) => void;
   onClose: () => void;
 }
 /**
@@ -18,15 +19,33 @@ export interface BodyEditorProps {
 const BodyEditor: React.FC<BodyEditorProps> = ({
   requestSchema,
   responseSchema,
-  onSave,
+  onSaveRequestSchema,
+  onSaveResponseSchema,
   onClose,
 }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS);
-  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
-  const { currentSchema, updateSchema } = useBodyEditor(requestSchema);
-  const handleSave = () => onSave(currentSchema);
+  const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
+  const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
+
+  const isRequestTab = mainTab.label === BODY_EDITOR_TABS[0].mainTab.label;
+
+  const handleSave = () => {
+    onSaveRequestSchema(reqSchema);
+  };
+
+  // const tempHandleSave = () => {
+  //   if (isRequestTab) onSaveRequestSchema(reqSchema);
+  //   else {
+  //     onSaveResponseSchema(resSchema);
+  //   }
+  // };
+
+  const schemaToRender = isRequestTab ? reqSchema : resSchema;
+  const updateSchema = isRequestTab ? setReqSchema : setResSchema;
+
+  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   return (
     <div className={styles.editorPopover} onClick={stopPropagation}>
@@ -56,13 +75,36 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
         ))}
       </nav>
 
-      <section className={styles.contentArea}>
+      {/* <section className={styles.contentArea}>
         {subTab.showSchema &&
           (mainTab.label === BODY_EDITOR_TABS[0].mainTab.label ? (
             <pre className={styles.schemaContent}>{JSON.stringify(currentSchema, null, 2)}</pre>
           ) : (
             <pre className={styles.schemaContent}>{JSON.stringify(responseSchema, null, 2)}</pre>
           ))}
+      </section> */}
+
+      <section className={styles.contentArea}>
+        {subTab.showSchema && (
+          <ul className={styles.fieldList}>
+            {schemaToRender.map((f, i) => (
+              <li key={i} className={styles.fieldItem}>
+                <span className={styles.fieldName}>{f.name}</span>
+                {f.nestedFields && f.nestedFields.length > 0 ? (
+                  <div className={styles.nestedFields}>
+                    {f.nestedFields.map((c, ci) => (
+                      <li key={ci} className={styles.fieldItem}>
+                        <span className={styles.fieldName}>{c.name}</span>
+                      </li>
+                    ))}
+                  </div>
+                ) : (
+                  <span className={styles.fieldValue}>empty</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <footer className={styles.buttonRow}>

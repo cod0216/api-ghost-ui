@@ -10,7 +10,7 @@ import React from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { NodeEndPoint, Field } from '@/common/types/index.ts';
+import { NodeEndPoint } from '@/common/types/index.ts';
 import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
 
 /**
@@ -21,8 +21,18 @@ import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
  */
 
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
-  const { baseUrl, method, path, showBody, requestSchema, responseSchema } = data;
-  const { toggleBody, saveRequestSchema } = useNodeControls(id);
+  const {
+    endpointId,
+    header,
+    baseUrl,
+    method,
+    path,
+    showBody,
+    requestSchema = [],
+    responseSchema = [],
+  } = data;
+
+  const { toggleBody, saveRequestSchema, saveResponseSchema } = useNodeControls(id, endpointId);
 
   return (
     <div className={`${styles.node} ${styles[method]}`}>
@@ -40,9 +50,10 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data }) => {
       {showBody && (
         <>
           <BodyEditor
-            requestSchema={requestSchema ?? []}
-            responseSchema={responseSchema ?? []}
-            onSave={saveRequestSchema}
+            requestSchema={requestSchema}
+            responseSchema={responseSchema}
+            onSaveRequestSchema={saveRequestSchema}
+            onSaveResponseSchema={saveResponseSchema}
             onClose={() => toggleBody()}
           />
         </>

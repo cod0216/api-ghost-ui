@@ -1,3 +1,5 @@
+@use '@/styles/mixins/httpMethod';
+
 .overlay {
   position: fixed;
   top: 0;
@@ -67,50 +69,35 @@
   align-items: flex-start;
   gap: 0.5rem;
 }
+
 .methodButton {
   font-size: $font-size-2xs;
   padding: 0px 6px;
   border: none;
   border-radius: $radius-2xl;
-  margin: 0 8px;
-  margin-bottom: 8px;
 }
 
 .DELETEMethod {
-  @extend .methodButton;
-  background-color: $delete-bg;
-  color: $delete-font;
+  @include httpMethod.method-button($delete-bg, $delete-font);
 }
 
 .GETMethod {
-  @extend .methodButton;
-  background-color: $get-bg;
-  color: $get-font;
+  @include httpMethod.method-button($get-bg, $get-font);
 }
 
 .POSTMethod {
-  @extend .methodButton;
-  background-color: $post-bg;
-  color: $post-font;
+  @include httpMethod.method-button($post-bg, $post-font);
 }
 
 .PUTMethod {
-  @extend .methodButton;
-  background-color: $put-bg;
-  color: $put-font;
+  @include httpMethod.method-button($put-bg, $put-font);
 }
 
-.FATCHMethod {
-  @extend .methodButton;
-  background-color: $fetch-bg;
-  color: $fetch-font;
+.FETCHMethod,
+.WEBSOCKETMethod {
+  @include httpMethod.method-button($fetch-bg, $fetch-font);
 }
 
-.STOMPMethod {
-  @extend .methodButton;
-  background-color: $fetch-bg;
-  color: $fetch-font;
-}
 .pathText {
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
