@@ -10,7 +10,7 @@ import React from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor.tsx';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { NodeEndPoint } from '@/common/types/index.ts';
+import { NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
 import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode.ts';
 
 /**

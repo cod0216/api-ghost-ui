@@ -14,7 +14,7 @@ import {
   useNodesState,
   useEdgesState,
 } from 'reactflow';
-import { NodeEndPoint, Field } from '@/common/types/index.ts';
+import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
 
 export const useFlowCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);

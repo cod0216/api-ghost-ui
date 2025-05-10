@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Field } from '@/common/types/index.ts';
+import { Field } from '@/pages/flow-canvas/types/index';
 
 /**
  * Hook for managing schema editing state.

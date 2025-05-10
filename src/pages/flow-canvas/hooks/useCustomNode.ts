@@ -1,6 +1,6 @@
 import { useCallback, MouseEvent } from 'react';
 import { useReactFlow } from 'reactflow';
-import { Field, NodeEndPoint } from '@/common/types/index.ts';
+import { Field, NodeEndPoint } from '@/pages/flow-canvas/types/index';
 
 /**
  * Hook providing toggle and save handlers for a CustomNode.

@@ -1,4 +1,5 @@
-import { Field, HttpMethod } from '@/common/types';
+import { Field } from '@/pages/flow-canvas/types/index';
+import { HttpMethod } from '@/common/types/index.ts';
 
 export interface MockApiFormValues {
   baseUrl: string;
