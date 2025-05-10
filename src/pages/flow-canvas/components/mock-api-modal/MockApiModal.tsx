@@ -30,9 +30,7 @@ interface MockApiModalProps {
   validateSchemas: (reqText: string, resText: string) => void;
 }
 
-const methods = Object.values(HttpMethod).filter(m =>
-  ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(m),
-);
+const methods = Object.values(HttpMethod);
 
 export const MockApiModal: React.FC<MockApiModalProps> = ({
   isVisible,

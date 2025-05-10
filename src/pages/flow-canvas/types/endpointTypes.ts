@@ -6,6 +6,12 @@ export interface Field {
   nestedFields?: Field[];
 }
 
+export interface FlowNode {
+  nodeId: string;
+  spec: NodeEndPoint;
+  position: { x: number; y: number };
+}
+
 export interface ApiEndpoint {
   protocolType: ProtocolType | string;
   baseUrl: string;
@@ -14,12 +20,12 @@ export interface ApiEndpoint {
   path: string;
   produces: string[];
   consumes: string[];
-  requestSchema?: Field[];
-  responseSchema?: Field[];
-  headers?: { key: string; value: string }[];
-  cookies?: { key: string; value: string }[];
-  requestParams?: { key: string; value: string }[];
-  pathVariables?: { key: string; value: string }[];
+  requestSchema: Field[] | null;
+  responseSchema: Field[] | null;
+  headers?: { key: string; value: string }[] | null;
+  cookies?: { key: string; value: string }[] | null;
+  requestParams?: { key: string; value: string }[] | null;
+  pathVariables?: { key: string; value: string }[] | null;
 }
 
 export interface NodeEndPoint {
@@ -28,15 +34,7 @@ export interface NodeEndPoint {
   method: HttpMethod | string;
   path: string;
   baseUrl: string;
-
   requestSchema?: Field[];
   responseSchema?: Field[];
-
   showBody: boolean;
-}
-
-export interface FlowNode {
-  nodeId: string;
-  spec: NodeEndPoint;
-  position: { x: number; y: number };
 }

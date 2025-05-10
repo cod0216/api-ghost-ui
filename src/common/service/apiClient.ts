@@ -1,5 +1,5 @@
-import { request, RequestOptions } from '@/common/service/api.ts';
-import { HttpMethod } from '@/common/types/index.ts';
+import { request } from '@/common/service/api';
+import { RequestOptions, HttpMethod } from '@/common/types';
 
 type Params = Record<string, string | number | boolean>;
 

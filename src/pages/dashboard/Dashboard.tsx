@@ -4,14 +4,9 @@ import MainContent from '@/pages/dashboard/components/main-content/MainContent.t
 import HeaderTabs from '@/pages/dashboard/components/header-tabs/HeaderTabs.tsx';
 import CommonSidebar from '@/common/components/CommonSidebar.tsx';
 import { useTabsController } from '@/pages/dashboard/hooks/useTabsController.ts';
-import {
-  ScenarioTestResultFileListItem,
-  ScenarioTestDetailResponse,
-} from '@/pages/dashboard/types/index.ts';
-import {
-  getScenarioResultList,
-  getScenarioDetailResult,
-} from '@/pages/dashboard/service/resultService.ts';
+import { ScenarioTestResultFileListItem } from '@/pages/dashboard/types/index.ts';
+import { useSearchParams } from 'react-router-dom';
+import { useScenarioFileList } from '@/pages/dashboard/hooks/useScenarioFileList.ts';
 
 /**
  * Dashboard component renders the main dashboard layout with sidebar, tabs, and main content.
@@ -22,23 +17,10 @@ import {
  * @author haerim-kweon
  */
 const Dashboard: React.FC = () => {
-  const [scenarioFileList, setScenarioFileList] = useState<ScenarioTestResultFileListItem[]>([]);
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioTestDetailResponse | null>(null);
-
-  const onItemSelected = async (item: ScenarioTestResultFileListItem) => {
-    try {
-      const response = await getScenarioDetailResult(item.fileName);
-      setSelectedScenario(response);
-    } catch (err) {
-      console.error('[Dashboard] getScenarioDetailResult Error', err);
-    }
-  };
-
-  useEffect(() => {
-    getScenarioResultList()
-      .then(setScenarioFileList)
-      .catch(err => console.error('[Dashboard] getScenarioResultList Error', err));
-  }, []);
+  const { scenarioFileList, selectedScenario, fetchSelectedScenario, clearSelectedScenario } =
+    useScenarioFileList();
+  const [searchParams] = useSearchParams();
+  const fileName = searchParams.get('fileName');
 
   const { tabs, selectedTab, selectTab, closeTab, handleSelectItem } = useTabsController<
     ScenarioTestResultFileListItem,
@@ -48,8 +30,22 @@ const Dashboard: React.FC = () => {
     itemList: scenarioFileList,
     idField: 'fileName',
     titleField: 'fileName',
-    onItemSelected,
+    onItemSelected: fetchSelectedScenario,
   });
+
+  useEffect(() => {
+    if (!fileName || scenarioFileList.length === 0) return;
+    const foundItem = scenarioFileList.find(item => item.fileName === fileName);
+    if (foundItem) {
+      handleSelectItem(foundItem);
+    }
+  }, [fileName, scenarioFileList, handleSelectItem]);
+
+  useEffect(() => {
+    if (tabs.length === 0) {
+      clearSelectedScenario();
+    }
+  }, [tabs]);
 
   return (
     <div className={styles.container}>
