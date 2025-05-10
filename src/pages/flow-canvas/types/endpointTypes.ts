@@ -4,6 +4,7 @@ export interface Field {
   type: string;
   name: string;
   nestedFields?: Field[];
+  value?: string | number | boolean;
 }
 
 export interface FlowNode {

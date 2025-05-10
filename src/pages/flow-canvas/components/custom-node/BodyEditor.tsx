@@ -2,7 +2,7 @@ import React, { MouseEvent, useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
 import { BODY_EDITOR_TABS, Path } from '@/pages/flow-canvas/types/index';
-import { Field } from '@/common/types/index.ts';
+import { Field } from '@/pages/flow-canvas/types/index.ts';
 import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
 
 export interface BodyEditorProps {

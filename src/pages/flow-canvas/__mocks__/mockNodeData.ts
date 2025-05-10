@@ -5,7 +5,7 @@
  * Each endpoint includes an ID, HTTP method, and a path to represent
  * an API request structure in scenario flows.
  */
-import { NodeEndPoint, HttpMethod } from '@/common/types/index.ts';
+import { NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
 export const mockEndpoints: NodeEndPoint[] = [
   // {
   //   id: '1',
