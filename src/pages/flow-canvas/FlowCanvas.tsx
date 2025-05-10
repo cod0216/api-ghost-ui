@@ -96,10 +96,8 @@ const FlowCanvas: React.FC = () => {
   };
 
   useEffect(() => {
-    // console.log('[FlowCanvas] useEffect sync viewport, from store:', viewport);
     if (viewport) {
       instSetViewport(viewport, { duration: 0 });
-      // console.log('[FlowCanvas] instSetViewport called with:', viewport);
     }
   }, [viewport, instSetViewport]);
 
