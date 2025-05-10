@@ -1,8 +1,8 @@
-import { Field } from '@/common/types';
+import { Field, HttpMethod } from '@/common/types';
 
 export interface MockApiFormValues {
   baseUrl: string;
-  method: string;
+  method: HttpMethod;
   path: string;
   requestSchema: Field[];
   responseSchema: Field[];
