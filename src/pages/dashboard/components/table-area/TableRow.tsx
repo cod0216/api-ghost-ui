@@ -30,7 +30,7 @@ const TableRow: React.FC<TableRowProps> = ({ item }) => {
         </td>
         <td>{item.method}</td>
         <td>{item.url}</td>
-        <td>{item.statusCode}</td>
+        <td>{item.status}</td>
         <td>{item.durationMs}</td>
       </tr>
       <DetailRow isOpen={open} item={item} />

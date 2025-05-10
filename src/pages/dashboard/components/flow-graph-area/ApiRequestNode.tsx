@@ -43,7 +43,7 @@ const ApiRequestNode: React.FC<ApiRequestNodeProps> = ({ data, isConnectable }) 
 
       <div className={styles.content}>
         <div className={styles.statusRow}>
-          <span className={styles.statusCode}>Status: {data.statusCode}</span>
+          <span className={styles.statusCode}>Status: {data.status}</span>
           <span className={styles.duration}>{data.durationMs}ms</span>
         </div>
       </div>

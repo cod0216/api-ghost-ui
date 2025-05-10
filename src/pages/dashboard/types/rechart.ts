@@ -7,7 +7,7 @@ export enum NodeStatus {
 export interface ApiRequestData {
   url: string;
   method: string;
-  statusCode: number;
+  status: number;
   durationMs: number;
   isRequestSuccess: boolean;
 }

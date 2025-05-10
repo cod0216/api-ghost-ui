@@ -1,8 +1,8 @@
 import {
   ScenarioTestDetailResponse,
   ScenarioTestResultFileListItem,
-} from '@/pages/dashboard/types/index.ts';
-import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
+} from '@/pages/dashboard/types';
+import { HttpMethod, ProtocolType } from '@/common/types';
 
 const mockScenarioTestDetailResponse: ScenarioTestDetailResponse = {
   name: 'User Signup Scenario',
@@ -38,7 +38,7 @@ const mockScenarioTestDetailResponse: ScenarioTestDetailResponse = {
       responseHeaders: {
         contentType: 'application/json',
       },
-      statusCode: 200,
+      status: 200,
       startTime: '2025-04-23T14:15:01.000+09:00',
       endTime: '2025-04-23T14:15:01.300+09:00',
       durationMs: 300,
