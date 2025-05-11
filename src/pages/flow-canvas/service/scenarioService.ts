@@ -17,5 +17,5 @@ export const exportScenario = async (
 ): Promise<{
   status: boolean;
 }> => {
-  return await apiClient.post('/scenario-export', scenario);
+  return await apiClient.post('/apighost/scenario-export', scenario);
 };

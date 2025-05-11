@@ -80,13 +80,16 @@ export const useFlowCanvas = () => {
 
   const updateNode = useCallback(
     (node: Node<NodeEndPoint>) => {
+      console.log('[useFlowCanvas] updateNode 호출', node);
       setNodes(ns => {
         const idx = ns.findIndex(n => n.id === node.id);
+        console.log('[useFlowCanvas] 기존 노드 배열', ns);
         if (idx !== -1) {
-          const copy = [...ns];
-          copy[idx] = node;
+          const next = [...ns];
+          next[idx] = node;
+          console.log('[useFlowCanvas] 갱신 후 노드 배열', next);
           dispatch(updateNodeInStore(node));
-          return copy;
+          return next;
         }
         return ns;
       });

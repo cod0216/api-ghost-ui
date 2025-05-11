@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Node, Edge } from 'reactflow';
-
+import { NodeEndPoint } from '@/pages/flow-canvas/types/endpointTypes';
 interface Viewport {
   x: number;
   y: number;
@@ -27,7 +27,8 @@ const flowSlice = createSlice({
     setEdges(state, action: PayloadAction<Edge[]>) {
       state.edges = action.payload;
     },
-    updateNode(state, action: PayloadAction<Node>) {
+    updateNode: (state, action: PayloadAction<Node<NodeEndPoint>>) => {
+      console.log('[flowSlice] updateNode 리듀서 실행, payload:', action.payload);
       const idx = state.nodes.findIndex(n => n.id === action.payload.id);
       if (idx !== -1) state.nodes[idx] = action.payload;
     },
