@@ -24,6 +24,7 @@ import {
 } from '@/pages/flow-canvas/service/scenarioService';
 import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
+import { useScenario } from './hooks/useScenario';
 
 const nodeTypes = { endpointNode: CustomNode };
 type NodeType = Node<NodeEndPoint>;
@@ -82,6 +83,7 @@ const FlowCanvas: React.FC = () => {
     setResSchemaText,
     validateSchemas,
   } = useMockApiModal();
+
   const [currentEdgeId, setCurrentEdgeId] = useState<string | null>(null);
   const [currentSrc, setCurrentSrc] = useState<NodeType | null>(null);
   const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
@@ -136,6 +138,19 @@ const FlowCanvas: React.FC = () => {
   ///
   const [scenarios, setScenarios] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
+  const saveScenario = useScenario();
+  const hasSaved = useRef(false);
+
+  useEffect(() => {
+    if (!hasSaved.current) {
+      saveScenario().then(fileName => {
+        if (fileName) {
+          onSelect(fileName);
+        }
+      });
+      hasSaved.current = true;
+    }
+  }, [saveScenario]);
 
   useEffect(() => {
     getScenarioList()
