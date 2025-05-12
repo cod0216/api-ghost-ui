@@ -46,23 +46,31 @@ export const useFlowCanvas = () => {
     (updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
       _setNodes(ns => {
         const next = updater(ns);
-        dispatch(setNodesInStore(next));
         return next;
       });
+      dispatch(setNodesInStore(nodes));
     },
     [dispatch, _setNodes],
   );
+
+  useEffect(() => {
+    dispatch(setNodesInStore(nodes));
+  }, [nodes, dispatch]);
 
   const setEdges = useCallback(
     (updater: (es: ReactEdge[]) => ReactEdge[]) => {
       _setEdges(es => {
         const next = updater(es);
-        dispatch(setEdgesInStore(next));
         return next;
       });
+      dispatch(setEdgesInStore(edges));
     },
     [dispatch, _setEdges],
   );
+
+  useEffect(() => {
+    dispatch(setEdgesInStore(edges));
+  }, [edges, dispatch]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -85,11 +93,11 @@ export const useFlowCanvas = () => {
         if (idx !== -1) {
           const next = [...ns];
           next[idx] = node;
-          dispatch(updateNodeInStore(node));
           return next;
         }
         return ns;
       });
+      dispatch(updateNodeInStore(node));
     },
     [dispatch, setNodes],
   );
@@ -231,7 +239,6 @@ export const useFlowCanvas = () => {
     wrapperRef,
     nodes,
     edges,
-    setEdges,
     onNodesChange,
     onEdgesChange,
     updateNode,
@@ -246,5 +253,7 @@ export const useFlowCanvas = () => {
     removeNode,
     viewport,
     onMove,
+    setNodes,
+    setEdges,
   };
 };

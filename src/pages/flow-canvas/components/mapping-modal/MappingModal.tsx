@@ -42,17 +42,17 @@ export const MappingModal: React.FC<MappingModalProps> = ({
     rightSelectedKey ? [rightSelectedKey] : [],
   );
 
-  useEffect(() => {
-    setLeftSelectedKeys(leftSelectedKey ? [leftSelectedKey] : []);
-    setRightSelectedKeys(rightSelectedKey ? [rightSelectedKey] : []);
-  }, [isVisible, leftSelectedKey, rightSelectedKey]);
+  // useEffect(() => {
+  //   setLeftSelectedKeys(leftSelectedKey ? [leftSelectedKey] : []);
+  //   setRightSelectedKeys(rightSelectedKey ? [rightSelectedKey] : []);
+  // }, [isVisible, leftSelectedKey, rightSelectedKey]);
 
   if (!isVisible) return null;
 
-  // 클릭할 때마다 단일 Response, 복수 Request 토글
   const toggleLeftKey = (key: string) => {
     setLeftSelectedKeys([key]);
   };
+
   const toggleRightKey = (key: string) => {
     setRightSelectedKeys(prev =>
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key],

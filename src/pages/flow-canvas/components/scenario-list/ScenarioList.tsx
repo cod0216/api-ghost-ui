@@ -13,26 +13,13 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
  * Displays a static list of user scenarios for selection.
  *
  */
-const ScenarioList: React.FC = () => {
-  const [scenarios, setScenarios] = useState<string[]>([]);
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
 
-  useEffect(() => {
-    getScenarioList()
-      .then(setScenarios)
-      .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
-  }, []);
+interface ScenarioListProps {
+  scenarios: string[];
+  onSelect: (fileName: string) => void;
+}
 
-  const onSelect = async (fileName: string) => {
-    await getScenarioInfo(fileName)
-      .then(setSelectedScenario)
-      .catch(err => console.error('[ScenarioList] getScenarioInfo Error', err));
-  };
-
-  useEffect(() => {
-    console.log(selectedScenario);
-  }, [selectedScenario]);
-
+const ScenarioList: React.FC<ScenarioListProps> = ({ scenarios, onSelect }) => {
   return (
     <ul className={styles.list}>
       {scenarios.map(fileName => (

@@ -10,6 +10,7 @@ export const useScenario = () => {
     if (!name) return;
     const description = prompt('Enter a brief description', '');
     const timeoutMs = 10000;
+    console.log('???');
 
     dispatch(
       exportScenario({

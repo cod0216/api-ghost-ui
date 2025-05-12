@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
@@ -17,6 +17,14 @@ import { useAppSelector } from '@/store/hooks';
 import { useReactFlow } from 'reactflow';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
+import {
+  getScenarioList,
+  getScenarioInfo,
+  scenarioTest,
+} from '@/pages/flow-canvas/service/scenarioService';
+import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
+import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
+
 const nodeTypes = { endpointNode: CustomNode };
 type NodeType = Node<NodeEndPoint>;
 
@@ -25,7 +33,6 @@ const FlowCanvas: React.FC = () => {
     wrapperRef,
     nodes,
     edges,
-    setEdges,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -38,6 +45,8 @@ const FlowCanvas: React.FC = () => {
     addNode,
     removeNode,
     onMove,
+    setNodes,
+    setEdges,
   } = useFlowCanvas();
 
   const {
@@ -124,12 +133,74 @@ const FlowCanvas: React.FC = () => {
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
   };
 
+  ///
+  const [scenarios, setScenarios] = useState<string[]>([]);
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
+
+  useEffect(() => {
+    getScenarioList()
+      .then(setScenarios)
+      .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
+  }, []);
+
+  const onSelect = async (fileName: string) => {
+    await getScenarioInfo(fileName)
+      .then(setSelectedScenario)
+      .catch(err => console.error('[ScenarioList] getScenarioInfo Error', err));
+  };
+
+  useEffect(() => {
+    if (!selectedScenario) return;
+
+    const { nodes: parsedNodes, edges: parsedEdges } = scenarioToFlowElements(selectedScenario);
+    setNodes(() => parsedNodes);
+    setEdges(() => parsedEdges);
+  }, [selectedScenario]);
+
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  const handleClick = () => {
+    if (isConnected) {
+      eventSourceRef.current?.close();
+      eventSourceRef.current = null;
+      setIsConnected(false);
+    } else {
+      const eventSource = scenarioTest('mock-test');
+      eventSourceRef.current = eventSource;
+      setIsConnected(true);
+
+      eventSource.addEventListener('stepResult', event => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+      });
+
+      eventSource.addEventListener('complete', event => {
+        const result = JSON.parse(event.data);
+        eventSource.close();
+        eventSourceRef.current = null;
+        setIsConnected(false);
+        console.log(result);
+      });
+
+      eventSource.onerror = e => {
+        console.log(e);
+        eventSource.close();
+        eventSourceRef.current = null;
+        setIsConnected(false);
+      };
+    }
+  };
+
   return (
     <div className={styles.container}>
       <CommonSidebar
         sections={[
           { title: 'API List', content: <ApiList /> },
-          { title: 'Scenario List', content: <ScenarioList /> },
+          {
+            title: 'Scenario List',
+            content: <ScenarioList scenarios={scenarios} onSelect={onSelect} />,
+          },
         ]}
       />
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
