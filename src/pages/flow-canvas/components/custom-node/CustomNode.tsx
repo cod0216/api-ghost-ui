@@ -1,14 +1,16 @@
 import React from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
-import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor';
+import NodeBody from '@/pages/flow-canvas/components/custom-node/NodeBody';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
 import { MainTabType, SubTabType, NodeEndPoint, Field } from '@/pages/flow-canvas/types';
 import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setNodeTab } from '@/store/slices/nodeTabSlice';
+import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos }) => {
   const { setNodes } = useReactFlow();
+  const { updateNode } = useFlowCanvas();
   const dispatch = useAppDispatch();
   const {
     baseUrl,
@@ -36,22 +38,20 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
   const handleSave = (type: MainTabType, newSchema: Field[]) => {
     save(type, newSchema);
 
-    setNodes(nodes =>
-      nodes.map(n =>
-        n.id === id
-          ? {
-              ...n,
-              data: {
-                ...n.data,
-                requestSchema: type === MainTabType.REQUEST ? newSchema : n.data.requestSchema,
-                responseSchema: type === MainTabType.RESPONSE ? newSchema : n.data.responseSchema,
-                showBody: false,
-              },
-            }
-          : n,
-      ),
-    );
+    const updatedNode = {
+      id,
+      type: 'endpointNode',
+      position: { x: xPos, y: yPos },
+      data: {
+        ...data,
+        requestSchema: type === MainTabType.REQUEST ? newSchema : data.requestSchema,
+        responseSchema: type === MainTabType.RESPONSE ? newSchema : data.responseSchema,
+        showBody: false,
+      },
+    };
+    updateNode(updatedNode);
   };
+
   const handleSaveRequest = (schema: Field[]) => handleSave(MainTabType.REQUEST, schema);
   const handleSaveResponse = (schema: Field[]) => handleSave(MainTabType.RESPONSE, schema);
 
@@ -76,7 +76,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
       </div>
 
       {showBody && (
-        <BodyEditor
+        <NodeBody
           requestSchema={requestSchema}
           responseSchema={responseSchema}
           initialMainTabLabel={savedTab.mainTab}
