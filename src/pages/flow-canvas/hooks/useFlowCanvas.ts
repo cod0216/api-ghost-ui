@@ -80,14 +80,11 @@ export const useFlowCanvas = () => {
 
   const updateNode = useCallback(
     (node: Node<NodeEndPoint>) => {
-      console.log('[useFlowCanvas] updateNode 호출', node);
       setNodes(ns => {
         const idx = ns.findIndex(n => n.id === node.id);
-        console.log('[useFlowCanvas] 기존 노드 배열', ns);
         if (idx !== -1) {
           const next = [...ns];
           next[idx] = node;
-          console.log('[useFlowCanvas] 갱신 후 노드 배열', next);
           dispatch(updateNodeInStore(node));
           return next;
         }
@@ -135,6 +132,8 @@ export const useFlowCanvas = () => {
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
       });
+      const req = endpoint.requestSchema ?? [];
+      const res = endpoint.responseSchema ?? [];
       setNodes(ns => [
         ...ns,
         {
@@ -142,13 +141,9 @@ export const useFlowCanvas = () => {
           type: 'endpointNode',
           position,
           data: {
-            endpointId: endpoint.endpointId,
-            header: endpoint.header,
-            baseUrl: endpoint.baseUrl,
-            method: endpoint.method,
-            path: endpoint.path,
-            requestSchema: endpoint.requestSchema,
-            responseSchema: endpoint.responseSchema,
+            ...endpoint,
+            requestSchema: req,
+            responseSchema: res,
             showBody: false,
           },
         },
@@ -236,6 +231,7 @@ export const useFlowCanvas = () => {
     wrapperRef,
     nodes,
     edges,
+    setEdges,
     onNodesChange,
     onEdgesChange,
     updateNode,

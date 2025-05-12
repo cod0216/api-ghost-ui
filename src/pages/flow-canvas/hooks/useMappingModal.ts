@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { KeyValue } from '@/pages/flow-canvas/types/mapping.ts';
+import { KeyValue, MappingPair } from '@/pages/flow-canvas/types/mapping';
 
+/**
+ * Hook for managing 1:N field mappings between response (source) and request (targets).
+ */
 export const useMappingModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [leftKeyValueList, setLeftKeyValueList] = useState<KeyValue[]>([]);
@@ -9,6 +12,8 @@ export const useMappingModal = () => {
   const [rightEndpointTitle, setRightEndpointTitle] = useState<string>('');
   const [leftEndpointBaseUrl, setLeftEndpointBaseUrl] = useState<string>('');
   const [rightEndpointBaseUrl, setRightEndpointBaseUrl] = useState<string>('');
+  const [leftSelectedKey, setLeftSelectedKey] = useState<string | null>(null);
+  const [rightSelectedKey, setRightSelectedKey] = useState<string | null>(null);
 
   function openMappingModal(
     leftList: KeyValue[],
@@ -17,6 +22,7 @@ export const useMappingModal = () => {
     rightTitleText: string,
     leftBaseUrlText: string,
     rightBaseUrlText: string,
+    existing: MappingPair[] = [],
   ) {
     setLeftKeyValueList(leftList);
     setRightKeyValueList(rightList);
@@ -24,6 +30,13 @@ export const useMappingModal = () => {
     setRightEndpointTitle(rightTitleText);
     setLeftEndpointBaseUrl(leftBaseUrlText);
     setRightEndpointBaseUrl(rightBaseUrlText);
+    if (existing.length > 0) {
+      setLeftSelectedKey(existing[0].sourceKey);
+      setRightSelectedKey(existing[0].targetKey);
+    } else {
+      setLeftSelectedKey(null);
+      setRightSelectedKey(null);
+    }
     setIsModalVisible(true);
   }
 
@@ -39,6 +52,8 @@ export const useMappingModal = () => {
     rightEndpointTitle,
     leftEndpointBaseUrl,
     rightEndpointBaseUrl,
+    leftSelectedKey,
+    rightSelectedKey,
     openMappingModal,
     saveMappingModal: closeMappingModal,
     cancelMappingModal: closeMappingModal,

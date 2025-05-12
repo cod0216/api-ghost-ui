@@ -36,7 +36,6 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
   };
 
   const handleSave = (type: MainTabType, newSchema: Field[]) => {
-    console.log('[CustomNode] handleSave 호출', { nodeId: id, type, newSchema });
     save(type, newSchema);
 
     const updatedNode = {

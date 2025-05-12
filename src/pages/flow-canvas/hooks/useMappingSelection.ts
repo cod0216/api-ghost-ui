@@ -5,9 +5,7 @@ export const useMappingSelection = () => {
   const [rightSelectedKeys, setRightSelectedKeys] = useState<string[]>([]);
 
   const toggleLeftKey = useCallback((key: string) => {
-    setLeftSelectedKeys(prev =>
-      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key],
-    );
+    setLeftSelectedKeys([key]);
   }, []);
 
   const toggleRightKey = useCallback((key: string) => {

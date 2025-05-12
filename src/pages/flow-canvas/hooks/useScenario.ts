@@ -9,8 +9,7 @@ export const useScenario = () => {
     const name = prompt('Enter scenario name', 'My Scenario');
     if (!name) return;
     const description = prompt('Enter a brief description', '');
-    const timeoutInput = prompt('Timeout (ms)?', '10000');
-    const timeoutMs = timeoutInput ? parseInt(timeoutInput, 10) : 10000;
+    const timeoutMs = 10000;
 
     dispatch(
       exportScenario({
