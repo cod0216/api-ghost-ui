@@ -25,7 +25,9 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
-import PlayButton from '@/common/components/playButton';
+import PlayButton from '@/common/components/PlayButton';
+('@/common/components/playButton');
+import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 
 const nodeTypes = { endpointNode: CustomNode };
 type NodeType = Node<NodeEndPoint>;
@@ -134,19 +136,19 @@ const FlowCanvas: React.FC = () => {
   ///
   const [scenarios, setScenarios] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
-  const saveScenario = useScenario();
-  const hasSaved = useRef(false);
+  // const saveScenario = useScenario();
+  const hasSaved = useRef(true);
 
   useEffect(() => {
     if (!selectedScenario) {
-      saveScenario().then(fileName => {
+      handleSave().then(fileName => {
         if (fileName) {
           onSelect(fileName);
         }
       });
       hasSaved.current = true;
     }
-  }, [saveScenario]);
+  }, [handleSave]);
 
   useEffect(() => {
     getScenarioList()
@@ -204,6 +206,30 @@ const FlowCanvas: React.FC = () => {
     }
   };
 
+  const onChangeLabel = (edgeId: string, newLabel: string) => {
+    setEdges(prev =>
+      prev.map(edge =>
+        edge.id === edgeId
+          ? {
+              ...edge,
+              data: {
+                ...edge.data,
+                label: newLabel,
+                expected: {
+                  ...edge.data?.expected,
+                  status: newLabel,
+                },
+              },
+            }
+          : edge,
+      ),
+    );
+  };
+
+  const edgeTypes = {
+    custom: (edgeProps: any) => <CustomEdge {...edgeProps} onChangeLabel={onChangeLabel} />,
+  };
+
   return (
     <div className={styles.container}>
       <CommonSidebar
@@ -239,8 +265,11 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          defaultViewport={viewport}
-          fitView
+          // defaultViewport={viewport}
+          // fitView
+          proOptions={{ hideAttribution: true }}
+          minZoom={0.5}
+          edgeTypes={edgeTypes}
           defaultEdgeOptions={{
             type: 'smoothstep',
             animated: true,

@@ -4,7 +4,7 @@
  * A custom hook that manages ReactFlow state and drag-and-drop logic
  * for the scenario flow canvas.
  */
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, ReactNode } from 'react';
 import {
   addEdge,
   applyNodeChanges,
@@ -107,7 +107,26 @@ export const useFlowCanvas = () => {
    * @param params - edge or connection parameters
    */
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges(es => addEdge(params, es)),
+    (params: Connection) => {
+      const newEdge: Edge = {
+        ...params,
+        id: `${params.source}-${params.target}`,
+        animated: true,
+        type: 'custom',
+        data: {
+          expected: {
+            status: '200',
+            value: {},
+          },
+          label: '200',
+        },
+        source: params.source!,
+        target: params.target!,
+        sourceHandle: params.sourceHandle!,
+        targetHandle: params.targetHandle!,
+      };
+      setEdges(es => addEdge(newEdge, es));
+    },
     [setEdges],
   );
 
