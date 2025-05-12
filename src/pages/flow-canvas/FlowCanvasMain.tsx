@@ -5,18 +5,11 @@ import { fetchEndpoints } from '@/store/thunks/fetchEndpoints';
 import SaveButton from '@/common/components/SaveButton';
 import FlowCanvas from './FlowCanvas';
 import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
+import PlayButton from '@/common/components/playButton';
 
 const FlowCanvasMain: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const handleSave = useScenario();
-
-  useEffect(() => {
-    dispatch(fetchEndpoints());
-  }, [dispatch]);
-
   return (
     <div>
-      <SaveButton onSave={handleSave} />
       <ReactFlowProvider>
         <FlowCanvas />
       </ReactFlowProvider>

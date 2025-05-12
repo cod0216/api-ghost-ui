@@ -25,6 +25,8 @@ import {
 import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
+import SaveButton from '@/common/components/SaveButton';
+import PlayButton from '@/common/components/playButton';
 
 const nodeTypes = { endpointNode: CustomNode };
 type NodeType = Node<NodeEndPoint>;
@@ -87,7 +89,7 @@ const FlowCanvas: React.FC = () => {
   const [currentEdgeId, setCurrentEdgeId] = useState<string | null>(null);
   const [currentSrc, setCurrentSrc] = useState<NodeType | null>(null);
   const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
-
+  const handleSave = useScenario();
   const viewport = useAppSelector(state => state.flow.viewport);
   const { setViewport: instSetViewport } = useReactFlow();
   useEffect(() => {
@@ -175,13 +177,14 @@ const FlowCanvas: React.FC = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const handleClick = () => {
+  const handlePlay = (fileName: string | undefined) => {
+    if (!fileName) return;
     if (isConnected) {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;
       setIsConnected(false);
     } else {
-      const eventSource = scenarioTest('mock-test');
+      const eventSource = scenarioTest(fileName);
       eventSourceRef.current = eventSource;
       setIsConnected(true);
 
@@ -218,6 +221,10 @@ const FlowCanvas: React.FC = () => {
           },
         ]}
       />
+      <div className={styles.actionContainer}>
+        <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
+        <SaveButton onSave={handleSave} />
+      </div>
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow
           nodes={nodes}

@@ -13,7 +13,6 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
  * Displays a static list of user scenarios for selection.
  *
  */
-
 interface ScenarioListProps {
   scenarios: string[];
   onSelect: (fileName: string) => void;

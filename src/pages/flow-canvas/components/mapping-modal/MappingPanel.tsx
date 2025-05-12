@@ -40,12 +40,11 @@ const MappingPanel: React.FC<MappingPanelProps> = ({
         <tr>
           <th></th>
           <th>Key</th>
-          <th>Value</th>
           <th>Type</th>
         </tr>
       </thead>
       <tbody>
-        {dataList.map(({ key, value, type, disabled }) => {
+        {dataList.map(({ key, type, disabled }) => {
           const checked = selectedKeys.includes(key);
           return (
             <tr key={key} className={disabled ? styles.disabledRow : ''}>
@@ -68,10 +67,7 @@ const MappingPanel: React.FC<MappingPanelProps> = ({
                 )}
               </td>
               <td>{key}</td>
-              <td>{value}</td>
-              <td>
-                <small className={styles.fieldType}>{type}</small>
-              </td>
+              <td>{type}</td>
             </tr>
           );
         })}

@@ -68,20 +68,22 @@ export const MappingModal: React.FC<MappingModalProps> = ({
     setRightSelectedKeys([]);
   };
 
-  const [lMethod, ...lParts] = leftEndpointTitle.split(' ');
-  const lPath = lParts.join(' ');
-  const [rMethod, ...rParts] = rightEndpointTitle.split(' ');
-  const rPath = rParts.join(' ');
+  const [leftMethod, ...leftParts] = leftEndpointTitle.split(' ');
+  const leftPath = leftParts.join(' ');
+  const [rightMethod, ...rightParts] = rightEndpointTitle.split(' ');
+  const rightPath = rightParts.join(' ');
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <h2 className={styles.title}>{modalTitle}</h2>
+        <div className={styles.header}>
+          <h2 className={styles.title}>{modalTitle}</h2>
+        </div>
         <div className={styles.mappingPanel}>
           <MappingPanel
             label={panelLabels[0]}
-            method={lMethod}
-            path={lPath}
+            method={leftMethod}
+            path={leftPath}
             baseUrl={leftEndpointBaseUrl}
             dataList={leftKeyValueList}
             selectedKeys={leftSelectedKeys}
@@ -90,8 +92,8 @@ export const MappingModal: React.FC<MappingModalProps> = ({
 
           <MappingPanel
             label={panelLabels[1]}
-            method={rMethod}
-            path={rPath}
+            method={rightMethod}
+            path={rightPath}
             baseUrl={rightEndpointBaseUrl}
             dataList={rightKeyValueList}
             selectedKeys={rightSelectedKeys}

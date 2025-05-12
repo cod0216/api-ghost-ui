@@ -1,279 +1,273 @@
-// import React, { MouseEvent, useState, useEffect } from 'react';
-// import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
-// import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
-// import { BODY_EDITOR_TABS, Path, Tab } from '@/pages/flow-canvas/types/index';
-// import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types/index.ts';
-// import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
+import React, { MouseEvent, useState, useEffect } from 'react';
+import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
+import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController.ts';
+import { BODY_EDITOR_TABS, Path, Tab } from '@/pages/flow-canvas/types/index';
+import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types/index.ts';
+import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor.ts';
 
-// export interface BodyEditorProps {
-//   requestSchema: Field[];
-//   responseSchema: Field[];
-//   initialMainTabLabel?: MainTabType;
-//   initialSubTabLabel?: SubTabType;
-//   onTabChange?: (main: MainTabType, sub: SubTabType) => void;
-//   onSaveRequestSchema: (newSchema: Field[]) => void;
-//   onSaveResponseSchema: (newSchema: Field[]) => void;
-//   onClose: () => void;
-// }
+export interface BodyEditorProps {
+  requestSchema: Field[];
+  responseSchema: Field[];
+  initialMainTabLabel?: MainTabType;
+  initialSubTabLabel?: SubTabType;
+  onTabChange?: (main: MainTabType, sub: SubTabType) => void;
+  onSaveRequestSchema: (newSchema: Field[]) => void;
+  onSaveResponseSchema: (newSchema: Field[]) => void;
+  onClose: () => void;
+}
 
-// const numericTypes = new Set([
-//   'int',
-//   'Integer',
-//   'long',
-//   'Long',
-//   'short',
-//   'Short',
-//   'double',
-//   'Double',
-//   'float',
-//   'Float',
-//   'byte',
-//   'Byte',
-// ]);
-// const booleanTypes = new Set(['boolean', 'Boolean']);
-// /**
-//  * BodyEditor component
-//  * Uses a controller and hook to manage its tab state.
-//  */
-// const BodyEditor: React.FC<BodyEditorProps> = ({
-//   requestSchema,
-//   responseSchema,
-//   initialMainTabLabel,
-//   initialSubTabLabel,
-//   onTabChange,
-//   onSaveRequestSchema,
-//   onSaveResponseSchema,
-//   onClose,
-// }) => {
-//   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
-//     useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
+const numericTypes = new Set([
+  'int',
+  'Integer',
+  'long',
+  'Long',
+  'short',
+  'Short',
+  'double',
+  'Double',
+  'float',
+  'Float',
+  'byte',
+  'Byte',
+]);
+const booleanTypes = new Set(['boolean', 'Boolean']);
+/**
+ * BodyEditor component
+ * Uses a controller and hook to manage its tab state.
+ */
+const BodyEditor: React.FC<BodyEditorProps> = ({
+  requestSchema,
+  responseSchema,
+  initialMainTabLabel,
+  initialSubTabLabel,
+  onTabChange,
+  onSaveRequestSchema,
+  onSaveResponseSchema,
+  onClose,
+}) => {
+  const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
+    useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
-//   const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
-//   const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
+  const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
+  const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
 
-//   useEffect(() => {
-//     setReqSchema(requestSchema);
-//   }, [requestSchema, setReqSchema]);
+  useEffect(() => {
+    setReqSchema(requestSchema);
+  }, [requestSchema, setReqSchema]);
 
-//   useEffect(() => {
-//     setResSchema(responseSchema);
-//   }, [responseSchema, setResSchema]);
+  useEffect(() => {
+    setResSchema(responseSchema);
+  }, [responseSchema, setResSchema]);
 
-//   const [editingPath, setEditingPath] = useState<Path | null>(null);
-//   const [editingValue, setEditingValue] = useState<string>('');
+  const [editingPath, setEditingPath] = useState<Path | null>(null);
+  const [editingValue, setEditingValue] = useState<string>('');
 
-//   const isRequestTab = mainTab.label === BODY_EDITOR_TABS[0].mainTab.label;
+  const isRequestTab = mainTab.label === BODY_EDITOR_TABS[0].mainTab.label;
 
-//   const handleSave = () => {
-//     if (isRequestTab) onSaveRequestSchema(reqSchema);
-//     else {
-//       onSaveResponseSchema(resSchema);
-//     }
-//     onClose();
-//   };
+  const handleSave = () => {
+    if (isRequestTab) onSaveRequestSchema(reqSchema);
+    else {
+      onSaveResponseSchema(resSchema);
+    }
+    onClose();
+  };
 
-//   const startEdit = (path: Path, rawValue: string) => {
-//     setEditingPath(path);
-//     setEditingValue(rawValue);
-//   };
+  const startEdit = (path: Path, rawValue: string) => {
+    setEditingPath(path);
+    setEditingValue(rawValue);
+  };
 
-//   const finishEdit = (path: Path) => {
-//     if (!editingPath) return;
-//     const updated = [...(isRequestTab ? reqSchema : resSchema)];
-//     let cursor: any = updated;
-//     for (let i = 0; i < path.length - 1; i++) {
-//       cursor = cursor[path[i]].nestedFields!;
-//     }
-//     const idx = path[path.length - 1];
-//     const oldField = cursor[idx] as Field;
-//     let newVal: string | number | boolean;
-//     const typeName = oldField.type;
-//     // Empty input handling
-//     if (editingValue.trim() === '') {
-//       if (numericTypes.has(typeName)) newVal = 0;
-//       else if (booleanTypes.has(typeName)) newVal = false;
-//       else newVal = '';
-//     }
-//     // Numeric input
-//     else if (!isNaN(Number(editingValue))) {
-//       newVal = Number(editingValue);
-//     }
-//     // Boolean input
-//     else if (editingValue === 'true' || editingValue === 'false') {
-//       newVal = editingValue === 'true';
-//     }
-//     // String or other
-//     else {
-//       newVal = editingValue;
-//     }
+  const finishEdit = (path: Path) => {
+    if (!editingPath) return;
+    const updated = [...(isRequestTab ? reqSchema : resSchema)];
+    let cursor: any = updated;
+    for (let i = 0; i < path.length - 1; i++) {
+      cursor = cursor[path[i]].nestedFields!;
+    }
+    const idx = path[path.length - 1];
+    const oldField = cursor[idx] as Field;
+    let newVal: string | number | boolean;
+    const typeName = oldField.type;
+    // Empty input handling
+    if (editingValue.trim() === '') {
+      if (numericTypes.has(typeName)) newVal = 0;
+      else if (booleanTypes.has(typeName)) newVal = false;
+      else newVal = '';
+    }
+    // Numeric input
+    else if (!isNaN(Number(editingValue))) {
+      newVal = Number(editingValue);
+    }
+    // Boolean input
+    else if (editingValue === 'true' || editingValue === 'false') {
+      newVal = editingValue === 'true';
+    }
+    // String or other
+    else {
+      newVal = editingValue;
+    }
 
-//     const newField: Field = {
-//       ...oldField,
-//       value: newVal,
-//       nestedFields: oldField.nestedFields,
-//     };
-//     cursor[idx] = newField;
-//     if (isRequestTab) setReqSchema(updated);
-//     else setResSchema(updated);
-//     setEditingPath(null);
-//   };
+    const newField: Field = {
+      ...oldField,
+      value: newVal,
+      nestedFields: oldField.nestedFields,
+    };
+    cursor[idx] = newField;
+    if (isRequestTab) setReqSchema(updated);
+    else setResSchema(updated);
+    setEditingPath(null);
+  };
 
-//   const renderJsonSchema = (
-//     fields: Field[],
-//     indent: number = 0,
-//     parentPath: Path = [],
-//   ): React.ReactNode => {
-//     const pad = ' '.repeat(indent);
-//     if (!Array.isArray(fields)) return(
-//       <span>
-//           {pad}
-//           {'{'}
-//       </span>
-//         {'\n'}
+  const renderJsonSchema = (
+    fields: Field[],
+    indent: number = 0,
+    parentPath: Path = [],
+  ): React.ReactNode => {
+    const pad = ' '.repeat(indent);
+    return (
+      <>
+        <span>
+          {pad}
+          {'{'}
+        </span>
+        {'\n'}
+        {fields.map((f, idx) => {
+          const path: Path = [...parentPath, idx];
+          const childPad = ' '.repeat(indent + 2);
 
-//       // TODO
-//     );
+          const isEditing =
+            editingPath &&
+            editingPath.length === path.length &&
+            editingPath.every((n, i) => n === path[i]);
+          const keyNode = <span className={styles.fieldKey}>{`"${f.name}"`}</span>;
 
-//     return (
-//       <>
+          const colon = <span>{': '}</span>;
+          const comma = <span>{','}</span>;
 
-//         {fields.map((f, idx) => {
-//           const path: Path = [...parentPath, idx];
-//           const childPad = ' '.repeat(indent + 2);
+          let valueNode: React.ReactNode;
+          if (f.nestedFields && f.nestedFields.length > 0) {
+            valueNode = (
+              <>
+                <span>
+                  {childPad}
+                  {'{'}
+                </span>
 
-//           const isEditing =
-//             editingPath &&
-//             editingPath.length === path.length &&
-//             editingPath.every((n, i) => n === path[i]);
-//           const keyNode = <span className={styles.fieldKey}>{`"${f.name}"`}</span>;
+                {'\n'}
+                {renderJsonSchema(f.nestedFields, indent + 4, path)}
+                <span>
+                  {childPad}
+                  {'}'}
+                </span>
+              </>
+            );
+          } else {
+            const raw = String(f.value);
+            if (isEditing) {
+              valueNode = (
+                <input
+                  className={styles.editInput}
+                  value={editingValue}
+                  autoFocus
+                  onChange={e => setEditingValue(e.target.value)}
+                  onBlur={() => finishEdit(path)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') finishEdit(path);
+                  }}
+                />
+              );
+            } else {
+              const display =
+                typeof f.value === 'number' || typeof f.value === 'boolean' ? raw : `"${raw}"`;
+              valueNode = (
+                <span className={styles.fieldValue} onDoubleClick={() => startEdit(path, raw)}>
+                  {display}
+                </span>
+              );
+            }
+          }
 
-//           const colon = <span>{': '}</span>;
-//           const comma = <span>{','}</span>;
+          return (
+            <span key={idx}>
+              {childPad}
+              {keyNode}
+              {colon}
+              {valueNode}
+              {comma}
+              {'\n'}
+            </span>
+          );
+        })}
+        <span>
+          {pad}
+          {'}'}
+        </span>
+        {'\n'}
+      </>
+    );
+  };
 
-//           let valueNode: React.ReactNode;
-//           if (f.nestedFields && Array.isArray(f.nestedFields) && f.nestedFields.length > 0) {
-//             valueNode = (
-//               <>
-//                 <span>
-//                   {childPad}
-//                   {'{'}
-//                 </span>
+  const updateSchema = isRequestTab ? setReqSchema : setResSchema;
+  const handleMainTab = (tab: Tab) => {
+    selectMainTab(tab);
+    if (onTabChange) onTabChange(tab.label as MainTabType, subTab.label as SubTabType);
+  };
 
-//                 {'\n'}
-//                 {renderJsonSchema(f.nestedFields, indent + 4, path)}
-//                 <span>
-//                   {childPad}
-//                   {'}'}
-//                 </span>
-//               </>
-//             );
-//           } else {
-//             const raw = String(f.value);
-//             if (isEditing) {
-//               valueNode = (
-//                 <input
-//                   className={styles.editInput}
-//                   value={editingValue}
-//                   autoFocus
-//                   onChange={e => setEditingValue(e.target.value)}
-//                   onBlur={() => finishEdit(path)}
-//                   onKeyDown={e => {
-//                     if (e.key === 'Enter') finishEdit(path);
-//                   }}
-//                 />
-//               );
-//             } else {
-//               const display =
-//                 typeof f.value === 'number' || typeof f.value === 'boolean' ? raw : `"${raw}"`;
-//               valueNode = (
-//                 <span className={styles.fieldValue} onDoubleClick={() => startEdit(path, raw)}>
-//                   {display}
-//                 </span>
-//               );
-//             }
-//           }
+  const handleSubTab = (tab: Tab) => {
+    selectSubTab(tab);
+    if (onTabChange) onTabChange(mainTab.label as MainTabType, tab.label as SubTabType);
+  };
+  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
+  const schemaToRender = isRequestTab ? reqSchema : resSchema;
 
-//           return (
-//             <span key={idx}>
-//               {childPad}
-//               {keyNode}
-//               {colon}
-//               {valueNode}
-//               {comma}
-//               {'\n'}
-//             </span>
-//           );
-//         })}
-//         <span>
-//           {pad}
-//           {'}'}
-//         </span>
-//         {'\n'}
-//       </>
-//     );
-//   };
+  return (
+    <div className={styles.editorPopover} onClick={stopPropagation}>
+      <nav className={styles.mainTabs}>
+        {BODY_EDITOR_TABS.map(group => (
+          <button
+            key={group.mainTab.label}
+            className={`${styles.tab} ${
+              mainTab.label === group.mainTab.label ? styles.activeMainTab : ''
+            }`}
+            onClick={() => handleMainTab(group.mainTab)}
+          >
+            {group.mainTab.label}
+          </button>
+        ))}
+      </nav>
 
-//   const updateSchema = isRequestTab ? setReqSchema : setResSchema;
-//   const handleMainTab = (tab: Tab) => {
-//     selectMainTab(tab);
-//     if (onTabChange) onTabChange(tab.label as MainTabType, subTab.label as SubTabType);
-//   };
+      <nav className={styles.subTabs}>
+        {availableSubTabs.map(tab => (
+          <button
+            key={tab.label}
+            className={`${styles.tab} ${subTab.label === tab.label ? styles.activeSubTab : ''}`}
+            onClick={() => handleSubTab(tab)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
 
-//   const handleSubTab = (tab: Tab) => {
-//     selectSubTab(tab);
-//     if (onTabChange) onTabChange(mainTab.label as MainTabType, tab.label as SubTabType);
-//   };
-//   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
-//   const schemaToRender = isRequestTab ? reqSchema : resSchema;
+      <section className={styles.contentArea}>
+        {subTab.showSchema && (
+          <pre className={styles.schemaContent}>
+            <code>{renderJsonSchema(schemaToRender)}</code>
+          </pre>
+        )}
+      </section>
 
-//   return (
-//     <div className={styles.editorPopover} onClick={stopPropagation}>
-//       <nav className={styles.mainTabs}>
-//         {BODY_EDITOR_TABS.map(group => (
-//           <button
-//             key={group.mainTab.label}
-//             className={`${styles.tab} ${
-//               mainTab.label === group.mainTab.label ? styles.activeMainTab : ''
-//             }`}
-//             onClick={() => handleMainTab(group.mainTab)}
-//           >
-//             {group.mainTab.label}
-//           </button>
-//         ))}
-//       </nav>
+      <footer className={styles.buttonRow}>
+        {
+          <button className={styles.saveButton} onClick={handleSave}>
+            Save
+          </button>
+        }
+        <button className={styles.closeButton} onClick={onClose}>
+          Close
+        </button>
+      </footer>
+    </div>
+  );
+};
 
-//       <nav className={styles.subTabs}>
-//         {availableSubTabs.map(tab => (
-//           <button
-//             key={tab.label}
-//             className={`${styles.tab} ${subTab.label === tab.label ? styles.activeSubTab : ''}`}
-//             onClick={() => handleSubTab(tab)}
-//           >
-//             {tab.label}
-//           </button>
-//         ))}
-//       </nav>
-
-//       <section className={styles.contentArea}>
-//         {subTab.showSchema && (
-//           <pre className={styles.schemaContent}>
-//             <code>{renderJsonSchema(schemaToRender)}</code>
-//           </pre>
-//         )}
-//       </section>
-
-//       <footer className={styles.buttonRow}>
-//         {
-//           <button className={styles.saveButton} onClick={handleSave}>
-//             Save
-//           </button>
-//         }
-//         <button className={styles.closeButton} onClick={onClose}>
-//           Close
-//         </button>
-//       </footer>
-//     </div>
-//   );
-// };
-
-// export default BodyEditor;
+export default BodyEditor;
