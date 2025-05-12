@@ -26,7 +26,6 @@ import {
   setNodes as setNodesInStore,
   setEdges as setEdgesInStore,
   updateNode as updateNodeInStore,
-  setViewport,
 } from '@/store/slices/flowSlice';
 
 export const useFlowCanvas = () => {
@@ -55,7 +54,7 @@ export const useFlowCanvas = () => {
 
   useEffect(() => {
     dispatch(setNodesInStore(nodes));
-  }, [nodes, dispatch]);
+  }, [nodes]);
 
   const setEdges = useCallback(
     (updater: (es: ReactEdge[]) => ReactEdge[]) => {
@@ -70,7 +69,7 @@ export const useFlowCanvas = () => {
 
   useEffect(() => {
     dispatch(setEdgesInStore(edges));
-  }, [edges, dispatch]);
+  }, [edges]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -228,13 +227,6 @@ export const useFlowCanvas = () => {
     [setNodes],
   );
 
-  const onMove = useCallback(
-    (_event: any, vp: { x: number; y: number; zoom: number }) => {
-      dispatch(setViewport(vp));
-    },
-    [dispatch],
-  );
-
   return {
     wrapperRef,
     nodes,
@@ -252,7 +244,6 @@ export const useFlowCanvas = () => {
     addNode,
     removeNode,
     viewport,
-    onMove,
     setNodes,
     setEdges,
   };

@@ -14,7 +14,6 @@ import CommonSidebar from '@/common/components/CommonSidebar';
 import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
 import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
 import { useAppSelector } from '@/store/hooks';
-import { useReactFlow } from 'reactflow';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
 import {
@@ -47,7 +46,6 @@ const FlowCanvas: React.FC = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
-    onMove,
     setNodes,
     setEdges,
   } = useFlowCanvas();
@@ -91,10 +89,6 @@ const FlowCanvas: React.FC = () => {
   const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
   const handleSave = useScenario();
   const viewport = useAppSelector(state => state.flow.viewport);
-  const { setViewport: instSetViewport } = useReactFlow();
-  useEffect(() => {
-    if (viewport) instSetViewport(viewport, { duration: 0 });
-  }, [viewport, instSetViewport]);
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
     setCurrentEdgeId(edge.id);
@@ -144,7 +138,7 @@ const FlowCanvas: React.FC = () => {
   const hasSaved = useRef(false);
 
   useEffect(() => {
-    if (!hasSaved.current) {
+    if (!selectedScenario) {
       saveScenario().then(fileName => {
         if (fileName) {
           onSelect(fileName);
@@ -246,7 +240,6 @@ const FlowCanvas: React.FC = () => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           defaultViewport={viewport}
-          onMove={onMove}
           fitView
           defaultEdgeOptions={{
             type: 'smoothstep',

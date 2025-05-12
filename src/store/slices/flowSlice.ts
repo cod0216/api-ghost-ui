@@ -18,9 +18,9 @@ const flowSlice = createSlice({
   name: 'flow',
   initialState,
   reducers: {
-    setViewport(state, action: PayloadAction<Viewport>) {
-      state.viewport = action.payload;
-    },
+    // setViewport(state, action: PayloadAction<Viewport>) {
+    //   state.viewport = action.payload;
+    // },
     setNodes(state, action: PayloadAction<Node[]>) {
       state.nodes = action.payload;
     },
@@ -38,5 +38,5 @@ const flowSlice = createSlice({
   },
 });
 
-export const { setViewport, setNodes, setEdges, resetFlow, updateNode } = flowSlice.actions;
+export const { setNodes, setEdges, resetFlow, updateNode } = flowSlice.actions;
 export default flowSlice.reducer;
