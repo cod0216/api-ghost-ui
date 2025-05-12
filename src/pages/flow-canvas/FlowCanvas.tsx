@@ -25,7 +25,7 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
-import PlayButton from '@/common/components/playButton';
+import PlayButton from '@/common/components/PlayButton';
 
 const nodeTypes = { endpointNode: CustomNode };
 type NodeType = Node<NodeEndPoint>;
@@ -97,14 +97,14 @@ const FlowCanvas: React.FC = () => {
     setCurrentSrc(srcNode);
     setCurrentTgt(tgtNode);
 
-    const respList = flattenSchema(srcNode.data.responseSchema ?? []);
-    const reqList = flattenSchema(tgtNode.data.requestSchema ?? []);
+    const responseList = flattenSchema(srcNode.data.responseSchema ?? []);
+    const requestList = flattenSchema(tgtNode.data.requestSchema ?? []);
     const titleLeft = `${srcNode.data.method} ${srcNode.data.path}`;
     const titleRight = `${tgtNode.data.method} ${tgtNode.data.path}`;
     const existing: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
     openMappingModal(
-      respList,
-      reqList,
+      responseList,
+      requestList,
       titleLeft,
       titleRight,
       srcNode.data.baseUrl,
@@ -113,12 +113,29 @@ const FlowCanvas: React.FC = () => {
     );
   };
 
-  const handleConfirmMapping = (pairs: MappingPair[]) => {
+  // 1. FlowCanvas.tsx - handleConfirmMapping 수정 (1:1 덮어쓰기 매핑)
+  const handleConfirmMapping = (newPairs: MappingPair[]) => {
     if (!currentEdgeId) return;
     setEdges(es =>
-      es.map(e =>
-        e.id === currentEdgeId ? { ...e, data: { ...(e.data ?? {}), mappingInfo: pairs } } : e,
-      ),
+      es.map(e => {
+        if (e.id !== currentEdgeId) return e;
+
+        const existing: MappingPair[] = (e.data as any)?.mappingInfo || [];
+        const [{ sourceKey, targetKey } = {} as MappingPair] = newPairs;
+
+        const filtered = existing.filter(
+          p => p.sourceKey !== sourceKey && p.targetKey !== targetKey,
+        );
+        const merged = sourceKey && targetKey ? [...filtered, { sourceKey, targetKey }] : filtered;
+
+        return {
+          ...e,
+          data: {
+            ...(e.data ?? {}),
+            mappingInfo: merged,
+          },
+        };
+      }),
     );
     cancelMappingModal();
   };
@@ -138,10 +155,10 @@ const FlowCanvas: React.FC = () => {
   const hasSaved = useRef(false);
 
   useEffect(() => {
-    if (!selectedScenario) {
+    if (!hasSaved.current) {
       saveScenario().then(fileName => {
         if (fileName) {
-          onSelect(fileName);
+          onSelect('이영석.yaml');
         }
       });
       hasSaved.current = true;
@@ -239,8 +256,9 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          defaultViewport={viewport}
+          // defaultViewport={viewport}
           fitView
+          proOptions={{ hideAttribution: true }}
           defaultEdgeOptions={{
             type: 'smoothstep',
             animated: true,

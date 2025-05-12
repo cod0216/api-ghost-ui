@@ -16,6 +16,7 @@ interface MappingModalProps {
   rightEndpointBaseUrl: string;
   leftSelectedKey: string | null;
   rightSelectedKey: string | null;
+  mappingInfo: MappingPair[];
   onConfirm: (mappingPairs: MappingPair[]) => void;
   onDismiss: () => void;
 }
@@ -32,41 +33,33 @@ export const MappingModal: React.FC<MappingModalProps> = ({
   rightEndpointBaseUrl,
   leftSelectedKey,
   rightSelectedKey,
+  mappingInfo,
   onConfirm,
   onDismiss,
 }) => {
-  const [leftSelectedKeys, setLeftSelectedKeys] = useState<string[]>(
-    leftSelectedKey ? [leftSelectedKey] : [],
-  );
-  const [rightSelectedKeys, setRightSelectedKeys] = useState<string[]>(
-    rightSelectedKey ? [rightSelectedKey] : [],
-  );
+  const [leftKey, setLeftKey] = useState<string | null>(leftSelectedKey);
+  const [rightKey, setRightKey] = useState<string | null>(rightSelectedKey);
+
+  // useEffect(() => {
+  //   setLeftSelectedKeys(leftSelectedKey ? [leftSelectedKey] : []);
+  //   setRightSelectedKeys(rightSelectedKey ? [rightSelectedKey] : []);
+  // }, [isVisible, leftSelectedKey, rightSelectedKey]);
 
   if (!isVisible) return null;
-
   const toggleLeftKey = (key: string) => {
-    setLeftSelectedKeys([key]);
+    // 기존에 매핑된 requestKey를 찾아 자동 선택
+    const mapped = (mappingInfo ?? []).find(p => p.sourceKey === key)?.targetKey;
+    setLeftKey(key);
+    setRightKey(mapped ?? null);
   };
-
-  const toggleRightKey = (key: string) => {
-    setRightSelectedKeys(prev =>
-      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key],
-    );
-  };
+  const toggleRightKey = (key: string) => setRightKey(key);
 
   const handleSave = () => {
-    const mappingPairs: MappingPair[] = leftSelectedKeys.flatMap(sourceKey =>
-      rightSelectedKeys.map(targetKey => ({ sourceKey, targetKey })),
-    );
-    onConfirm(mappingPairs);
-    setLeftSelectedKeys([]);
-    setRightSelectedKeys([]);
+    if (!leftKey || !rightKey) return;
+    onConfirm([{ sourceKey: leftKey, targetKey: rightKey }]);
   };
-
   const [leftMethod, ...leftParts] = leftEndpointTitle.split(' ');
-  const leftPath = leftParts.join(' ');
   const [rightMethod, ...rightParts] = rightEndpointTitle.split(' ');
-  const rightPath = rightParts.join(' ');
 
   return (
     <div className={styles.overlay}>
@@ -78,31 +71,26 @@ export const MappingModal: React.FC<MappingModalProps> = ({
           <MappingPanel
             label={panelLabels[0]}
             method={leftMethod}
-            path={leftPath}
+            path={leftParts.join(' ')}
             baseUrl={leftEndpointBaseUrl}
             dataList={leftKeyValueList}
-            selectedKeys={leftSelectedKeys}
+            selectedKeys={leftKey ? [leftKey] : []}
             onToggleKey={toggleLeftKey}
+            singleSelect={true}
           />
 
           <MappingPanel
             label={panelLabels[1]}
             method={rightMethod}
-            path={rightPath}
+            path={rightParts.join(' ')}
             baseUrl={rightEndpointBaseUrl}
             dataList={rightKeyValueList}
-            selectedKeys={rightSelectedKeys}
+            selectedKeys={rightKey ? [rightKey] : []}
             onToggleKey={toggleRightKey}
+            singleSelect={true}
           />
         </div>
-        <CommonButton
-          onConfirm={handleSave}
-          onCancel={() => {
-            setLeftSelectedKeys([]);
-            setRightSelectedKeys([]);
-            onDismiss();
-          }}
-        />
+        <CommonButton onConfirm={handleSave} onCancel={onDismiss} />
       </div>
     </div>
   );

@@ -43,33 +43,25 @@ export const useFlowCanvas = () => {
 
   const setNodes = useCallback(
     (updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
-      _setNodes(ns => {
-        const next = updater(ns);
-        return next;
-      });
-      dispatch(setNodesInStore(nodes));
+      _setNodes(updater);
     },
-    [dispatch, _setNodes],
+    [_setNodes],
   );
 
   useEffect(() => {
     dispatch(setNodesInStore(nodes));
-  }, [nodes]);
+  }, [dispatch, nodes]);
 
   const setEdges = useCallback(
     (updater: (es: ReactEdge[]) => ReactEdge[]) => {
-      _setEdges(es => {
-        const next = updater(es);
-        return next;
-      });
-      dispatch(setEdgesInStore(edges));
+      _setEdges(updater);
     },
-    [dispatch, _setEdges],
+    [_setEdges],
   );
 
   useEffect(() => {
     dispatch(setEdgesInStore(edges));
-  }, [edges]);
+  }, [dispatch, edges]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -243,7 +235,7 @@ export const useFlowCanvas = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
-    viewport,
+    // viewport,
     setNodes,
     setEdges,
   };
