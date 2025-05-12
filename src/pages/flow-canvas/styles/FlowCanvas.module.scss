@@ -2,6 +2,19 @@
  * @fileoverview Styles for FlowCanvas component.
 */
 
+.actionContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: $white;
+  padding: 5px 20px;
+  border-radius: $radius-xl;
+  box-shadow: 0 0 5px $gray-300;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 1000;
+}
 .container {
   display: flex;
   height: 100vh;

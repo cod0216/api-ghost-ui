@@ -17,5 +17,11 @@ export const exportScenario = async (
 ): Promise<{
   status: boolean;
 }> => {
-  return await apiClient.post('/scenario-export', scenario);
+  return await apiClient.post('/apighost/scenario-export', scenario);
+};
+
+export const scenarioTest = (name: string): EventSource => {
+  const queryString = new URLSearchParams({ scenarioName: name }).toString();
+  const fullUrl = `http://localhost:8080/apighost/scenario-test?${queryString}`;
+  return new EventSource(fullUrl);
 };

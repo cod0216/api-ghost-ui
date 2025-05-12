@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Node, Edge } from 'reactflow';
-
+import { NodeEndPoint } from '@/pages/flow-canvas/types/endpointTypes';
 interface Viewport {
   x: number;
   y: number;
@@ -18,16 +18,16 @@ const flowSlice = createSlice({
   name: 'flow',
   initialState,
   reducers: {
-    setViewport(state, action: PayloadAction<Viewport>) {
-      state.viewport = action.payload;
-    },
+    // setViewport(state, action: PayloadAction<Viewport>) {
+    //   state.viewport = action.payload;
+    // },
     setNodes(state, action: PayloadAction<Node[]>) {
       state.nodes = action.payload;
     },
     setEdges(state, action: PayloadAction<Edge[]>) {
       state.edges = action.payload;
     },
-    updateNode(state, action: PayloadAction<Node>) {
+    updateNode: (state, action: PayloadAction<Node<NodeEndPoint>>) => {
       const idx = state.nodes.findIndex(n => n.id === action.payload.id);
       if (idx !== -1) state.nodes[idx] = action.payload;
     },
@@ -38,5 +38,5 @@ const flowSlice = createSlice({
   },
 });
 
-export const { setViewport, setNodes, setEdges, resetFlow, updateNode } = flowSlice.actions;
+export const { setNodes, setEdges, resetFlow, updateNode } = flowSlice.actions;
 export default flowSlice.reducer;
