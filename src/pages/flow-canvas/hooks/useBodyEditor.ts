@@ -2,6 +2,10 @@ import { useState, useCallback } from 'react';
 import { Field } from '@/pages/flow-canvas/types/index';
 
 function deepCloneWithValue(fields: Field[]): Field[] {
+  if (!Array.isArray(fields)) {
+    console.error('Expected fields to be an array, but received:', fields);
+    return [];
+  }
   return fields.map(f => ({
     type: f.type,
     name: f.name,

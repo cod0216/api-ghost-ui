@@ -26,7 +26,6 @@ import {
   setNodes as setNodesInStore,
   setEdges as setEdgesInStore,
   updateNode as updateNodeInStore,
-  setViewport,
 } from '@/store/slices/flowSlice';
 
 export const useFlowCanvas = () => {
@@ -46,23 +45,31 @@ export const useFlowCanvas = () => {
     (updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
       _setNodes(ns => {
         const next = updater(ns);
-        dispatch(setNodesInStore(next));
         return next;
       });
+      dispatch(setNodesInStore(nodes));
     },
     [dispatch, _setNodes],
   );
+
+  useEffect(() => {
+    dispatch(setNodesInStore(nodes));
+  }, [nodes]);
 
   const setEdges = useCallback(
     (updater: (es: ReactEdge[]) => ReactEdge[]) => {
       _setEdges(es => {
         const next = updater(es);
-        dispatch(setEdgesInStore(next));
         return next;
       });
+      dispatch(setEdgesInStore(edges));
     },
     [dispatch, _setEdges],
   );
+
+  useEffect(() => {
+    dispatch(setEdgesInStore(edges));
+  }, [edges]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -83,13 +90,13 @@ export const useFlowCanvas = () => {
       setNodes(ns => {
         const idx = ns.findIndex(n => n.id === node.id);
         if (idx !== -1) {
-          const copy = [...ns];
-          copy[idx] = node;
-          dispatch(updateNodeInStore(node));
-          return copy;
+          const next = [...ns];
+          next[idx] = node;
+          return next;
         }
         return ns;
       });
+      dispatch(updateNodeInStore(node));
     },
     [dispatch, setNodes],
   );
@@ -132,6 +139,8 @@ export const useFlowCanvas = () => {
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
       });
+      const req = endpoint.requestSchema ?? [];
+      const res = endpoint.responseSchema ?? [];
       setNodes(ns => [
         ...ns,
         {
@@ -139,13 +148,9 @@ export const useFlowCanvas = () => {
           type: 'endpointNode',
           position,
           data: {
-            endpointId: endpoint.endpointId,
-            header: endpoint.header,
-            baseUrl: endpoint.baseUrl,
-            method: endpoint.method,
-            path: endpoint.path,
-            requestSchema: endpoint.requestSchema,
-            responseSchema: endpoint.responseSchema,
+            ...endpoint,
+            requestSchema: req,
+            responseSchema: res,
             showBody: false,
           },
         },
@@ -222,13 +227,6 @@ export const useFlowCanvas = () => {
     [setNodes],
   );
 
-  const onMove = useCallback(
-    (_event: any, vp: { x: number; y: number; zoom: number }) => {
-      dispatch(setViewport(vp));
-    },
-    [dispatch],
-  );
-
   return {
     wrapperRef,
     nodes,
@@ -246,6 +244,7 @@ export const useFlowCanvas = () => {
     addNode,
     removeNode,
     viewport,
-    onMove,
+    setNodes,
+    setEdges,
   };
 };

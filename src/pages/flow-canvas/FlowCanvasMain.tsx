@@ -1,15 +1,8 @@
-import FlowCanvas from '@/pages/flow-canvas/FlowCanvas.tsx';
-import { fetchEndpoints } from '@/store/thunks/fetchEndpoints';
-import { useEffect } from 'react';
+import React from 'react';
 import { ReactFlowProvider } from 'reactflow';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import FlowCanvas from './FlowCanvas';
 
-const FlowCanvasMain = () => {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchEndpoints());
-  }, [dispatch]);
-
+const FlowCanvasMain: React.FC = () => {
   return (
     <ReactFlowProvider>
       <FlowCanvas />

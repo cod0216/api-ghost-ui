@@ -1,77 +1,79 @@
 import React from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
-import { KeyValue } from '@/pages/flow-canvas/types/index.ts';
+import { KeyValue } from '@/pages/flow-canvas/types/mapping';
 
 interface MappingPanelProps {
+  label: string;
   method: string;
   path: string;
   baseUrl: string;
-  label: string;
-  dataList: KeyValue[];
+  dataList: (KeyValue & { disabled?: boolean })[];
   selectedKeys: string[];
   onToggleKey: (key: string) => void;
+  singleSelect?: boolean;
 }
-
-export const MappingPanel: React.FC<MappingPanelProps> = ({
+const MappingPanel: React.FC<MappingPanelProps> = ({
+  label,
   method,
   path,
   baseUrl,
-  label,
   dataList,
   selectedKeys,
   onToggleKey,
-}) => {
-  const renderKeyValueList = (list: KeyValue[]) => (
-    <ul className={styles.list}>
-      {list
-        .filter(entry => entry.key.toLowerCase() !== 'baseurl')
-        .map((entry, index) => (
-          <li key={index} className={styles.item}>
-            <span className={styles.itemKey}>{entry.key}</span>
-            <span className={styles.itemValue}>{entry.value}</span>
-          </li>
-        ))}
-    </ul>
-  );
-
-  return (
-    <div className={styles.panel}>
-      <div className={styles.panelHeader}>
-        <h2 className={styles.label}>{label}</h2>
-        <div className={styles.pathGroup}>
-          <div className={styles.methodPathGroup}>
-            <span className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</span>
-            <span className={styles.pathText}>
-              {baseUrl}
-              {path}
-            </span>
-          </div>
+  singleSelect = false,
+}) => (
+  <div className={styles.panel}>
+    <div className={styles.panelHeader}>
+      <h2 className={styles.label}>{label}</h2>
+      <div className={styles.pathGroup}>
+        <div className={styles.methodPathGroup}>
+          <span className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</span>
+          <span className={styles.pathText}>
+            {baseUrl}
+            {path}
+          </span>
         </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>key</th>
-            <th>value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dataList.map(({ key, value }) => (
-            <tr key={key}>
+    </div>
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Key</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {dataList.map(({ key, type, disabled }) => {
+          const checked = selectedKeys.includes(key);
+          return (
+            <tr key={key} className={disabled ? styles.disabledRow : ''}>
               <td>
-                <input
-                  type="checkbox"
-                  checked={selectedKeys.includes(key)}
-                  onChange={() => onToggleKey(key)}
-                />
+                {singleSelect ? (
+                  <input
+                    type="radio"
+                    name={label}
+                    disabled={disabled}
+                    checked={checked}
+                    onChange={() => onToggleKey(key)}
+                  />
+                ) : (
+                  <input
+                    type="checkbox"
+                    disabled={disabled}
+                    checked={checked}
+                    onChange={() => onToggleKey(key)}
+                  />
+                )}
               </td>
               <td>{key}</td>
-              <td>{value}</td>
+              <td>{type}</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+);
+
+export default MappingPanel;

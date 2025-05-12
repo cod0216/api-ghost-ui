@@ -1,22 +1,34 @@
-import React, { useEffect } from 'react';
-import ReactFlow, { MarkerType, Handle, Position, NodeProps, Edge } from 'reactflow';
+import React, { useEffect, useState, useRef } from 'react';
+import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas.ts';
+import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
-import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode.tsx';
-import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal.tsx';
+import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode';
+import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
 import styles from './styles/FlowCanvas.module.scss';
-import { COLORS } from '@/pages/flow-canvas/constants/color.ts';
+import { COLORS } from '@/pages/flow-canvas/constants/color';
 import { flattenSchema } from '@/common/utils/schemaUtils';
 import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import CommonSidebar from '@/common/components/CommonSidebar';
-import ApiList from '@/pages/flow-canvas/components/api-list/ApiList.tsx';
-import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList.tsx';
+import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
+import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
 import { useAppSelector } from '@/store/hooks';
-import { useReactFlow } from 'reactflow';
+import { MappingPair } from '@/pages/flow-canvas/types/mapping';
+import { NodeEndPoint } from '@/pages/flow-canvas/types';
+import {
+  getScenarioList,
+  getScenarioInfo,
+  scenarioTest,
+} from '@/pages/flow-canvas/service/scenarioService';
+import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
+import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
+import { useScenario } from './hooks/useScenario';
+import SaveButton from '@/common/components/SaveButton';
+import PlayButton from '@/common/components/playButton';
 
 const nodeTypes = { endpointNode: CustomNode };
+type NodeType = Node<NodeEndPoint>;
 
 const FlowCanvas: React.FC = () => {
   const {
@@ -34,7 +46,8 @@ const FlowCanvas: React.FC = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
-    onMove,
+    setNodes,
+    setEdges,
   } = useFlowCanvas();
 
   const {
@@ -46,8 +59,9 @@ const FlowCanvas: React.FC = () => {
     leftEndpointBaseUrl,
     rightEndpointBaseUrl,
     openMappingModal,
-    saveMappingModal,
     cancelMappingModal,
+    leftSelectedKey,
+    rightSelectedKey,
   } = useMappingModal();
 
   const {
@@ -70,45 +84,141 @@ const FlowCanvas: React.FC = () => {
     validateSchemas,
   } = useMockApiModal();
 
+  const [currentEdgeId, setCurrentEdgeId] = useState<string | null>(null);
+  const [currentSrc, setCurrentSrc] = useState<NodeType | null>(null);
+  const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
+  const handleSave = useScenario();
   const viewport = useAppSelector(state => state.flow.viewport);
-  const { setViewport: instSetViewport } = useReactFlow();
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
-    const sourceNode = nodes.find(n => n.id === edge.source);
-    const targetNode = nodes.find(n => n.id === edge.target);
+    setCurrentEdgeId(edge.id);
+    const srcNode = nodes.find(n => n.id === edge.source)!;
+    const tgtNode = nodes.find(n => n.id === edge.target)!;
+    setCurrentSrc(srcNode);
+    setCurrentTgt(tgtNode);
 
+    const respList = flattenSchema(srcNode.data.responseSchema ?? []);
+    const reqList = flattenSchema(tgtNode.data.requestSchema ?? []);
+    const titleLeft = `${srcNode.data.method} ${srcNode.data.path}`;
+    const titleRight = `${tgtNode.data.method} ${tgtNode.data.path}`;
+    const existing: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
     openMappingModal(
-      sourceNode ? flattenSchema(sourceNode.data.responseSchema) : [],
-      targetNode ? flattenSchema(targetNode.data.requestSchema) : [],
-      sourceNode ? `${sourceNode.data.method} ${sourceNode.data.path}` : '',
-      targetNode ? `${targetNode.data.method} ${targetNode.data.path}` : '',
-      sourceNode?.data.baseUrl ?? '',
-      targetNode?.data.baseUrl ?? '',
+      respList,
+      reqList,
+      titleLeft,
+      titleRight,
+      srcNode.data.baseUrl,
+      tgtNode.data.baseUrl,
+      existing,
     );
+  };
+
+  const handleConfirmMapping = (pairs: MappingPair[]) => {
+    if (!currentEdgeId) return;
+    setEdges(es =>
+      es.map(e =>
+        e.id === currentEdgeId ? { ...e, data: { ...(e.data ?? {}), mappingInfo: pairs } } : e,
+      ),
+    );
+    cancelMappingModal();
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!wrapperRef.current) return;
-    const bounds = (wrapperRef.current as HTMLDivElement).getBoundingClientRect();
+    const bounds = wrapperRef.current.getBoundingClientRect();
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
   };
 
+  ///
+  const [scenarios, setScenarios] = useState<string[]>([]);
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
+  const saveScenario = useScenario();
+  const hasSaved = useRef(false);
+
   useEffect(() => {
-    if (viewport) {
-      instSetViewport(viewport, { duration: 0 });
+    if (!selectedScenario) {
+      saveScenario().then(fileName => {
+        if (fileName) {
+          onSelect(fileName);
+        }
+      });
+      hasSaved.current = true;
     }
-  }, [viewport, instSetViewport]);
+  }, [saveScenario]);
+
+  useEffect(() => {
+    getScenarioList()
+      .then(setScenarios)
+      .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
+  }, []);
+
+  const onSelect = async (fileName: string) => {
+    await getScenarioInfo(fileName)
+      .then(setSelectedScenario)
+      .catch(err => console.error('[ScenarioList] getScenarioInfo Error', err));
+  };
+
+  useEffect(() => {
+    if (!selectedScenario) return;
+
+    const { nodes: parsedNodes, edges: parsedEdges } = scenarioToFlowElements(selectedScenario);
+    setNodes(() => parsedNodes);
+    setEdges(() => parsedEdges);
+  }, [selectedScenario]);
+
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  const handlePlay = (fileName: string | undefined) => {
+    if (!fileName) return;
+    if (isConnected) {
+      eventSourceRef.current?.close();
+      eventSourceRef.current = null;
+      setIsConnected(false);
+    } else {
+      const eventSource = scenarioTest(fileName);
+      eventSourceRef.current = eventSource;
+      setIsConnected(true);
+
+      eventSource.addEventListener('stepResult', event => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+      });
+
+      eventSource.addEventListener('complete', event => {
+        const result = JSON.parse(event.data);
+        eventSource.close();
+        eventSourceRef.current = null;
+        setIsConnected(false);
+        console.log(result);
+      });
+
+      eventSource.onerror = e => {
+        console.log(e);
+        eventSource.close();
+        eventSourceRef.current = null;
+        setIsConnected(false);
+      };
+    }
+  };
 
   return (
     <div className={styles.container}>
       <CommonSidebar
         sections={[
           { title: 'API List', content: <ApiList /> },
-          { title: 'Scenario List', content: <ScenarioList /> },
+          {
+            title: 'Scenario List',
+            content: <ScenarioList scenarios={scenarios} onSelect={onSelect} />,
+          },
         ]}
       />
+      <div className={styles.actionContainer}>
+        <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
+        <SaveButton onSave={handleSave} />
+      </div>
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow
           nodes={nodes}
@@ -130,7 +240,6 @@ const FlowCanvas: React.FC = () => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           defaultViewport={viewport}
-          onMove={onMove}
           fitView
           defaultEdgeOptions={{
             type: 'smoothstep',
@@ -140,15 +249,20 @@ const FlowCanvas: React.FC = () => {
         />
         <MappingModal
           isVisible={isModalVisible}
+          modalTitle="Field Mapping"
+          panelLabels={['Response', 'Request']}
           leftEndpointTitle={leftEndpointTitle}
           rightEndpointTitle={rightEndpointTitle}
           leftKeyValueList={leftKeyValueList}
           rightKeyValueList={rightKeyValueList}
           leftEndpointBaseUrl={leftEndpointBaseUrl}
           rightEndpointBaseUrl={rightEndpointBaseUrl}
-          onConfirm={saveMappingModal}
+          leftSelectedKey={leftSelectedKey}
+          rightSelectedKey={rightSelectedKey}
+          onConfirm={handleConfirmMapping}
           onDismiss={cancelMappingModal}
         />
+
         <MockApiModal
           isVisible={isMockVisible}
           formValues={formValues}

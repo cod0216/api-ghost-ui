@@ -7,7 +7,7 @@ import { store } from '@/store';
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </Provider>
   );
 };

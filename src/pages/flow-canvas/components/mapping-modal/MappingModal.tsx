@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
-import { MappingPanel } from './MappingPanel';
-import { KeyValue, MappingPair, MappingPanelConfig } from '@/pages/flow-canvas/types/index.ts';
-import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
+import MappingPanel from './MappingPanel';
+import { KeyValue, MappingPair } from '@/pages/flow-canvas/types/index.ts';
 import { CommonButton } from '@/common/components/CommonButton';
 
 interface MappingModalProps {
@@ -15,6 +14,8 @@ interface MappingModalProps {
   rightKeyValueList: KeyValue[];
   leftEndpointBaseUrl: string;
   rightEndpointBaseUrl: string;
+  leftSelectedKey: string | null;
+  rightSelectedKey: string | null;
   onConfirm: (mappingPairs: MappingPair[]) => void;
   onDismiss: () => void;
 }
@@ -29,80 +30,81 @@ export const MappingModal: React.FC<MappingModalProps> = ({
   rightKeyValueList,
   leftEndpointBaseUrl,
   rightEndpointBaseUrl,
+  leftSelectedKey,
+  rightSelectedKey,
   onConfirm,
   onDismiss,
 }) => {
-  if (!isVisible) {
-    return null;
-  }
+  const [leftSelectedKeys, setLeftSelectedKeys] = useState<string[]>(
+    leftSelectedKey ? [leftSelectedKey] : [],
+  );
+  const [rightSelectedKeys, setRightSelectedKeys] = useState<string[]>(
+    rightSelectedKey ? [rightSelectedKey] : [],
+  );
 
-  const [leftHttpMethod, ...leftTitleParts] = leftEndpointTitle.split(' ');
-  const leftEndpointPath = leftTitleParts.join(' ');
+  // useEffect(() => {
+  //   setLeftSelectedKeys(leftSelectedKey ? [leftSelectedKey] : []);
+  //   setRightSelectedKeys(rightSelectedKey ? [rightSelectedKey] : []);
+  // }, [isVisible, leftSelectedKey, rightSelectedKey]);
 
-  const [rightHttpMethod, ...rightTitleParts] = rightEndpointTitle.split(' ');
-  const rightEndpointPath = rightTitleParts.join(' ');
+  if (!isVisible) return null;
 
-  const { leftSelectedKeys, rightSelectedKeys, toggleLeftKey, toggleRightKey, clearSelection } =
-    useMappingSelection();
+  const toggleLeftKey = (key: string) => {
+    setLeftSelectedKeys([key]);
+  };
+
+  const toggleRightKey = (key: string) => {
+    setRightSelectedKeys(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key],
+    );
+  };
 
   const handleSave = () => {
     const mappingPairs: MappingPair[] = leftSelectedKeys.flatMap(sourceKey =>
       rightSelectedKeys.map(targetKey => ({ sourceKey, targetKey })),
     );
     onConfirm(mappingPairs);
-    clearSelection();
+    setLeftSelectedKeys([]);
+    setRightSelectedKeys([]);
   };
 
-  const mappingConfigs: MappingPanelConfig[] = [
-    {
-      endpointTitle: leftEndpointTitle,
-      baseUrl: leftEndpointBaseUrl,
-      dataList: leftKeyValueList,
-      selectedKeys: leftSelectedKeys,
-      onToggleKey: toggleLeftKey,
-      label: panelLabels[0],
-    },
-    {
-      endpointTitle: rightEndpointTitle,
-      baseUrl: rightEndpointBaseUrl,
-      dataList: rightKeyValueList,
-      selectedKeys: rightSelectedKeys,
-      onToggleKey: toggleRightKey,
-      label: panelLabels[1],
-    },
-  ];
+  const [leftMethod, ...leftParts] = leftEndpointTitle.split(' ');
+  const leftPath = leftParts.join(' ');
+  const [rightMethod, ...rightParts] = rightEndpointTitle.split(' ');
+  const rightPath = rightParts.join(' ');
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <header className={styles.header}>
+        <div className={styles.header}>
           <h2 className={styles.title}>{modalTitle}</h2>
-        </header>
-
+        </div>
         <div className={styles.mappingPanel}>
-          {mappingConfigs.map(
-            ({ endpointTitle, baseUrl, dataList, selectedKeys, onToggleKey, label }) => {
-              const [method, ...parts] = endpointTitle.split(' ');
-              const path = parts.join(' ');
-              return (
-                <MappingPanel
-                  key={label}
-                  method={method}
-                  path={path}
-                  baseUrl={baseUrl}
-                  label={label}
-                  dataList={dataList}
-                  selectedKeys={selectedKeys}
-                  onToggleKey={onToggleKey}
-                />
-              );
-            },
-          )}
+          <MappingPanel
+            label={panelLabels[0]}
+            method={leftMethod}
+            path={leftPath}
+            baseUrl={leftEndpointBaseUrl}
+            dataList={leftKeyValueList}
+            selectedKeys={leftSelectedKeys}
+            onToggleKey={toggleLeftKey}
+          />
+
+          <MappingPanel
+            label={panelLabels[1]}
+            method={rightMethod}
+            path={rightPath}
+            baseUrl={rightEndpointBaseUrl}
+            dataList={rightKeyValueList}
+            selectedKeys={rightSelectedKeys}
+            onToggleKey={toggleRightKey}
+          />
         </div>
         <CommonButton
           onConfirm={handleSave}
           onCancel={() => {
-            clearSelection();
+            setLeftSelectedKeys([]);
+            setRightSelectedKeys([]);
             onDismiss();
           }}
         />

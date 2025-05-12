@@ -1,9 +1,12 @@
-import { KeyValue } from '@/pages/flow-canvas/types/index';
-import { FieldSchema } from '@/pages/flow-canvas/types/index.ts';
+import { Field } from '@/pages/flow-canvas/types';
+import { KeyValue } from '@/pages/flow-canvas/types/mapping';
 
-export function flattenSchema(fields: FieldSchema[] = []): KeyValue[] {
-  return fields.flatMap(field => [
-    { key: field.name, value: field.type },
-    ...flattenSchema(field.nestedFields),
-  ]);
+export function flattenSchema(fields: Field[], parentKey: string = ''): KeyValue[] {
+  return fields.flatMap(f => {
+    const fullKey = parentKey ? `${parentKey}.${f.name}` : f.name;
+    if (f.nestedFields && f.nestedFields.length) {
+      return flattenSchema(f.nestedFields, fullKey);
+    }
+    return [{ key: fullKey, value: `${f.value ?? ''}`, type: f.type }];
+  });
 }
