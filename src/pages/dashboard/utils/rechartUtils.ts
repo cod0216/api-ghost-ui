@@ -3,8 +3,8 @@ import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.
 import { ApiRequestData, NodeStatus } from '@/pages/dashboard/types/index.ts';
 import { COLORS } from '@/pages/dashboard/constants/colors.ts';
 
-const NODE_SPACING_X = 200;
-const NODE_SPACING_Y = 100;
+const NODE_SPACING_X = 250;
+const NODE_SPACING_Y = 130;
 const NODE_BASE_Y = 250;
 
 /**

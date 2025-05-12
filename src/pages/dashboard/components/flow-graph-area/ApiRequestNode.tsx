@@ -23,12 +23,16 @@ const nodeStatusClassMap: Record<NodeStatus, string> = {
  *
  * @author haerim-kweon
  */
+interface ApiRequestNodeProps {
+  data: ApiRequestData;
+  isConnectable: boolean;
+}
+
 const ApiRequestNode: React.FC<ApiRequestNodeProps> = ({ data, isConnectable }) => {
   const statusClass = getNodeStatusClass(data);
-  const statusClassName = nodeStatusClassMap[statusClass];
 
   return (
-    <div className={`${styles.apiRequestNode} ${statusClassName}`}>
+    <div className={`${styles.apiRequestNodeMinimal} ${styles[statusClass]}`}>
       <Handle
         type="target"
         position={Position.Left}
@@ -36,16 +40,15 @@ const ApiRequestNode: React.FC<ApiRequestNodeProps> = ({ data, isConnectable }) 
         className={styles.handle}
       />
 
-      <div className={styles.header}>
-        <div className={styles.method}>{data.method}</div>
-        <div className={styles.endpoint}>{data.url}</div>
+      <div className={styles.lineTop}>
+        <span className={styles.method}>{data.method}</span>
+        <span className={styles.duration}>{data.durationMs}ms</span>
       </div>
 
-      <div className={styles.content}>
-        <div className={styles.statusRow}>
-          <span className={styles.statusCode}>Status: {data.status}</span>
-          <span className={styles.duration}>{data.durationMs}ms</span>
-        </div>
+      <div className={styles.endpoint}>{data.url}</div>
+
+      <div className={styles.lineBottom}>
+        <span className={styles.statusCode}>Status {data.status}</span>
       </div>
 
       <Handle

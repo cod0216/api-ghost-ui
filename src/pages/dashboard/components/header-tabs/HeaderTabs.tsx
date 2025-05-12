@@ -40,9 +40,11 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({
             className={`${styles.tab} ${isSelected ? styles.selectedTab : ''}`}
             onClick={() => onSelectTab(tab.id)}
           >
-            <span className={styles.title}>{tab.title}</span>
+            <div className={styles.title} title={tab.title}>
+              {tab.title}
+            </div>
 
-            <span
+            <div
               data-testid={`close-button-${tab.id}`}
               className={styles.close}
               onClick={e => {
@@ -51,7 +53,7 @@ const HeaderTabs: React.FC<HeaderTabsProps> = ({
               }}
             >
               ×
-            </span>
+            </div>
           </div>
         );
       })}

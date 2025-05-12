@@ -17,8 +17,7 @@ import { useScenarioFileList } from '@/pages/dashboard/hooks/useScenarioFileList
  * @author haerim-kweon
  */
 const Dashboard: React.FC = () => {
-  const { scenarioFileList, selectedScenario, fetchSelectedScenario, clearSelectedScenario } =
-    useScenarioFileList();
+  const { scenarioFileList, selectedScenario, fetchSelectedScenario } = useScenarioFileList();
   const [searchParams] = useSearchParams();
   const fileName = searchParams.get('fileName');
 
@@ -34,18 +33,11 @@ const Dashboard: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!fileName || scenarioFileList.length === 0) return;
-    const foundItem = scenarioFileList.find(item => item.fileName === fileName);
-    if (foundItem) {
-      handleSelectItem(foundItem);
-    }
-  }, [fileName, scenarioFileList, handleSelectItem]);
-
-  useEffect(() => {
-    if (tabs.length === 0) {
-      clearSelectedScenario();
-    }
-  }, [tabs]);
+    if (scenarioFileList.length === 0) return;
+    const selectItem =
+      scenarioFileList.find(item => item.fileName === fileName) ?? scenarioFileList[0];
+    handleSelectItem(selectItem);
+  }, [fileName, scenarioFileList]);
 
   return (
     <div className={styles.container}>
@@ -60,6 +52,7 @@ const Dashboard: React.FC = () => {
                   const isSelected = item.fileName === selectedTab?.id;
                   return (
                     <div
+                      title={item.fileName}
                       data-selected={isSelected}
                       data-testid={`sidebar-item-${item.fileName}`}
                       className={`${styles.scenarioListItem} ${isSelected ? styles.selectedScenarioListItem : ''}`}
