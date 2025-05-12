@@ -42,11 +42,6 @@ export const MappingModal: React.FC<MappingModalProps> = ({
     rightSelectedKey ? [rightSelectedKey] : [],
   );
 
-  // useEffect(() => {
-  //   setLeftSelectedKeys(leftSelectedKey ? [leftSelectedKey] : []);
-  //   setRightSelectedKeys(rightSelectedKey ? [rightSelectedKey] : []);
-  // }, [isVisible, leftSelectedKey, rightSelectedKey]);
-
   if (!isVisible) return null;
 
   const toggleLeftKey = (key: string) => {
