@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
-import BodyEditor from '@/pages/flow-canvas/components/custom-node/BodyEditor';
+import NodeBody from '@/pages/flow-canvas/components/custom-node/NodeBody';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
 import { MainTabType, SubTabType, NodeEndPoint, Field } from '@/pages/flow-canvas/types';
 import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
@@ -76,7 +76,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
       </div>
 
       {showBody && (
-        <BodyEditor
+        <NodeBody
           requestSchema={requestSchema}
           responseSchema={responseSchema}
           initialMainTabLabel={savedTab.mainTab}

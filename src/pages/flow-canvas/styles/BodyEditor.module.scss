@@ -118,3 +118,11 @@
   border-radius: $radius-sm;
   outline: none;
 }
+
+.editableValue {
+  cursor: pointer;
+  padding: 2px 4px;
+  &:hover {
+    background-color: $white;
+  }
+}
