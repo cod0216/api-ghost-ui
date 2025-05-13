@@ -52,10 +52,6 @@ export const useFlowCanvas = () => {
     [dispatch, _setNodes],
   );
 
-  useEffect(() => {
-    dispatch(setNodesInStore(nodes));
-  }, [nodes]);
-
   const setEdges = useCallback(
     (updater: (es: ReactEdge[]) => ReactEdge[]) => {
       _setEdges(es => {
@@ -67,13 +63,10 @@ export const useFlowCanvas = () => {
     [dispatch, _setEdges],
   );
 
-  useEffect(() => {
-    dispatch(setEdgesInStore(edges));
-  }, [edges]);
-
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
       setNodes(ns => applyNodeChanges(changes, ns));
+      dispatch(setNodesInStore(nodes));
     },
     [setNodes],
   );
@@ -81,6 +74,7 @@ export const useFlowCanvas = () => {
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
       setEdges(es => applyEdgeChanges(changes, es));
+      dispatch(setEdgesInStore(edges));
     },
     [setEdges],
   );
@@ -96,7 +90,6 @@ export const useFlowCanvas = () => {
         }
         return ns;
       });
-      dispatch(updateNodeInStore(node));
     },
     [dispatch, setNodes],
   );
