@@ -5,11 +5,8 @@ import { KeyValue, MappingPair, MappingData } from '@/pages/flow-canvas/types/in
 import { CommonButton } from '@/common/components/CommonButton';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
 import type { Node, Edge } from 'reactflow';
-import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
-import { parseJsonToFields, fieldsToJson } from '@/common/utils/JsonUtils';
 import {} from '@/pages/flow-canvas/hooks/useMappingModal';
 import { flattenSchema } from '@/common/utils/schemaUtils';
-import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
 import { NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
 
 interface MappingModalProps {
@@ -26,7 +23,6 @@ export const MappingModal: React.FC<MappingModalProps> = ({
 }) => {
   const mappingInfo: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
 
-  // const { nodes, setEdges } = useFlowCanvas();
   const panelLabels = ['Response', 'Request'];
   const {
     leftSelectedKey,
@@ -71,9 +67,14 @@ export const MappingModal: React.FC<MappingModalProps> = ({
       setRightSelectedKeys([]);
     }
   }, [edge.id]);
+
   const toggleLeftKey = (key: string) => {
     setLeftSelectedKey(key);
-    const targets = mappingInfo.filter(p => p.sourceKey === key).map(p => p.targetKey);
+
+    const existingPairs: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
+
+    const targets = existingPairs.filter(p => p.sourceKey === key).map(p => p.targetKey);
+
     setRightSelectedKeys(targets);
   };
 
@@ -85,11 +86,18 @@ export const MappingModal: React.FC<MappingModalProps> = ({
 
   const handleConfirmMapping = () => {
     if (!leftSelectedKey) return;
+
+    const existing: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
+
+    const filtered = existing.filter(p => p.sourceKey !== leftSelectedKey);
+
     const newPairs: MappingPair[] = rightSelectedKeys.map(rk => ({
       sourceKey: leftSelectedKey,
       targetKey: rk,
     }));
-    // console.log('[MappingModal] newPairs to save →', newPairs);
+
+    const updatedMappingInfo = [...filtered, ...newPairs];
+
     setEdges(es =>
       es.map(e =>
         e.id === edge.id
@@ -97,12 +105,13 @@ export const MappingModal: React.FC<MappingModalProps> = ({
               ...e,
               data: {
                 ...(e.data ?? {}),
-                mappingInfo: newPairs,
+                mappingInfo: updatedMappingInfo,
               },
             }
           : e,
       ),
     );
+
     closeModal();
   };
 
