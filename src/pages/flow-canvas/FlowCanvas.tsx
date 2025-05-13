@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
@@ -30,6 +30,8 @@ import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 
 const nodeTypes = { endpointNode: CustomNode };
+// const edgeTypes = { flowCanvasEdge: CustomEdge };
+
 type NodeType = Node<NodeEndPoint>;
 
 const FlowCanvas: React.FC = () => {
@@ -65,6 +67,35 @@ const FlowCanvas: React.FC = () => {
     leftSelectedKey,
     rightSelectedKey,
   } = useMappingModal();
+
+  const onChangeLabel = useCallback(
+    (edgeId: string, newLabel: string) => {
+      setEdges(prev =>
+        prev.map(edge =>
+          edge.id === edgeId
+            ? {
+                ...edge,
+                data: {
+                  ...edge.data,
+                  label: newLabel,
+                  expected: { ...edge.data?.expected, status: newLabel },
+                },
+              }
+            : edge,
+        ),
+      );
+    },
+    [setEdges],
+  );
+
+  const edgeTypes = useMemo(
+    () => ({
+      flowCanvasEdge: (edgeProps: any) => (
+        <CustomEdge {...edgeProps} onChangeLabel={onChangeLabel} />
+      ),
+    }),
+    [onChangeLabel],
+  );
 
   const {
     isVisible: isMockVisible,
@@ -207,30 +238,6 @@ const FlowCanvas: React.FC = () => {
     }
   };
 
-  const onChangeLabel = (edgeId: string, newLabel: string) => {
-    setEdges(prev =>
-      prev.map(edge =>
-        edge.id === edgeId
-          ? {
-              ...edge,
-              data: {
-                ...edge.data,
-                label: newLabel,
-                expected: {
-                  ...edge.data?.expected,
-                  status: newLabel,
-                },
-              },
-            }
-          : edge,
-      ),
-    );
-  };
-
-  const edgeTypes = {
-    custom: (edgeProps: any) => <CustomEdge {...edgeProps} onChangeLabel={onChangeLabel} />,
-  };
-
   return (
     <div className={styles.container}>
       <CommonSidebar
@@ -272,8 +279,15 @@ const FlowCanvas: React.FC = () => {
           minZoom={0.5}
           edgeTypes={edgeTypes}
           defaultEdgeOptions={{
-            type: 'smoothstep',
+            type: 'flowCanvasEdge',
             animated: true,
+            label: '200',
+            data: {
+              expected: {
+                status: '200',
+                value: {},
+              },
+            },
             markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
           }}
         />

@@ -35,7 +35,7 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
   return (
     <>
       <path id={id} d={path} stroke="#222" strokeWidth={1.5} fill="none" markerEnd={markerEnd} />
-      {data?.label !== undefined && (
+      {data?.expected?.status !== undefined && (
         <foreignObject
           width={150}
           height={40}
@@ -44,7 +44,7 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
         >
           <EdgeLabelEditor
             edgeId={id}
-            initialLabel={data.label}
+            initialLabel={data.expected.status}
             onChangeLabel={handleLabelChange}
           />
         </foreignObject>

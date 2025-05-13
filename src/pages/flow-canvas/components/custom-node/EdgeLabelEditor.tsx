@@ -34,7 +34,7 @@ const EdgeLabelEditor: React.FC<EdgeLabelEditorProps> = ({
     <div className={styles.labelWrapper} onClick={handleClick}>
       {editing ? (
         <input
-          className={styles.input}
+          className={styles.labelInput}
           autoFocus
           value={label}
           onChange={handleChange}
