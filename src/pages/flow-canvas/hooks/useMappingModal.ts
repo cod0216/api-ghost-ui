@@ -14,6 +14,7 @@ export const useMappingModal = () => {
   const [rightEndpointBaseUrl, setRightEndpointBaseUrl] = useState<string>('');
   const [leftSelectedKey, setLeftSelectedKey] = useState<string | null>(null);
   const [rightSelectedKey, setRightSelectedKey] = useState<string | null>(null);
+  const [rightSelectedKeys, setRightSelectedKeys] = useState<string[]>([]);
 
   function openMappingModal(
     leftList: KeyValue[],
@@ -31,11 +32,13 @@ export const useMappingModal = () => {
     setLeftEndpointBaseUrl(leftBaseUrlText);
     setRightEndpointBaseUrl(rightBaseUrlText);
     if (existing.length > 0) {
-      setLeftSelectedKey(existing[0].sourceKey);
-      setRightSelectedKey(existing[0].targetKey);
+      const first = existing[0].sourceKey;
+      setLeftSelectedKey(first);
+      const targets = existing.filter(p => p.sourceKey === first).map(p => p.targetKey);
+      setRightSelectedKeys(targets);
     } else {
       setLeftSelectedKey(null);
-      setRightSelectedKey(null);
+      setRightSelectedKeys([]);
     }
     setIsModalVisible(true);
   }
@@ -45,6 +48,7 @@ export const useMappingModal = () => {
   }
 
   return {
+    leftSelectedKey,
     isModalVisible,
     leftKeyValueList,
     rightKeyValueList,
@@ -52,10 +56,12 @@ export const useMappingModal = () => {
     rightEndpointTitle,
     leftEndpointBaseUrl,
     rightEndpointBaseUrl,
-    leftSelectedKey,
-    rightSelectedKey,
+    rightSelectedKeys,
+    setLeftSelectedKey,
+    setRightSelectedKeys,
+    setRightSelectedKey,
     openMappingModal,
     saveMappingModal: closeMappingModal,
-    cancelMappingModal: closeMappingModal,
+    closeMappingModal,
   };
 };

@@ -235,7 +235,6 @@ export const useFlowCanvas = () => {
     onEdgeContextMenu,
     addNode,
     removeNode,
-    // viewport,
     setNodes,
     setEdges,
   };

@@ -1,23 +1,18 @@
 import React from 'react';
 import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
-import { KeyValue } from '@/pages/flow-canvas/types/mapping';
+import { MappingData } from '@/pages/flow-canvas/types/mapping';
 
 interface MappingPanelProps {
   label: string;
-  method: string;
-  path: string;
-  baseUrl: string;
-  dataList: (KeyValue & { disabled?: boolean })[];
+  mappingData: MappingData;
   selectedKeys: string[];
   onToggleKey: (key: string) => void;
   singleSelect?: boolean;
 }
+
 const MappingPanel: React.FC<MappingPanelProps> = ({
   label,
-  method,
-  path,
-  baseUrl,
-  dataList,
+  mappingData,
   selectedKeys,
   onToggleKey,
   singleSelect = false,
@@ -27,10 +22,12 @@ const MappingPanel: React.FC<MappingPanelProps> = ({
       <h2 className={styles.label}>{label}</h2>
       <div className={styles.pathGroup}>
         <div className={styles.methodPathGroup}>
-          <span className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</span>
+          <span className={`${styles.methodButton} ${styles[`${mappingData.method}Method`]}`}>
+            {mappingData.method}
+          </span>
           <span className={styles.pathText}>
-            {baseUrl}
-            {path}
+            {mappingData.baseURl}
+            {mappingData.path}
           </span>
         </div>
       </div>
@@ -44,33 +41,36 @@ const MappingPanel: React.FC<MappingPanelProps> = ({
         </tr>
       </thead>
       <tbody>
-        {dataList.map(({ key, type, disabled }) => {
-          const checked = selectedKeys.includes(key);
-          return (
-            <tr key={key} className={disabled ? styles.disabledRow : ''}>
-              <td>
-                {singleSelect ? (
-                  <input
-                    type="radio"
-                    name={label}
-                    disabled={disabled}
-                    checked={checked}
-                    onChange={() => onToggleKey(key)}
-                  />
-                ) : (
-                  <input
-                    type="checkbox"
-                    disabled={disabled}
-                    checked={checked}
-                    onChange={() => onToggleKey(key)}
-                  />
-                )}
-              </td>
-              <td>{key}</td>
-              <td>{type}</td>
-            </tr>
-          );
-        })}
+        {mappingData.valueList &&
+          mappingData.valueList.map(item => {
+            const { key, type } = item;
+            const disabled = false;
+            const checked = selectedKeys.includes(key);
+            return (
+              <tr key={key} className={disabled ? styles.disabledRow : ''}>
+                <td>
+                  {singleSelect ? (
+                    <input
+                      type="radio"
+                      name={label}
+                      disabled={disabled}
+                      checked={checked}
+                      onChange={() => onToggleKey(key)}
+                    />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      disabled={disabled}
+                      checked={checked}
+                      onChange={() => onToggleKey(key)}
+                    />
+                  )}
+                </td>
+                <td>{key}</td>
+                <td>{type}</td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   </div>

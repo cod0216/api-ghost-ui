@@ -18,9 +18,6 @@ const flowSlice = createSlice({
   name: 'flow',
   initialState,
   reducers: {
-    // setViewport(state, action: PayloadAction<Viewport>) {
-    //   state.viewport = action.payload;
-    // },
     setNodes(state, action: PayloadAction<Node[]>) {
       state.nodes = action.payload;
     },

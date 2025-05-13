@@ -2,19 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
-import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode';
 import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
-import { flattenSchema } from '@/common/utils/schemaUtils';
 import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import CommonSidebar from '@/common/components/CommonSidebar';
 import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
 import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
 import { useAppSelector } from '@/store/hooks';
-import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
 import {
   getScenarioList,
@@ -50,22 +47,9 @@ const FlowCanvas: React.FC = () => {
     setEdges,
   } = useFlowCanvas();
 
+  const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
   const {
-    isModalVisible,
-    leftKeyValueList,
-    rightKeyValueList,
-    leftEndpointTitle,
-    rightEndpointTitle,
-    leftEndpointBaseUrl,
-    rightEndpointBaseUrl,
-    openMappingModal,
-    cancelMappingModal,
-    leftSelectedKey,
-    rightSelectedKey,
-  } = useMappingModal();
-
-  const {
-    isVisible: isMockVisible,
+    isVisible: isMockVisible, //TODO
     formValues,
     baseUrl,
     path,
@@ -84,60 +68,18 @@ const FlowCanvas: React.FC = () => {
     validateSchemas,
   } = useMockApiModal();
 
-  const [currentEdgeId, setCurrentEdgeId] = useState<string | null>(null);
-  const [currentSrc, setCurrentSrc] = useState<NodeType | null>(null);
-  const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
-  const handleSave = useScenario();
-  const viewport = useAppSelector(state => state.flow.viewport);
+  const saveScenario = useScenario();
+
+  const handleSave = () => {
+    saveScenario();
+  };
+  const reduxEdge = useAppSelector(state => state.flow.edges);
+
+  const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
-    setCurrentEdgeId(edge.id);
-    const srcNode = nodes.find(n => n.id === edge.source)!;
-    const tgtNode = nodes.find(n => n.id === edge.target)!;
-    setCurrentSrc(srcNode);
-    setCurrentTgt(tgtNode);
-
-    const responseList = flattenSchema(srcNode.data.responseSchema ?? []);
-    const requestList = flattenSchema(tgtNode.data.requestSchema ?? []);
-    const titleLeft = `${srcNode.data.method} ${srcNode.data.path}`;
-    const titleRight = `${tgtNode.data.method} ${tgtNode.data.path}`;
-    const existing: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
-    openMappingModal(
-      responseList,
-      requestList,
-      titleLeft,
-      titleRight,
-      srcNode.data.baseUrl,
-      tgtNode.data.baseUrl,
-      existing,
-    );
-  };
-
-  // 1. FlowCanvas.tsx - handleConfirmMapping 수정 (1:1 덮어쓰기 매핑)
-  const handleConfirmMapping = (newPairs: MappingPair[]) => {
-    if (!currentEdgeId) return;
-    setEdges(es =>
-      es.map(e => {
-        if (e.id !== currentEdgeId) return e;
-
-        const existing: MappingPair[] = (e.data as any)?.mappingInfo || [];
-        const [{ sourceKey, targetKey } = {} as MappingPair] = newPairs;
-
-        const filtered = existing.filter(
-          p => p.sourceKey !== sourceKey && p.targetKey !== targetKey,
-        );
-        const merged = sourceKey && targetKey ? [...filtered, { sourceKey, targetKey }] : filtered;
-
-        return {
-          ...e,
-          data: {
-            ...(e.data ?? {}),
-            mappingInfo: merged,
-          },
-        };
-      }),
-    );
-    cancelMappingModal();
+    setCurrentEdge(edge);
+    setShowMappingModal(true);
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
@@ -148,17 +90,15 @@ const FlowCanvas: React.FC = () => {
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
   };
 
-  ///
   const [scenarios, setScenarios] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
-  const saveScenario = useScenario();
   const hasSaved = useRef(false);
 
   useEffect(() => {
     if (!hasSaved.current) {
       saveScenario().then(fileName => {
         if (fileName) {
-          onSelect('이영석.yaml');
+          onSelect(fileName);
         }
       });
       hasSaved.current = true;
@@ -256,7 +196,6 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          // defaultViewport={viewport}
           fitView
           proOptions={{ hideAttribution: true }}
           defaultEdgeOptions={{
@@ -265,22 +204,14 @@ const FlowCanvas: React.FC = () => {
             markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
           }}
         />
-        <MappingModal
-          isVisible={isModalVisible}
-          modalTitle="Field Mapping"
-          panelLabels={['Response', 'Request']}
-          leftEndpointTitle={leftEndpointTitle}
-          rightEndpointTitle={rightEndpointTitle}
-          leftKeyValueList={leftKeyValueList}
-          rightKeyValueList={rightKeyValueList}
-          leftEndpointBaseUrl={leftEndpointBaseUrl}
-          rightEndpointBaseUrl={rightEndpointBaseUrl}
-          leftSelectedKey={leftSelectedKey}
-          rightSelectedKey={rightSelectedKey}
-          onConfirm={handleConfirmMapping}
-          onDismiss={cancelMappingModal}
-        />
-
+        {showMappingModal && currentEdge && (
+          <MappingModal
+            closeModal={() => {
+              setShowMappingModal(false);
+            }}
+            edge={currentEdge}
+          />
+        )}
         <MockApiModal
           isVisible={isMockVisible}
           formValues={formValues}

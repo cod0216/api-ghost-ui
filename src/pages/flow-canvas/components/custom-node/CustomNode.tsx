@@ -12,6 +12,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
   const { setNodes } = useReactFlow();
   const { updateNode } = useFlowCanvas();
   const dispatch = useAppDispatch();
+
   const {
     baseUrl,
     method,

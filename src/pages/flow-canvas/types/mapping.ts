@@ -1,7 +1,17 @@
+import { HttpMethod } from '@/common/types';
+
 export interface KeyValue {
   key: string;
-  value: string;
+  value?: string;
   type: string;
+}
+
+export interface MappingData {
+  valueList: KeyValue[] | null;
+  title: string;
+  baseURl: string;
+  method: string;
+  path: string;
 }
 
 export interface MappingPair {
