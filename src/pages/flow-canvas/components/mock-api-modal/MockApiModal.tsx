@@ -45,40 +45,44 @@ export const MockApiModal: React.FC<MockApiModalProps> = ({ onConfirm, closeModa
   return (
     <div className={styles.overlay} onClick={stopPropagation}>
       <div className={styles.modal} onClick={stopPropagation}>
-        <h2>Create Mock API Node</h2>
-
-        <div className={styles.inputRow}>
-          <label>
-            Method:
-            <select value={method} onChange={e => setMethod(e.target.value as HttpMethod)}>
-              {methods.map(m => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Base URL:
-            <input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
-          </label>
-
-          <label>
-            Path:
-            <input value={path} onChange={e => setPath(e.target.value)} />
-          </label>
+        <div className={styles.header}>
+          <h2>Create Mock API Node</h2>
         </div>
 
-        <div className={styles.schemaRow}>
-          <div className={styles.schemaSection}>
-            <h3>Request Schema</h3>
-            <textarea value={reqSchemaText} onChange={e => handleReqChange(e.target.value)} />
+        <div className={styles.modalContent}>
+          <div className={styles.inputRow}>
+            <label>
+              Method:
+              <select value={method} onChange={e => setMethod(e.target.value as HttpMethod)}>
+                {methods.map(m => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Base URL:
+              <input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
+            </label>
+
+            <label>
+              Path:
+              <input value={path} onChange={e => setPath(e.target.value)} />
+            </label>
           </div>
 
-          <div className={styles.schemaSection}>
-            <h3>Response Schema</h3>
-            <textarea value={resSchemaText} onChange={e => handleResChange(e.target.value)} />
+          <div className={styles.schemaRow}>
+            <div className={styles.schemaSection}>
+              <h3>Request Schema</h3>
+              <textarea value={reqSchemaText} onChange={e => handleReqChange(e.target.value)} />
+            </div>
+
+            <div className={styles.schemaSection}>
+              <h3>Response Schema</h3>
+              <textarea value={resSchemaText} onChange={e => handleResChange(e.target.value)} />
+            </div>
           </div>
         </div>
 
