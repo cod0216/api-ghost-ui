@@ -10,15 +10,23 @@ import { parseJsonToFields, fieldsToJson } from '@/common/utils/JsonUtils';
 import {} from '@/pages/flow-canvas/hooks/useMappingModal';
 import { flattenSchema } from '@/common/utils/schemaUtils';
 import { useMappingSelection } from '@/pages/flow-canvas/hooks/useMappingSelection';
+import { NodeEndPoint } from '@/pages/flow-canvas/types/index.ts';
+
 interface MappingModalProps {
   closeModal: () => void;
   edge: Edge;
+  nodes: Node<NodeEndPoint>[];
+  setEdges: (updater: (edges: Edge[]) => Edge[]) => void;
 }
-
-export const MappingModal: React.FC<MappingModalProps> = ({ closeModal, edge }) => {
+export const MappingModal: React.FC<MappingModalProps> = ({
+  closeModal,
+  edge,
+  nodes,
+  setEdges,
+}) => {
   const mappingInfo: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
 
-  const { nodes, setEdges } = useFlowCanvas();
+  // const { nodes, setEdges } = useFlowCanvas();
   const panelLabels = ['Response', 'Request'];
   const {
     leftSelectedKey,
@@ -81,6 +89,7 @@ export const MappingModal: React.FC<MappingModalProps> = ({ closeModal, edge }) 
       sourceKey: leftSelectedKey,
       targetKey: rk,
     }));
+    // console.log('[MappingModal] newPairs to save →', newPairs);
     setEdges(es =>
       es.map(e =>
         e.id === edge.id

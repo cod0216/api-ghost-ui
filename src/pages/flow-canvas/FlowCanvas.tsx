@@ -32,6 +32,7 @@ const FlowCanvas: React.FC = () => {
     wrapperRef,
     nodes,
     edges,
+    setEdges,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -44,7 +45,6 @@ const FlowCanvas: React.FC = () => {
     addNode,
     removeNode,
     setNodes,
-    setEdges,
   } = useFlowCanvas();
 
   const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
@@ -73,7 +73,17 @@ const FlowCanvas: React.FC = () => {
   const handleSave = () => {
     saveScenario();
   };
-  const reduxEdge = useAppSelector(state => state.flow.edges);
+  const reduxEdges = useAppSelector(state => state.flow.edges);
+
+  // useEffect(() => {
+  //   console.log(
+  //     '[FlowCanvas] edges.mappingInfo →',
+  //     reduxEdges.map(e => ({
+  //       id: e.id,
+  //       mappingInfo: (e.data as any)?.mappingInfo ?? null,
+  //     })),
+  //   );
+  // }, [reduxEdges]);
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -206,10 +216,10 @@ const FlowCanvas: React.FC = () => {
         />
         {showMappingModal && currentEdge && (
           <MappingModal
-            closeModal={() => {
-              setShowMappingModal(false);
-            }}
+            closeModal={() => setShowMappingModal(false)}
             edge={currentEdge}
+            nodes={nodes}
+            setEdges={setEdges}
           />
         )}
         <MockApiModal
