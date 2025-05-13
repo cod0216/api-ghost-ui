@@ -8,73 +8,91 @@ $color-method-unreachable: $gray-400;
 
 $color-text-duration: $gray-400;
 
-.apiRequestNode {
-  padding: 8px;
-  border-radius: $radius-lg;
+$bg-success: rgba($primary-800, 0.05);
+$bg-error: rgba($red-500, 0.05);
+$bg-unreachable: rgba($gray-400, 0.05);
+
+.apiRequestNodeMinimal {
+  border: 2px solid $gray-300;
+  border-radius: $radius-xl;
+  padding: 12px;
   background-color: $white;
-  border: 2px solid $gray-400;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 150px;
+  width: 200px;
+  font-size: $font-size-sm;
+  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &:hover {
+    background-color: $gray-50;
+  }
 
   &.success {
     border-color: $color-border-success;
     .method {
-      background-color: $color-method-success;
+      color: $color-method-success;
+    }
+    .statusCode {
+      color: $color-method-success;
     }
   }
 
   &.error {
     border-color: $color-border-error;
     .method {
-      background-color: $color-method-error;
+      color: $color-method-error;
+    }
+    .statusCode {
+      color: $color-method-error;
     }
   }
 
   &.unreachable {
     border-color: $color-border-unreachable;
     .method {
-      background-color: $color-method-unreachable;
+      color: $color-method-unreachable;
+    }
+    .statusCode {
+      color: $color-method-unreachable;
     }
   }
-}
 
-.header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
+  .lineTop,
+  .lineBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.method {
-  padding: 2px 6px;
-  border-radius: $radius-md;
-  color: $white;
-  font-weight: $font-weight-regular;
-  font-size: $font-size-xs;
-  margin-right: 8px;
-}
+  .method {
+    font-weight: $font-weight-bold;
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+  }
 
-.endpoint {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-regular;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  flex: 1;
-}
+  .duration {
+    font-size: $font-size-xs;
+    color: $color-text-duration;
+  }
 
-.content {
-  font-size: $font-size-xs;
-}
+  .endpoint {
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    word-break: break-all;
+  }
 
-.statusRow {
-  display: flex;
-  justify-content: space-between;
-}
+  .statusCode {
+    font-weight: $font-weight-medium;
+    font-size: $font-size-xs;
+  }
 
-.statusCode {
-  font-weight: $font-weight-regular;
-}
-
-.duration {
-  color: $color-text-duration;
+  .handle {
+    width: 10px;
+    height: 10px;
+    background-color: $gray-500;
+    border-radius: 50%;
+    border: 2px solid $white;
+    box-shadow: 0 0 0 2px $gray-400;
+  }
 }

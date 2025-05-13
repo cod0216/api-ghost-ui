@@ -35,12 +35,6 @@ export const useScenarioFileList = () => {
       .catch(err => console.error('[useScenarioFileList] getScenarioResultList Error', err));
   }, []);
 
-  useEffect(() => {
-    if (scenarioFileList.length > 0) {
-      fetchSelectedScenario(scenarioFileList[0].fileName);
-    }
-  }, []);
-
   const clearSelectedScenario = () => {
     setSelectedScenario(null);
   };
@@ -49,6 +43,5 @@ export const useScenarioFileList = () => {
     scenarioFileList,
     selectedScenario,
     fetchSelectedScenario,
-    clearSelectedScenario,
   };
 };

@@ -18,13 +18,13 @@ export const exportScenario = createAsyncThunk(
     const state = getState() as RootState;
     const { nodes, edges } = state.flow;
     const schemaState = state.schemaEditor;
-    console.log('[nodes] : ', nodes);
-    console.log('[edges] : ', edges);
+    // console.log('[nodes] : ', nodes);
+    // console.log('[edges] : ', edges);
 
     const steps: Record<string, FlowStep> = {};
 
     nodes.forEach(node => {
-      console.log('[exportScenario node] : ', node);
+      // console.log('[exportScenario node] : ', node);
       const id = node.id;
 
       const entry = schemaState[id];
@@ -93,7 +93,7 @@ export const exportScenario = createAsyncThunk(
 
           return {
             expected: {
-              status: '200',
+              status: e.data?.expected?.status ? e.data.expected.status : '200',
               value: Object.keys(expectedValue).length ? expectedValue : null,
             },
             then: {

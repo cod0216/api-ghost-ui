@@ -47,7 +47,7 @@ const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
 
             <div className={styles.detailColumn}>
               <h3>Request Body</h3>
-              <pre>{JSON.stringify(item.requestBody, null, 2)}</pre>
+              <pre>{JSON.stringify(item.requestBody?.json, null, 2)}</pre>
             </div>
 
             <div className={styles.detailColumn}>

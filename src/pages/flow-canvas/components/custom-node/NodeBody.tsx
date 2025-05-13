@@ -6,7 +6,7 @@ import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types';
 import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor';
 import RenderJsonSchema from '@/pages/flow-canvas/components/custom-node/RenderJsonSchema';
 
-export interface NodeBodyProps {
+interface NodeBodyProps {
   requestSchema: Field[];
   responseSchema: Field[];
   initialMainTabLabel?: MainTabType;
@@ -52,6 +52,7 @@ const NodeBody: React.FC<NodeBodyProps> = ({
     selectSubTab(tab);
     if (onTabChange) onTabChange(mainTab.label as MainTabType, tab.label as SubTabType);
   };
+
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   const handleSave = () => {

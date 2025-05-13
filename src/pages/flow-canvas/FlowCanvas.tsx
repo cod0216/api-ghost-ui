@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
@@ -25,9 +25,13 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
-import PlayButton from '@/common/components/playButton';
+import PlayButton from '@/common/components/PlayButton';
+('@/common/components/playButton');
+import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 
 const nodeTypes = { endpointNode: CustomNode };
+// const edgeTypes = { flowCanvasEdge: CustomEdge };
+
 type NodeType = Node<NodeEndPoint>;
 
 const FlowCanvas: React.FC = () => {
@@ -64,6 +68,35 @@ const FlowCanvas: React.FC = () => {
     rightSelectedKey,
   } = useMappingModal();
 
+  const onChangeLabel = useCallback(
+    (edgeId: string, newLabel: string) => {
+      setEdges(prev =>
+        prev.map(edge =>
+          edge.id === edgeId
+            ? {
+                ...edge,
+                data: {
+                  ...edge.data,
+                  label: newLabel,
+                  expected: { ...edge.data?.expected, status: newLabel },
+                },
+              }
+            : edge,
+        ),
+      );
+    },
+    [setEdges],
+  );
+
+  const edgeTypes = useMemo(
+    () => ({
+      flowCanvasEdge: (edgeProps: any) => (
+        <CustomEdge {...edgeProps} onChangeLabel={onChangeLabel} />
+      ),
+    }),
+    [onChangeLabel],
+  );
+
   const {
     isVisible: isMockVisible,
     formValues,
@@ -72,6 +105,7 @@ const FlowCanvas: React.FC = () => {
     method,
     isSchemaValid,
     openMockApiModal,
+    saveMockApi,
     closeMockApiModal,
     reqSchemaText,
     resSchemaText,
@@ -134,19 +168,19 @@ const FlowCanvas: React.FC = () => {
   ///
   const [scenarios, setScenarios] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
-  const saveScenario = useScenario();
-  const hasSaved = useRef(false);
+  // const saveScenario = useScenario();
+  const hasSaved = useRef(true);
 
   useEffect(() => {
     if (!selectedScenario) {
-      saveScenario().then(fileName => {
+      handleSave().then(fileName => {
         if (fileName) {
           onSelect(fileName);
         }
       });
       hasSaved.current = true;
     }
-  }, [saveScenario]);
+  }, [handleSave]);
 
   useEffect(() => {
     getScenarioList()
@@ -239,11 +273,21 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          defaultViewport={viewport}
-          fitView
+          // defaultViewport={viewport}
+          // fitView
+          proOptions={{ hideAttribution: true }}
+          minZoom={0.5}
+          edgeTypes={edgeTypes}
           defaultEdgeOptions={{
-            type: 'smoothstep',
+            type: 'flowCanvasEdge',
             animated: true,
+            label: '200',
+            data: {
+              expected: {
+                status: '200',
+                value: {},
+              },
+            },
             markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
           }}
         />
@@ -278,6 +322,7 @@ const FlowCanvas: React.FC = () => {
           setIsSchemaValid={setIsSchemaValid}
           setReqSchemaText={setReqSchemaText}
           setResSchemaText={setResSchemaText}
+          saveMockApi={saveMockApi}
           onConfirm={addNode}
           onCancel={closeMockApiModal}
           validateSchemas={validateSchemas}

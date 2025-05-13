@@ -10,7 +10,7 @@
     th,
     td {
       padding: 0.75rem;
-      border: 1px solid $primary-100;
+      border: 1px solid $outline-color;
       text-align: center;
       vertical-align: top;
       font-size: $font-size-xs;
@@ -21,7 +21,7 @@
     th {
       font-weight: $font-weight-semibold;
       white-space: nowrap;
-      background-color: $primary-50;
+      background-color: $gray-50;
     }
 
     td {
@@ -41,9 +41,12 @@
 
       pre {
         margin: 0;
+        padding: 20px;
         white-space: pre-wrap;
         word-break: break-word;
         font-family: inherit;
+        height: 100%;
+        min-height: 100px;
       }
     }
 
