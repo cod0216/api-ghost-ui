@@ -175,7 +175,6 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
-    fileName = 'KKANGTONG.yaml';
     if (!fileName) return;
     if (isConnected) {
       eventSourceRef.current?.close();
