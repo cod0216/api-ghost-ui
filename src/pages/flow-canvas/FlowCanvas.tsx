@@ -74,6 +74,7 @@ const FlowCanvas: React.FC = () => {
     method,
     isSchemaValid,
     openMockApiModal,
+    saveMockApi,
     closeMockApiModal,
     reqSchemaText,
     resSchemaText,
@@ -174,6 +175,7 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
+    fileName = 'KKANGTONG.yaml';
     if (!fileName) return;
     if (isConnected) {
       eventSourceRef.current?.close();
@@ -307,6 +309,7 @@ const FlowCanvas: React.FC = () => {
           setIsSchemaValid={setIsSchemaValid}
           setReqSchemaText={setReqSchemaText}
           setResSchemaText={setResSchemaText}
+          saveMockApi={saveMockApi}
           onConfirm={addNode}
           onCancel={closeMockApiModal}
           validateSchemas={validateSchemas}

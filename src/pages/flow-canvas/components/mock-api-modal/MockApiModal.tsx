@@ -1,5 +1,5 @@
-import React, { MouseEvent, useState, useEffect } from 'react';
-import styles from '@/pages/flow-canvas/styles/MappingModal.module.scss';
+import React, { MouseEvent } from 'react';
+import styles from '@/pages/flow-canvas/styles/MockApiModal.module.scss';
 import { MockApiFormValues } from '@/pages/flow-canvas/types/index';
 import { CommonButton } from '@/common/components/CommonButton';
 import { HttpMethod } from '@/common/types/index';
@@ -19,13 +19,8 @@ interface MockApiModalProps {
   setIsSchemaValid: (v: boolean) => void;
   setReqSchemaText: (v: string) => void;
   setResSchemaText: (v: string) => void;
-  onConfirm: (
-    values: MockApiFormValues & {
-      requestSchemaText: string;
-      responseSchemaText: string;
-      isSchemaValid: boolean;
-    },
-  ) => void;
+  saveMockApi: () => MockApiFormValues;
+  onConfirm: (values: MockApiFormValues) => void;
   onCancel: () => void;
   validateSchemas: (reqText: string, resText: string) => void;
 }
@@ -48,6 +43,7 @@ export const MockApiModal: React.FC<MockApiModalProps> = ({
   setBaseUrl,
   onConfirm,
   onCancel,
+  saveMockApi,
 }) => {
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
@@ -60,15 +56,8 @@ export const MockApiModal: React.FC<MockApiModalProps> = ({
   };
 
   const handleConfirm = () => {
-    onConfirm({
-      ...formValues,
-      baseUrl,
-      method,
-      path,
-      requestSchemaText: reqSchemaText,
-      responseSchemaText: resSchemaText,
-      isSchemaValid,
-    });
+    const saved: MockApiFormValues = saveMockApi();
+    onConfirm(saved);
     onCancel();
   };
 
@@ -79,36 +68,41 @@ export const MockApiModal: React.FC<MockApiModalProps> = ({
       <div className={styles.modal} onClick={stopPropagation}>
         <h2>Create Mock API Node</h2>
 
-        <label>
-          Base URL:
-          <input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
-        </label>
+        <div className={styles.inputRow}>
+          <label>
+            Method:
+            <select value={method} onChange={e => setMethod(e.target.value as HttpMethod)}>
+              {methods.map(m => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <label>
-          Method:
-          <select value={method} onChange={e => setMethod(e.target.value as HttpMethod)}>
-            {methods.map(m => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label>
+            Base URL:
+            <input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
+          </label>
 
-        <label>
-          Path:
-          <input value={path} onChange={e => setPath(e.target.value)} />
-        </label>
-
-        <div className={styles.schemaSection}>
-          <h3>Request Schema</h3>
-          <textarea value={reqSchemaText} onChange={e => handleReqChange(e.target.value)} />
+          <label>
+            Path:
+            <input value={path} onChange={e => setPath(e.target.value)} />
+          </label>
         </div>
 
-        <div className={styles.schemaSection}>
-          <h3>Response Schema</h3>
-          <textarea value={resSchemaText} onChange={e => handleResChange(e.target.value)} />
+        <div className={styles.schemaRow}>
+          <div className={styles.schemaSection}>
+            <h3>Request Schema</h3>
+            <textarea value={reqSchemaText} onChange={e => handleReqChange(e.target.value)} />
+          </div>
+
+          <div className={styles.schemaSection}>
+            <h3>Response Schema</h3>
+            <textarea value={resSchemaText} onChange={e => handleResChange(e.target.value)} />
+          </div>
         </div>
+
         <CommonButton onConfirm={handleConfirm} onCancel={onCancel} />
       </div>
     </div>
