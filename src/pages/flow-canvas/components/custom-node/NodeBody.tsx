@@ -3,7 +3,6 @@ import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController';
 import { BODY_EDITOR_TABS, Path, Tab } from '@/pages/flow-canvas/types/index';
 import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types';
-import { useBodyEditor } from '@/pages/flow-canvas/hooks/useBodyEditor';
 import RenderJsonSchema from '@/pages/flow-canvas/components/custom-node/RenderJsonSchema';
 
 interface NodeBodyProps {
@@ -30,8 +29,8 @@ const NodeBody: React.FC<NodeBodyProps> = ({
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
-  const { currentSchema: reqSchema, updateSchema: setReqSchema } = useBodyEditor(requestSchema);
-  const { currentSchema: resSchema, updateSchema: setResSchema } = useBodyEditor(responseSchema);
+  const [reqSchema, setReqSchema] = useState<Field[]>(requestSchema);
+  const [resSchema, setResSchema] = useState<Field[]>(responseSchema);
 
   useEffect(() => {
     setReqSchema(requestSchema);
@@ -56,10 +55,8 @@ const NodeBody: React.FC<NodeBodyProps> = ({
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   const handleSave = () => {
-    if (isRequestTab) onSaveRequestSchema(reqSchema);
-    else {
-      onSaveResponseSchema(resSchema);
-    }
+    onSaveRequestSchema(reqSchema);
+    onSaveResponseSchema(resSchema);
     onClose();
   };
 

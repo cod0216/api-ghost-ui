@@ -38,17 +38,7 @@ export const useMockApiModal = () => {
   };
 
   const openMockApiModal = (x: number, y: number) => {
-    setFormValues(init);
-    setMethod(init.method);
-    setBaseUrl(init.baseUrl);
-    setPath(init.path);
-
-    const reqText = JSON.stringify(fieldsToJson(init.requestSchema), null, 2);
-    const resText = JSON.stringify(fieldsToJson(init.responseSchema), null, 2);
-    setReqSchemaText(reqText);
-    setResSchemaText(resText);
-    validateSchemas(reqText, resText);
-
+    setFormValues({ ...init, x, y });
     setVisible(true);
   };
 
@@ -62,17 +52,14 @@ export const useMockApiModal = () => {
       const responseSchema: Field[] = parseJsonToFields(resSchemaText, 'value')[0].nestedFields!;
 
       const values: MockApiFormValues = {
+        ...formValues,
         baseUrl,
         method,
         path,
         requestSchema,
         responseSchema,
-        x: formValues.x,
-        y: formValues.y,
       };
 
-      console.log('[ saveMockApi ] : ' + values);
-      setFormValues(values);
       setVisible(false);
       return values;
     } catch (e) {

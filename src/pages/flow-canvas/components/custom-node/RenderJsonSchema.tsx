@@ -46,7 +46,7 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
                 indent={indent + 1}
                 onChange={updatedNested => {
                   const updated = [...localData];
-                  updated[index].nestedFields = updatedNested;
+                  updated[index].nestedFields = [...updatedNested];
                   setLocalData(updated);
                   onChange?.(updated);
                 }}

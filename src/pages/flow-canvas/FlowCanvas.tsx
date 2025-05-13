@@ -77,7 +77,6 @@ const FlowCanvas: React.FC = () => {
                 ...edge,
                 data: {
                   ...edge.data,
-                  label: newLabel,
                   expected: { ...edge.data?.expected, status: newLabel },
                 },
               }
@@ -97,32 +96,12 @@ const FlowCanvas: React.FC = () => {
     [onChangeLabel],
   );
 
-  const {
-    isVisible: isMockVisible,
-    formValues,
-    baseUrl,
-    path,
-    method,
-    isSchemaValid,
-    openMockApiModal,
-    saveMockApi,
-    closeMockApiModal,
-    reqSchemaText,
-    resSchemaText,
-    setBaseUrl,
-    setMethod,
-    setPath,
-    setIsSchemaValid,
-    setReqSchemaText,
-    setResSchemaText,
-    validateSchemas,
-  } = useMockApiModal();
-
   const [currentEdgeId, setCurrentEdgeId] = useState<string | null>(null);
   const [currentSrc, setCurrentSrc] = useState<NodeType | null>(null);
   const [currentTgt, setCurrentTgt] = useState<NodeType | null>(null);
-  const handleSave = useScenario();
-  const viewport = useAppSelector(state => state.flow.viewport);
+  const handleSave = () => useScenario();
+
+  const [showMockApiModal, setShowMockApiModal] = useState<boolean>(false);
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
     setCurrentEdgeId(edge.id);
@@ -161,26 +140,12 @@ const FlowCanvas: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     if (!wrapperRef.current) return;
-    const bounds = wrapperRef.current.getBoundingClientRect();
-    openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
+    setShowMockApiModal(true);
   };
 
   ///
   const [scenarios, setScenarios] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
-  // const saveScenario = useScenario();
-  const hasSaved = useRef(true);
-
-  useEffect(() => {
-    if (!selectedScenario) {
-      handleSave().then(fileName => {
-        if (fileName) {
-          onSelect(fileName);
-        }
-      });
-      hasSaved.current = true;
-    }
-  }, [handleSave]);
 
   useEffect(() => {
     getScenarioList()
@@ -188,7 +153,7 @@ const FlowCanvas: React.FC = () => {
       .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
   }, []);
 
-  const onSelect = async (fileName: string) => {
+  const onScenarioSelect = async (fileName: string) => {
     await getScenarioInfo(fileName)
       .then(setSelectedScenario)
       .catch(err => console.error('[ScenarioList] getScenarioInfo Error', err));
@@ -245,7 +210,7 @@ const FlowCanvas: React.FC = () => {
           { title: 'API List', content: <ApiList /> },
           {
             title: 'Scenario List',
-            content: <ScenarioList scenarios={scenarios} onSelect={onSelect} />,
+            content: <ScenarioList scenarios={scenarios} onSelect={onScenarioSelect} />,
           },
         ]}
       />
@@ -281,7 +246,6 @@ const FlowCanvas: React.FC = () => {
           defaultEdgeOptions={{
             type: 'flowCanvasEdge',
             animated: true,
-            label: '200',
             data: {
               expected: {
                 status: '200',
@@ -307,26 +271,9 @@ const FlowCanvas: React.FC = () => {
           onDismiss={cancelMappingModal}
         />
 
-        <MockApiModal
-          isVisible={isMockVisible}
-          formValues={formValues}
-          baseUrl={baseUrl}
-          path={path}
-          method={method}
-          isSchemaValid={isSchemaValid}
-          reqSchemaText={reqSchemaText}
-          resSchemaText={resSchemaText}
-          setBaseUrl={setBaseUrl}
-          setMethod={setMethod}
-          setPath={setPath}
-          setIsSchemaValid={setIsSchemaValid}
-          setReqSchemaText={setReqSchemaText}
-          setResSchemaText={setResSchemaText}
-          saveMockApi={saveMockApi}
-          onConfirm={addNode}
-          onCancel={closeMockApiModal}
-          validateSchemas={validateSchemas}
-        />
+        {showMockApiModal && (
+          <MockApiModal onConfirm={addNode} closeModal={() => setShowMockApiModal(false)} />
+        )}
       </div>
     </div>
   );
