@@ -4,6 +4,7 @@ import nodeReducer from './slices/nodeSlice';
 import schemaEditorReducer from './slices/schemaEditorSlice';
 import flowReducer from './slices/flowSlice';
 import nodeTabReducer from './slices/nodeTabSlice';
+import scenarioReducer from './slices/scenarioSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     schemaEditor: schemaEditorReducer,
     flow: flowReducer,
     nodeTab: nodeTabReducer,
+    scenario: scenarioReducer,
   },
 });
 

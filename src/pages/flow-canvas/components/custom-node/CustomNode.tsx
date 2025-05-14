@@ -11,6 +11,7 @@ import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, type }) => {
   const { updateNode, setNodes } = useFlowCanvas();
   const dispatch = useAppDispatch();
+
   const {
     baseUrl,
     method,

@@ -6,8 +6,9 @@
  */
 import React, { useEffect, useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/ScenarioList.module.scss';
-import { getScenarioList, getScenarioInfo } from '@/pages/flow-canvas/service/scenarioService';
-import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
+import { useDispatch } from 'react-redux';
+import { selectScenario } from '@/store/slices/scenarioSlice';
+import { getScenarioInfo } from '@/pages/flow-canvas/service/scenarioService';
 
 /**
  * Displays a static list of user scenarios for selection.

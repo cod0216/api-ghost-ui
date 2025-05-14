@@ -1,23 +1,57 @@
 import { useCallback } from 'react';
-import { useAppDispatch } from '@/store/hooks';
-import { exportScenario } from '@/store/thunks/exportScenario';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { exportScenario as exportScenarioThunk } from '@/store/thunks/exportScenario';
+import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
+import type { ScenarioInfo } from '@/pages/flow-canvas/types';
+import { getScenarioInfo, getScenarioList } from '../service/scenarioService';
 
 export const useScenario = () => {
   const dispatch = useAppDispatch();
+  const selected = useAppSelector(state => state.scenario.selected) as ScenarioInfo | null;
 
-  return useCallback(async (): Promise<string | null> => {
-    const name = prompt('Enter scenario name', 'My Scenario');
-    if (!name) return null;
-    const description = prompt('Enter a brief description', '');
-    const timeoutMs = 10000;
+  const saveScenario = useCallback(async (): Promise<string | void> => {
+    const defaultName = selected?.name ?? '';
+    const nameInput = prompt('input save file name', defaultName);
+    if (!nameInput) return;
+    const name = nameInput.trim();
 
-    await dispatch(
-      exportScenario({
-        name,
-        description: description || '',
-        timeoutMs,
-      }),
-    );
-    return name;
-  }, [dispatch]);
+    const descInput = prompt('input scenario description ', selected?.description ?? '');
+    const description = descInput != null ? descInput : (selected?.description ?? '');
+
+    let timeoutMs: number;
+    while (true) {
+      const input = prompt('input test timeout', String(selected?.timeoutMs ?? 1000));
+      if (input === null) {
+        return;
+      }
+      const trimmed = input.trim();
+      if (!/^\d+$/.test(trimmed)) {
+        alert('Please enter numbers only.');
+        continue;
+      }
+      timeoutMs = parseInt(trimmed, 10);
+      break;
+    }
+
+    try {
+      const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
+      const resp = unwrapResult(actionResult);
+      if (!resp.status) {
+        alert('Failed to save scenario.');
+        return;
+      }
+
+      const list = await getScenarioList();
+      dispatch(setScenarioList(list));
+
+      const fullfillScenario = await getScenarioInfo(name + '.yaml');
+      dispatch(selectScenario(fullfillScenario));
+      return name;
+    } catch (err) {
+      alert('An error occurred while saving the scenario.');
+    }
+  }, [dispatch, selected]);
+
+  return { saveScenario };
 };
