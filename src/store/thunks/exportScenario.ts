@@ -18,7 +18,17 @@ export const exportScenario = createAsyncThunk(
   async (meta: Payload, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const { nodes, edges } = state.flow;
+    console.log('[exportScenario] nodes →', nodes);
+    console.log('[exportScenario] edges →', edges);
+
     const schemaState = state.schemaEditor;
+    console.log(
+      '[exportScenario] state.flow.edges.mappingInfo →',
+      edges.map(e => ({
+        id: e.id,
+        mappingInfo: (e.data as any)?.mappingInfo ?? null,
+      })),
+    );
 
     const steps: Record<string, FlowStep> = {};
 

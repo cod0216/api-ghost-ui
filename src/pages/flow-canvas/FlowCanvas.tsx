@@ -8,9 +8,7 @@ import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
 import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
-import CommonSidebar from '@/common/components/CommonSidebar';
-import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
-import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
+
 import { useAppSelector } from '@/store/hooks';
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
 import {
@@ -178,16 +176,7 @@ const FlowCanvas: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <CommonSidebar
-        sections={[
-          { title: 'API List', content: <ApiList /> },
-          {
-            title: 'Scenario List',
-            content: <ScenarioList scenarios={scenarios} onSelect={onSelect} />,
-          },
-        ]}
-      />
+    <>
       <div className={styles.actionContainer}>
         <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
         <SaveButton onSave={saveScenario} />
@@ -261,7 +250,7 @@ const FlowCanvas: React.FC = () => {
           validateSchemas={validateSchemas}
         />
       </div>
-    </div>
+    </>
   );
 };
 

@@ -89,7 +89,9 @@ export const MappingModal: React.FC<MappingModalProps> = ({
 
     const existing: MappingPair[] = (edge.data as any)?.mappingInfo ?? [];
 
-    const filtered = existing.filter(p => p.sourceKey !== leftSelectedKey);
+    const filtered = existing.filter(
+      p => p.sourceKey !== leftSelectedKey && !rightSelectedKeys.includes(p.targetKey),
+    );
 
     const newPairs: MappingPair[] = rightSelectedKeys.map(rk => ({
       sourceKey: leftSelectedKey,
