@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.title {
+  font-size: $font-size-5xl;
+  margin-bottom: 1rem;
+}
+
+.createButton {
+  font-size: $font-size-lg;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $primary-700;
+}

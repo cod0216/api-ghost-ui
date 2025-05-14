@@ -12,6 +12,7 @@
   justify-content: center;
   z-index: 1000;
 }
+
 .baseUrl {
   font-size: $font-size-xl;
 }
@@ -26,6 +27,7 @@
   display: flex;
   flex-direction: column;
 }
+
 .methodPathGroup {
   display: flex;
   align-items: center;
@@ -40,7 +42,8 @@
   box-shadow: 0 4px 12px rgba($black, 0.2);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .header {
@@ -61,6 +64,10 @@
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
+
+  > div {
+    min-width: 0;
+  }
 }
 
 .panelHeader {
@@ -132,6 +139,7 @@
     border-bottom: none;
   }
 }
+
 .itemKey {
   width: 40%;
   font-weight: $font-weight-medium;
@@ -146,8 +154,10 @@
   color: $gray-600;
   word-break: break-word;
 }
+
 table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: $font-size-sm;
   color: $gray-800;
@@ -161,6 +171,9 @@ table {
       font-weight: $font-weight-semibold;
       font-size: $font-size-sm;
       border-bottom: 2px solid $gray-300;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -175,6 +188,9 @@ table {
       td {
         padding: 0.75rem;
         vertical-align: middle;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
       }
 
       input[type='checkbox'] {
