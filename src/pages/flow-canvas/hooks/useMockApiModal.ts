@@ -60,7 +60,6 @@ export const useMockApiModal = () => {
         responseSchema,
       };
 
-      setVisible(false);
       return values;
     } catch (e) {
       console.error('Failed to save mock API due to invalid schema', e);
