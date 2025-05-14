@@ -45,7 +45,13 @@ const FlowCanvasMain: React.FC = () => {
           { title: 'API List', content: <ApiList /> },
           {
             title: 'Scenario List',
-            content: <ScenarioList scenarios={scenarios} onSelect={handleSelect} />,
+            content: (
+              <ScenarioList
+                scenarios={scenarios}
+                selectedScenario={(selected?.name ?? '') + '.yaml'}
+                onSelect={handleSelect}
+              />
+            ),
           },
         ]}
       />
