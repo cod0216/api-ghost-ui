@@ -22,13 +22,15 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
 
   return (
     <>
-      <div style={{ marginLeft: indent * 10 }}>{'{'}</div>
+      <div className={styles.jsonSchema} style={{ marginLeft: indent * 10 }}>
+        {'{'}
+      </div>
       {localData.map((field, index) => (
         <div key={`${field.name}-${index}`} style={{ marginLeft: indent * 10 + 10 }}>
           <div>
-            <span>"{field.name}"</span>
+            <span title={field.type}>"{field.name}"</span>
             {' : '}
-            {'"'}
+
             {editingIndex === index ? (
               <input
                 type="text"
@@ -38,26 +40,23 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
                 onBlur={() => setEditingIndex(null)}
                 className={styles.editInput}
               />
+            ) : field.nestedFields && field.nestedFields.length > 0 ? (
+              <RenderJsonSchema
+                data={field.nestedFields}
+                indent={indent + 1}
+                onChange={updatedNested => {
+                  const updated = [...localData];
+                  updated[index].nestedFields = updatedNested;
+                  setLocalData(updated);
+                  onChange?.(updated);
+                }}
+              />
             ) : (
               <span onClick={() => setEditingIndex(index)} className={styles.editableValue}>
-                {field.value ?? ''}
+                "{field.value}"
               </span>
             )}
-            {'"'}
           </div>
-
-          {field.nestedFields && field.nestedFields.length > 0 && (
-            <RenderJsonSchema
-              data={field.nestedFields}
-              indent={indent + 1}
-              onChange={updatedNested => {
-                const updated = [...localData];
-                updated[index].nestedFields = updatedNested;
-                setLocalData(updated);
-                onChange?.(updated);
-              }}
-            />
-          )}
         </div>
       ))}
       <div style={{ marginLeft: indent * 10 }}>{'}'}</div>

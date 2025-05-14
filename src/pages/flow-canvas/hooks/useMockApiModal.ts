@@ -1,6 +1,8 @@
-import { HttpMethod } from '@/common/types';
-import { MockApiFormValues } from '@/pages/flow-canvas/types/index';
 import { useState } from 'react';
+import { HttpMethod } from '@/common/types';
+import { parseJsonToFields, fieldsToJson } from '@/common/utils/jsonUtils';
+import { MockApiFormValues } from '@/pages/flow-canvas/types/index';
+import { Field } from '@/pages/flow-canvas/types';
 
 export const useMockApiModal = () => {
   const [isSchemaValid, setIsSchemaValid] = useState(true);
@@ -20,31 +22,33 @@ export const useMockApiModal = () => {
   const [path, setPath] = useState(formValues.path);
 
   const [reqSchemaText, setReqSchemaText] = useState(
-    JSON.stringify(formValues.requestSchema, null, 2),
+    JSON.stringify(fieldsToJson(formValues.requestSchema), null, 2),
   );
   const [resSchemaText, setResSchemaText] = useState(
-    JSON.stringify(formValues.responseSchema, null, 2),
+    JSON.stringify(fieldsToJson(formValues.responseSchema), null, 2),
   );
+  const init: MockApiFormValues = {
+    baseUrl: '',
+    method: HttpMethod.GET,
+    path: '',
+    requestSchema: [],
+    responseSchema: [],
+    x: 0,
+    y: 0,
+  };
 
   const openMockApiModal = (x: number, y: number) => {
-    const init: MockApiFormValues = {
-      baseUrl: '',
-      method: HttpMethod.GET,
-      path: '',
-      requestSchema: [],
-      responseSchema: [],
-      x,
-      y,
-    };
     setFormValues(init);
     setMethod(init.method);
     setBaseUrl(init.baseUrl);
     setPath(init.path);
-    const reqText = JSON.stringify(init.requestSchema, null, 2);
-    const resText = JSON.stringify(init.responseSchema, null, 2);
+
+    const reqText = JSON.stringify(fieldsToJson(init.requestSchema), null, 2);
+    const resText = JSON.stringify(fieldsToJson(init.responseSchema), null, 2);
     setReqSchemaText(reqText);
     setResSchemaText(resText);
     validateSchemas(reqText, resText);
+
     setVisible(true);
   };
 
@@ -52,9 +56,30 @@ export const useMockApiModal = () => {
     setVisible(false);
   };
 
-  const saveMockApi = (values: MockApiFormValues) => {
-    setVisible(false);
-    return values;
+  const saveMockApi = (): MockApiFormValues => {
+    try {
+      const requestSchema: Field[] = parseJsonToFields(reqSchemaText, 'value')[0].nestedFields!;
+      const responseSchema: Field[] = parseJsonToFields(resSchemaText, 'value')[0].nestedFields!;
+
+      const values: MockApiFormValues = {
+        baseUrl,
+        method,
+        path,
+        requestSchema,
+        responseSchema,
+        x: formValues.x,
+        y: formValues.y,
+      };
+
+      console.log('[ saveMockApi ] : ' + values);
+      setFormValues(values);
+      setVisible(false);
+      return values;
+    } catch (e) {
+      console.error('Failed to save mock API due to invalid schema', e);
+      setIsSchemaValid(false);
+      return init;
+    }
   };
 
   const setReqSchemaTextWithValidation = (text: string) => {
@@ -64,7 +89,7 @@ export const useMockApiModal = () => {
 
   const setResSchemaTextWithValidation = (text: string) => {
     setResSchemaText(text);
-    validateSchemas(text, resSchemaText);
+    validateSchemas(reqSchemaText, text);
   };
 
   const validateSchemas = (reqText: string, resText: string) => {

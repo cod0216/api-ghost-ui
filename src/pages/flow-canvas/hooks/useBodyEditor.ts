@@ -10,7 +10,7 @@ function deepCloneWithValue(fields: Field[]): Field[] {
     type: f.type,
     name: f.name,
     nestedFields: f.nestedFields ? deepCloneWithValue(f.nestedFields) : undefined,
-    value: (f as any).value ?? 'empty',
+    value: (f as any).value ?? '',
   }));
 }
 

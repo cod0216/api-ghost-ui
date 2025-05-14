@@ -57,42 +57,43 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
   const handleSaveResponse = (schema: Field[]) => handleSave(MainTabType.RESPONSE, schema);
 
   return (
-    <div className={`${styles.node} ${styles[method]}`}>
-      <div className={styles.header}>{baseUrl}</div>
+    <div className={styles.nodeWrapper}>
+      <div className={`${styles.node} ${styles[method]}`}>
+        <div className={styles.header}>{baseUrl}</div>
 
-      <div
-        className={styles.actions}
-        onClick={e => {
-          e.stopPropagation();
-          handleToggleBody();
-        }}
-      >
-        <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
-        <span className={styles.path}>{path}</span>
-        <div className={styles.menuIcon}>
-          <span className={styles.line} />
-          <span className={styles.line} />
-          <span className={styles.line} />
+        <div
+          className={styles.actions}
+          onClick={e => {
+            e.stopPropagation();
+            handleToggleBody();
+          }}
+        >
+          <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
+          <span className={styles.path}>{path}</span>
+          <div className={styles.menuIcon}>
+            <span className={styles.line} />
+            <span className={styles.line} />
+            <span className={styles.line} />
+          </div>
         </div>
+
+        {showBody && (
+          <NodeBody
+            requestSchema={requestSchema}
+            responseSchema={responseSchema}
+            initialMainTabLabel={savedTab.mainTab}
+            initialSubTabLabel={savedTab.subTab}
+            onTabChange={(main, sub) =>
+              dispatch(setNodeTab({ nodeId: id, mainTab: main, subTab: sub }))
+            }
+            onSaveRequestSchema={handleSaveRequest}
+            onSaveResponseSchema={handleSaveResponse}
+            onClose={handleToggleBody}
+          />
+        )}
       </div>
-
-      {showBody && (
-        <NodeBody
-          requestSchema={requestSchema}
-          responseSchema={responseSchema}
-          initialMainTabLabel={savedTab.mainTab}
-          initialSubTabLabel={savedTab.subTab}
-          onTabChange={(main, sub) =>
-            dispatch(setNodeTab({ nodeId: id, mainTab: main, subTab: sub }))
-          }
-          onSaveRequestSchema={handleSaveRequest}
-          onSaveResponseSchema={handleSaveResponse}
-          onClose={handleToggleBody}
-        />
-      )}
-
-      <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
+      <Handle type="target" position={Position.Left} className={styles.handle} />
+      <Handle type="source" position={Position.Right} className={styles.handle} />
     </div>
   );
 };

@@ -4,7 +4,7 @@
  * A custom hook that manages ReactFlow state and drag-and-drop logic
  * for the scenario flow canvas.
  */
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, ReactNode } from 'react';
 import {
   addEdge,
   applyNodeChanges,
@@ -38,7 +38,7 @@ export const useFlowCanvas = () => {
 
   const [nodes, _setNodes, internalOnNodesChange] = useNodesState<NodeEndPoint>(storedNodes);
   const [edges, _setEdges, internalOnEdgesChange] = useEdgesState<ReactEdge>(storedEdges);
-  const { project } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
   const setNodes = useCallback(
@@ -99,7 +99,26 @@ export const useFlowCanvas = () => {
    * @param params - edge or connection parameters
    */
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges(es => addEdge(params, es)),
+    (params: Connection) => {
+      const newEdge: Edge = {
+        ...params,
+        id: `${params.source}-${params.target}`,
+        animated: true,
+        type: 'flowCanvasEdge',
+        data: {
+          expected: {
+            status: '200',
+            value: {},
+          },
+          label: '200',
+        },
+        source: params.source!,
+        target: params.target!,
+        sourceHandle: params.sourceHandle!,
+        targetHandle: params.targetHandle!,
+      };
+      setEdges(es => addEdge(newEdge, es));
+    },
     [setEdges],
   );
 
@@ -127,7 +146,7 @@ export const useFlowCanvas = () => {
       if (!data) return;
 
       const endpoint: NodeEndPoint = JSON.parse(data);
-      const position = project({
+      const position = screenToFlowPosition({
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
       });
@@ -148,7 +167,7 @@ export const useFlowCanvas = () => {
         },
       ]);
     },
-    [project, setNodes],
+    [screenToFlowPosition, setNodes],
   );
 
   const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {

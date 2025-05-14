@@ -83,7 +83,7 @@ export const exportScenario = createAsyncThunk(
 
           return {
             expected: {
-              status: '200',
+              status: e.data?.expected?.status ? e.data.expected.status : '200',
               value: Object.keys(expectedValue).length ? expectedValue : null,
             },
             then: {
