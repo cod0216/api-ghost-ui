@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import ReactFlow, { MarkerType, Edge, Node, Position } from 'reactflow';
+import ReactFlow, { MiniMap, MarkerType, Edge, Node, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 import { useMappingModal } from '@/pages/flow-canvas/hooks/useMappingModal';
@@ -8,12 +8,10 @@ import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/Mappi
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
 import { flattenSchema } from '@/common/utils/schemaUtils';
-import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import CommonSidebar from '@/common/components/CommonSidebar';
 import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
 import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
-import { useAppSelector } from '@/store/hooks';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
 import {
@@ -26,11 +24,8 @@ import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
-('@/common/components/playButton');
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
-
-const nodeTypes = { endpointNode: CustomNode };
-// const edgeTypes = { flowCanvasEdge: CustomEdge };
+const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode };
 
 type NodeType = Node<NodeEndPoint>;
 
@@ -254,7 +249,9 @@ const FlowCanvas: React.FC = () => {
             },
             markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
           }}
-        />
+        >
+          <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
+        </ReactFlow>
         <MappingModal
           isVisible={isModalVisible}
           modalTitle="Field Mapping"
@@ -277,6 +274,17 @@ const FlowCanvas: React.FC = () => {
       </div>
     </div>
   );
+};
+
+const nodeColor = (node: any) => {
+  switch (node.type) {
+    case 'mockNode':
+      return '#6ede87';
+    case 'endpointNode':
+      return '#6865A5';
+    default:
+      return '#ff0072';
+  }
 };
 
 export default FlowCanvas;

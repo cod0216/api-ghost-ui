@@ -8,7 +8,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setNodeTab } from '@/store/slices/nodeTabSlice';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
-const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos }) => {
+const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, type }) => {
   const { setNodes } = useReactFlow();
   const { updateNode } = useFlowCanvas();
   const dispatch = useAppDispatch();
@@ -55,10 +55,11 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos })
   const handleSaveRequest = (schema: Field[]) => handleSave(MainTabType.REQUEST, schema);
   const handleSaveResponse = (schema: Field[]) => handleSave(MainTabType.RESPONSE, schema);
 
+  const isMockNode = type === 'mockNode';
   return (
     <div className={styles.nodeWrapper}>
       <div className={`${styles.node} ${styles[method]}`}>
-        <div className={styles.header}>{baseUrl}</div>
+        <div className={`${styles.header} ${isMockNode && styles.mockHeader}`}>{baseUrl}</div>
 
         <div
           className={styles.actions}

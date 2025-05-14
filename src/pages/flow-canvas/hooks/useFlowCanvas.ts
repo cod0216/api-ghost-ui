@@ -215,7 +215,7 @@ export const useFlowCanvas = () => {
       const id = `mock-${Date.now()}`;
       const newNode = {
         id,
-        type: 'endpointNode',
+        type: 'mockNode',
         position: { x: vals.x, y: vals.y },
         data: {
           endpointId: id,

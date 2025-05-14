@@ -126,15 +126,10 @@
   word-break: break-all;
   overflow-wrap: break-word;
   box-sizing: border-box;
-
-  &:hover {
-    background-color: $white;
-  }
 }
 
 .editInput {
   font-size: $font-size-2xs;
-  // width: 100%;
   max-width: 100%;
   padding: 0;
   border: 1px solid $primary-700;
@@ -145,4 +140,49 @@
 
 .jsonSchema {
   width: max-content;
+}
+
+.headerTable {
+  background-color: $white;
+  width: 100%;
+  margin: 1rem 0;
+
+  th,
+  td {
+    background-color: $white;
+    font-size: $font-size-2xs;
+    padding: 0.3rem;
+    border: 0.1px solid $outline-color;
+  }
+
+  input {
+    width: 100%;
+    outline: none;
+    border: none;
+    display: block;
+    font-size: $font-size-2xs;
+  }
+
+  :hover {
+    background-color: $white;
+  }
+
+  .deleteSection {
+    width: 25px;
+  }
+
+  .deleteButton {
+    border: none;
+    padding: 0 5px;
+    font-size: $font-size-2xs;
+    border-radius: $radius-md;
+    background-color: $gray-100;
+    border: 0.1px solid $gray-500;
+    color: $gray-500;
+
+    &:hover {
+      border: 0.1px solid $gray-800;
+      color: $gray-800;
+    }
+  }
 }
