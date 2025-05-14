@@ -135,7 +135,7 @@ export const MappingModal: React.FC<MappingModalProps> = ({
             mappingData={rightData}
             selectedKeys={rightSelectedKeys}
             onToggleKey={toggleRightKey}
-            singleSelect={true}
+            singleSelect={false}
           />
         </div>
         <CommonButton onConfirm={handleConfirmMapping} onCancel={closeModal} />

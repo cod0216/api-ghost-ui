@@ -4,8 +4,7 @@ import { exportScenario } from '@/store/thunks/exportScenario';
 
 export const useScenario = () => {
   const dispatch = useAppDispatch();
-
-  return useCallback(async (): Promise<string | null> => {
+  const saveScenario = useCallback(async (): Promise<string | null> => {
     const name = prompt('Enter scenario name', 'My Scenario');
     if (!name) return null;
     const description = prompt('Enter a brief description', '');
@@ -20,4 +19,6 @@ export const useScenario = () => {
     );
     return name;
   }, [dispatch]);
+
+  return { saveScenario };
 };

@@ -72,6 +72,8 @@ const FlowCanvas: React.FC = () => {
     validateSchemas,
   } = useMockApiModal();
 
+  const { saveScenario } = useScenario();
+
   const onChangeLabel = useCallback(
     (edgeId: string, newLabel: string) => {
       setEdges(prev =>
@@ -100,10 +102,6 @@ const FlowCanvas: React.FC = () => {
     }),
     [onChangeLabel],
   );
-
-  const handleSave = () => {
-    useScenario();
-  };
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -192,7 +190,7 @@ const FlowCanvas: React.FC = () => {
       />
       <div className={styles.actionContainer}>
         <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
-        <SaveButton onSave={handleSave} />
+        <SaveButton onSave={saveScenario} />
       </div>
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow
