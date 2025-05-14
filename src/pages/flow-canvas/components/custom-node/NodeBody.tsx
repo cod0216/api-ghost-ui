@@ -1,9 +1,10 @@
 import React, { MouseEvent, useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController';
-import { BODY_EDITOR_TABS, Path, Tab } from '@/pages/flow-canvas/types/index';
+import { BODY_EDITOR_TABS, Tab } from '@/pages/flow-canvas/types/index';
 import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types';
 import RenderJsonSchema from '@/pages/flow-canvas/components/custom-node/RenderJsonSchema';
+import RenderHeaderInputTable from './RenderHeaderInputTable';
 
 interface NodeBodyProps {
   requestSchema: Field[];
@@ -11,9 +12,9 @@ interface NodeBodyProps {
   initialMainTabLabel?: MainTabType;
   initialSubTabLabel?: SubTabType;
   onTabChange?: (main: MainTabType, sub: SubTabType) => void;
-  onSaveRequestSchema: (newSchema: Field[]) => void;
-  onSaveResponseSchema: (newSchema: Field[]) => void;
+  onSaveData: (request: Field[], response: Field[], newHeader?: Record<string, string>) => void;
   onClose: () => void;
+  header?: Record<string, string>;
 }
 
 const NodeBody: React.FC<NodeBodyProps> = ({
@@ -22,15 +23,16 @@ const NodeBody: React.FC<NodeBodyProps> = ({
   initialMainTabLabel,
   initialSubTabLabel,
   onTabChange,
-  onSaveRequestSchema,
-  onSaveResponseSchema,
   onClose,
+  onSaveData,
+  header,
 }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
   const [reqSchema, setReqSchema] = useState<Field[]>(requestSchema);
   const [resSchema, setResSchema] = useState<Field[]>(responseSchema);
+  const [requestHeader, setRequestHeader] = useState<Record<string, string>>({ ...header });
 
   useEffect(() => {
     setReqSchema(requestSchema);
@@ -55,8 +57,7 @@ const NodeBody: React.FC<NodeBodyProps> = ({
   const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 
   const handleSave = () => {
-    onSaveRequestSchema(reqSchema);
-    onSaveResponseSchema(resSchema);
+    onSaveData(reqSchema, resSchema, requestHeader);
     onClose();
   };
 
@@ -88,22 +89,26 @@ const NodeBody: React.FC<NodeBodyProps> = ({
         ))}
       </nav>
 
-      <section className={styles.contentArea}>
-        {subTab.showSchema && isRequestTab && (
-          <RenderJsonSchema
-            data={reqSchema}
-            indent={0}
-            onChange={updated => setReqSchema(updated)}
-          />
-        )}
-        {subTab.showSchema && !isRequestTab && (
-          <RenderJsonSchema
-            data={resSchema}
-            indent={0}
-            onChange={updated => setResSchema(updated)}
-          />
-        )}
-      </section>
+      {subTab.label === SubTabType.HEADER && (
+        <RenderHeaderInputTable header={requestHeader} onChange={setRequestHeader} />
+      )}
+      {subTab.showSchema && (
+        <section className={styles.contentArea}>
+          {isRequestTab ? (
+            <RenderJsonSchema
+              data={reqSchema}
+              indent={0}
+              onChange={updated => setReqSchema(updated)}
+            />
+          ) : (
+            <RenderJsonSchema
+              data={resSchema}
+              indent={0}
+              onChange={updated => setResSchema(updated)}
+            />
+          )}
+        </section>
+      )}
 
       <footer className={styles.buttonRow}>
         {

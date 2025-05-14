@@ -9,8 +9,7 @@ import { setNodeTab } from '@/store/slices/nodeTabSlice';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
 const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, type }) => {
-  const { setNodes } = useReactFlow();
-  const { updateNode } = useFlowCanvas();
+  const { updateNode, setNodes } = useFlowCanvas();
   const dispatch = useAppDispatch();
   const {
     baseUrl,
@@ -19,6 +18,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     showBody,
     requestSchema: dataReq = [],
     responseSchema: dataRes = [],
+    header: dataHeader,
   } = data;
 
   const { requestSchema, responseSchema, save } = useSchemaEditor(id, dataReq, dataRes);
@@ -35,8 +35,13 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     );
   };
 
-  const handleSave = (type: MainTabType, newSchema: Field[]) => {
-    save(type, newSchema);
+  const handleSave = (
+    request: Field[],
+    response: Field[],
+    updatedHeader?: Record<string, string>,
+  ) => {
+    save(MainTabType.REQUEST, request);
+    save(MainTabType.REQUEST, response);
 
     const updatedNode = {
       id,
@@ -44,16 +49,15 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
       position: { x: xPos, y: yPos },
       data: {
         ...data,
-        requestSchema: type === MainTabType.REQUEST ? newSchema : data.requestSchema,
-        responseSchema: type === MainTabType.RESPONSE ? newSchema : data.responseSchema,
+        requestSchema: request,
+        responseSchema: response,
+        header: updatedHeader,
         showBody: false,
       },
     };
+
     updateNode(updatedNode);
   };
-
-  const handleSaveRequest = (schema: Field[]) => handleSave(MainTabType.REQUEST, schema);
-  const handleSaveResponse = (schema: Field[]) => handleSave(MainTabType.RESPONSE, schema);
 
   const isMockNode = type === 'mockNode';
   return (
@@ -86,9 +90,9 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
             onTabChange={(main, sub) =>
               dispatch(setNodeTab({ nodeId: id, mainTab: main, subTab: sub }))
             }
-            onSaveRequestSchema={handleSaveRequest}
-            onSaveResponseSchema={handleSaveResponse}
+            onSaveData={handleSave}
             onClose={handleToggleBody}
+            header={dataHeader}
           />
         )}
       </div>
