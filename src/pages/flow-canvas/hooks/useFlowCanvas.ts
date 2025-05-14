@@ -4,7 +4,7 @@
  * A custom hook that manages ReactFlow state and drag-and-drop logic
  * for the scenario flow canvas.
  */
-import { useCallback, useRef, useEffect, ReactNode } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import {
   addEdge,
   applyNodeChanges,
@@ -14,19 +14,13 @@ import {
   NodeChange,
   reconnectEdge,
   useReactFlow,
-  useNodesState,
-  useEdgesState,
   Node,
   EdgeChange,
   Edge as ReactEdge,
 } from 'reactflow';
 import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  setNodes as setNodesInStore,
-  setEdges as setEdgesInStore,
-  updateNode as updateNodeInStore,
-} from '@/store/slices/flowSlice';
+import { setNodes as setNodesInStore, setEdges as setEdgesInStore } from '@/store/slices/flowSlice';
 
 export const useFlowCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -36,92 +30,96 @@ export const useFlowCanvas = () => {
   const storedEdges = useAppSelector(state => state.flow.edges);
   const viewport = useAppSelector(state => state.flow.viewport);
 
-  const [nodes, _setNodes, internalOnNodesChange] = useNodesState<NodeEndPoint>(storedNodes);
-  const [edges, _setEdges, internalOnEdgesChange] = useEdgesState<ReactEdge>(storedEdges);
+  // Use local state instead of useNodesState and useEdgesState
+  const [nodes, setNodesLocal] = useState<Node<NodeEndPoint>[]>(storedNodes);
+  const [edges, setEdgesLocal] = useState<ReactEdge[]>(storedEdges);
+
+  // Sync local state with Redux store (only when store changes)
+  useEffect(() => {
+    setNodesLocal(storedNodes);
+  }, [storedNodes]);
+
+  useEffect(() => {
+    setEdgesLocal(storedEdges);
+  }, [storedEdges]);
+
+  // Batch updates to Redux store
+  const syncToRedux = useCallback(() => {
+    dispatch(setNodesInStore(nodes));
+    dispatch(setEdgesInStore(edges));
+  }, [dispatch, nodes, edges]);
+
+  // Debounced sync to Redux (prevents too many dispatches)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      syncToRedux();
+    }, 50);
+    return () => clearTimeout(timeoutId);
+  }, [nodes, edges, syncToRedux]);
+
   const { screenToFlowPosition } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
-  const setNodes = useCallback(
-    (updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
-      _setNodes(ns => {
-        const next = updater(ns);
-        return next;
-      });
-      dispatch(setNodesInStore(nodes));
-    },
-    [dispatch, _setNodes],
-  );
+  const setNodes = useCallback((updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
+    setNodesLocal(updater);
+  }, []);
 
-  const setEdges = useCallback(
-    (updater: (es: ReactEdge[]) => ReactEdge[]) => {
-      _setEdges(es => {
-        const next = updater(es);
-        return next;
-      });
-      dispatch(setEdgesInStore(edges));
-    },
-    [dispatch, _setEdges],
-  );
+  const setEdges = useCallback((updater: (es: ReactEdge[]) => ReactEdge[]) => {
+    setEdgesLocal(updater);
+  }, []);
 
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      setNodes(ns => applyNodeChanges(changes, ns));
-      dispatch(setNodesInStore(nodes));
-    },
-    [setNodes],
-  );
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodesLocal(prev => applyNodeChanges(changes, prev));
+  }, []);
 
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => {
-      setEdges(es => applyEdgeChanges(changes, es));
-      dispatch(setEdgesInStore(edges));
-    },
-    [setEdges],
-  );
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    setEdgesLocal(prev => applyEdgeChanges(changes, prev));
+  }, []);
 
-  const updateNode = useCallback(
-    (node: Node<NodeEndPoint>) => {
-      setNodes(ns => {
-        const idx = ns.findIndex(n => n.id === node.id);
-        if (idx !== -1) {
-          const next = [...ns];
-          next[idx] = node;
-          return next;
-        }
-        return ns;
-      });
-    },
-    [dispatch, setNodes],
-  );
+  const updateNode = useCallback((node: Node<NodeEndPoint>) => {
+    setNodesLocal(prev => {
+      const idx = prev.findIndex(n => n.id === node.id);
+      if (idx === -1) return prev;
 
-  /**
-   * Adds a new edge when two nodes are connected.
-   *
-   * @param params - edge or connection parameters
-   */
-  const onConnect = useCallback(
-    (params: Connection) => {
-      const newEdge: Edge = {
-        ...params,
-        id: `${params.source}-${params.target}`,
-        animated: true,
-        type: 'flowCanvasEdge',
-        data: {
-          expected: {
-            status: '200',
-            value: {},
-          },
-          label: '200',
+      const updated = [...prev];
+      updated[idx] = {
+        ...prev[idx],
+        ...node,
+        position: {
+          ...prev[idx].position,
+          ...node.position,
         },
-        source: params.source!,
-        target: params.target!,
-        sourceHandle: params.sourceHandle!,
-        targetHandle: params.targetHandle!,
+        data: {
+          ...prev[idx].data,
+          ...node.data,
+          header: {
+            ...prev[idx].data?.header,
+            ...node.data?.header,
+          },
+        },
       };
-      setEdges(es => addEdge(newEdge, es));
-    },
-    [setEdges],
-  );
+
+      return updated;
+    });
+  }, []);
+
+  const onConnect = useCallback((params: Connection) => {
+    const newEdge: Edge = {
+      ...params,
+      id: `${params.source}-${params.target}`,
+      animated: true,
+      type: 'flowCanvasEdge',
+      data: {
+        expected: { status: '200', value: {} },
+        label: '200',
+      },
+      source: params.source!,
+      target: params.target!,
+      sourceHandle: params.sourceHandle!,
+      targetHandle: params.targetHandle!,
+    };
+    setEdgesLocal(prev => addEdge(newEdge, prev));
+  }, []);
 
   /**
    * Prevents default behavior and sets move effect during drag over.
@@ -153,7 +151,8 @@ export const useFlowCanvas = () => {
       });
       const req = endpoint.requestSchema ?? [];
       const res = endpoint.responseSchema ?? [];
-      setNodes(ns => [
+
+      setNodesLocal(ns => [
         ...ns,
         {
           id: `${endpoint.endpointId}_${Date.now()}`,
@@ -168,39 +167,33 @@ export const useFlowCanvas = () => {
         },
       ]);
     },
-    [screenToFlowPosition, setNodes],
+    [screenToFlowPosition],
   );
 
   const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {
     pendingEdgeRef.current = edge;
   }, []);
 
-  const onEdgeUpdate = useCallback(
-    (oldEdge: Edge, newConn: Connection) => {
-      if (newConn.target) {
-        setEdges(es => reconnectEdge(oldEdge, newConn, es));
-        pendingEdgeRef.current = null;
-      }
-    },
-    [setEdges],
-  );
+  const onEdgeUpdate = useCallback((oldEdge: Edge, newConn: Connection) => {
+    if (newConn.target) {
+      setEdgesLocal(es => reconnectEdge(oldEdge, newConn, es));
+      pendingEdgeRef.current = null;
+    }
+  }, []);
 
   const onEdgeUpdateEnd = useCallback(() => {
     const edge = pendingEdgeRef.current;
     if (edge) {
-      setEdges(es => es.filter(e => e.id !== edge.id));
+      setEdgesLocal(es => es.filter(e => e.id !== edge.id));
       pendingEdgeRef.current = null;
     }
-  }, [setEdges]);
+  }, []);
 
-  const onEdgeContextMenu = useCallback(
-    (event: React.MouseEvent, edge: Edge) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setEdges(es => es.filter(e => e.id !== edge.id));
-    },
-    [setEdges],
-  );
+  const onEdgeContextMenu = useCallback((event: React.MouseEvent, edge: Edge) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setEdgesLocal(es => es.filter(e => e.id !== edge.id));
+  }, []);
 
   const addNode = useCallback(
     (vals: {
@@ -211,6 +204,7 @@ export const useFlowCanvas = () => {
       responseSchema: Field[];
       x: number;
       y: number;
+      header?: Record<string, string>;
     }) => {
       const id = `mock-${Date.now()}`;
       const newNode = {
@@ -225,19 +219,17 @@ export const useFlowCanvas = () => {
           requestSchema: vals.requestSchema,
           responseSchema: vals.responseSchema,
           showBody: false,
+          header: vals.header,
         } as NodeEndPoint,
       };
-      setNodes(ns => ns.concat(newNode));
+      setNodesLocal(ns => ns.concat(newNode));
     },
-    [setNodes],
+    [],
   );
 
-  const removeNode = useCallback(
-    (nodeId: String) => {
-      setNodes(ns => ns.filter(n => n.id !== nodeId));
-    },
-    [setNodes],
-  );
+  const removeNode = useCallback((nodeId: String) => {
+    setNodesLocal(prev => prev.filter(n => n.id !== nodeId));
+  }, []);
 
   return {
     wrapperRef,
