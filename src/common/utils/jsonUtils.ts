@@ -71,3 +71,13 @@ const parseField = (field: Field): any => {
 
   return field.value;
 };
+
+export const parseBaseUrl = (url: string): string => {
+  const baseURl = url.split('/');
+  return baseURl[0] + '/' + '/' + baseURl[2];
+};
+
+export const parseEndpoint = (url: string): string => {
+  const Endpoint = url.split('/');
+  return '/' + Endpoint.slice(3).join('/');
+};
