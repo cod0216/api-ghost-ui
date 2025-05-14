@@ -133,13 +133,18 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
-    if (!fileName) return;
+    console.log('hihihihi');
+    if (!fileName) {
+      console.log('heelo!!');
+      return;
+    }
     if (isConnected) {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;
       setIsConnected(false);
     } else {
       const eventSource = scenarioTest(fileName);
+      console.log(fileName);
       eventSourceRef.current = eventSource;
       setIsConnected(true);
 

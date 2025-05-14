@@ -41,10 +41,8 @@ export const useScenario = () => {
         alert('Failed to save scenario.');
         return;
       }
-
       const list = await getScenarioList();
       dispatch(setScenarioList(list));
-
       const fullfillScenario = await getScenarioInfo(name + '.yaml');
       dispatch(selectScenario(fullfillScenario));
       return name;
@@ -53,5 +51,44 @@ export const useScenario = () => {
     }
   }, [dispatch, selected]);
 
-  return { saveScenario };
+  const autoSave = useCallback(
+    async (currentScenario: ScenarioInfo | null): Promise<void> => {
+      if (!currentScenario) {
+        return;
+      }
+      const { name, description, timeoutMs } = currentScenario;
+
+      try {
+        const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
+        const resp = unwrapResult(actionResult);
+
+        if (!resp.status) {
+          console.warn('Auto-save completed but status=false', resp);
+          return;
+        }
+      } catch (error) {
+        console.error('Auto-save failed with error:', error);
+        alert(`Auto-save failed: ${error instanceof Error ? error.message : error}`);
+      }
+    },
+    [dispatch],
+  );
+
+  const autoLoad = useCallback(
+    async (fileName: string): Promise<void> => {
+      try {
+        const info = await getScenarioInfo(fileName);
+        dispatch(selectScenario(info));
+      } catch (error) {
+        console.error('autoLoad fail', error);
+      }
+    },
+    [dispatch],
+  );
+
+  return {
+    saveScenario,
+    autoSave,
+    autoLoad,
+  };
 };

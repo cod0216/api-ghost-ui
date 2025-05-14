@@ -9,14 +9,20 @@ import WelcomePage from '@/pages/flow-canvas/WelcomePage';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
 import { getScenarioInfo, getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
+import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
 
 const FlowCanvasMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const scenarios = useAppSelector(state => state.scenario.list);
   const selected = useAppSelector(state => state.scenario.selected);
+  const { autoSave } = useScenario();
 
   const handleSelect = async (name: string) => {
+    if (selected) {
+      const ok = await autoSave(selected);
+    }
     const info = await getScenarioInfo(name);
+    console.log('newFile Name: ', name);
     dispatch(selectScenario(info));
   };
 
