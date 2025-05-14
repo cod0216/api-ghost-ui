@@ -7,7 +7,7 @@ import ApiList from '@/pages/flow-canvas/components/api-list/ApiList';
 import ScenarioList from '@/pages/flow-canvas/components/scenario-list/ScenarioList';
 import WelcomePage from '@/pages/flow-canvas/WelcomePage';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { selectScenario, setList } from '@/store/slices/scenarioSlice';
+import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
 import { getScenarioInfo, getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
 
 const FlowCanvasMain: React.FC = () => {
@@ -20,9 +20,11 @@ const FlowCanvasMain: React.FC = () => {
     dispatch(selectScenario(info));
   };
 
+  useEffect(() => {}, [selected]);
+
   useEffect(() => {
     getScenarioList()
-      .then(names => dispatch(setList(names)))
+      .then(names => dispatch(setScenarioList(names)))
       .catch(err => console.error('[FlowCanvasMain] getScenarioList Error', err));
   }, [dispatch]);
 

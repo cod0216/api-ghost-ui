@@ -117,6 +117,8 @@ export const useFlowCanvas = () => {
         sourceHandle: params.sourceHandle!,
         targetHandle: params.targetHandle!,
       };
+      console.log('[useFlowCanvas] onConnect', newEdge);
+
       setEdges(es => addEdge(newEdge, es));
     },
     [setEdges],

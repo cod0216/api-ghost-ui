@@ -21,7 +21,6 @@ import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
-// ('@/common/components/playButton');
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 
 const nodeTypes = { endpointNode: CustomNode };
@@ -92,6 +91,10 @@ const FlowCanvas: React.FC = () => {
     [setEdges],
   );
 
+  useEffect(() => {
+    console.log('[FlowCanvas] edges state →', edges);
+  }, [edges]);
+
   const edgeTypes = useMemo(
     () => ({
       flowCanvasEdge: (edgeProps: any) => (
@@ -116,20 +119,7 @@ const FlowCanvas: React.FC = () => {
     openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
   };
 
-  const [scenarios, setScenarios] = useState<string[]>([]);
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioInfo | null>(null);
-
-  useEffect(() => {
-    getScenarioList()
-      .then(setScenarios)
-      .catch(err => console.error('[ScenarioList] getScenarioList Error', err));
-  }, []);
-
-  const onSelect = async (fileName: string) => {
-    await getScenarioInfo(fileName)
-      .then(setSelectedScenario)
-      .catch(err => console.error('[ScenarioList] getScenarioInfo Error', err));
-  };
+  const selectedScenario = useAppSelector(state => state.scenario.selected);
 
   useEffect(() => {
     if (!selectedScenario) return;
@@ -201,8 +191,6 @@ const FlowCanvas: React.FC = () => {
           onEdgeContextMenu={onEdgeContextMenu}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          // defaultViewport={viewport}
-          // fitView
           proOptions={{ hideAttribution: true }}
           minZoom={0.5}
           edgeTypes={edgeTypes}
