@@ -1,78 +1,126 @@
 import { Node, Edge, MarkerType } from 'reactflow';
 import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.ts';
-import { ApiRequestData, NodeStatus } from '@/pages/dashboard/types/index.ts';
-import { COLORS } from '@/pages/dashboard/constants/colors.ts';
+import { ApiRequestData, NodeStatus, Route } from '@/pages/dashboard/types/index.ts';
+import { COLORS, FLOW_LAYOUT } from '@/pages/dashboard/constants/colors.ts';
 
-const NODE_SPACING_X = 250;
-const NODE_SPACING_Y = 130;
-const NODE_BASE_Y = 250;
+const NODE_SPACING_X = FLOW_LAYOUT.NODE_SPACING_X;
+const NODE_SPACING_Y = FLOW_LAYOUT.NODE_SPACING_Y;
+const NODE_BASE_Y = FLOW_LAYOUT.NODE_BASE_Y;
 
-/**
- * Creates a new node for an API request in the flow diagram.
- *
- * @param result - The result object containing the details of the API request.
- * @param index - The index used to calculate the node's position in the flow.
- * @returns A `Node` object representing the API request.
- */
 const createNode = (
   result: ScenarioTestDetailResponseResult,
   index: number,
 ): Node<ApiRequestData> => ({
-  id: `node-${index}`,
+  id: result.stepName,
   type: 'apiRequest',
   position: {
     x: index * NODE_SPACING_X,
-    y: NODE_BASE_Y + (index % 3) * NODE_SPACING_Y,
+    y: NODE_BASE_Y,
   },
-  data: result,
+  data: {
+    ...result,
+    isRequestSuccess: result.isRequestSuccess,
+  },
+  style: {
+    borderColor: result.isRequestSuccess ? COLORS.node.border.success : COLORS.node.border.error,
+    borderWidth: 2,
+    background: result.isRequestSuccess
+      ? COLORS.node.background.success
+      : COLORS.node.background.error,
+  },
 });
 
 /**
- * Creates an edge connecting two nodes in the flow diagram.
- *
- * @param sourceIndex - The index of the source node.
- * @param targetIndex - The index of the target node.
- * @returns An `Edge` object representing the connection between nodes.
+ * Creates an edge between two nodes, optionally annotating based on failure or route conditions.
  */
-const createEdge = (sourceIndex: number, targetIndex: number): Edge => ({
-  id: `edge-${sourceIndex}-${targetIndex}`,
-  source: `node-${sourceIndex}`,
-  target: `node-${targetIndex}`,
+const createEdge = (
+  sourceId: string,
+  targetId: string,
+  isConditional: boolean = false,
+  expectedCondition?: any,
+  isFailurePath: boolean = false,
+): Edge => ({
+  id: `edge-${sourceId}-${targetId}`,
+  source: sourceId,
+  target: targetId,
   type: 'smoothstep',
-  animated: false,
-  style: { stroke: COLORS.edge.stroke, strokeWidth: 2 },
+  animated: isFailurePath,
+  label: expectedCondition ? `Status ${expectedCondition.status}` : undefined,
+  style: {
+    stroke: isFailurePath ? COLORS.edge.failureStroke : COLORS.edge.stroke,
+    strokeWidth: 2,
+    strokeDasharray: isConditional ? '5,5' : undefined,
+  },
   markerEnd: {
     type: MarkerType.ArrowClosed,
     width: 15,
     height: 15,
-    color: COLORS.edge.marker,
+    color: isFailurePath ? COLORS.edge.failureStroke : COLORS.edge.marker,
   },
 });
 
-/**
- * Builds the flow elements consisting of nodes and edges for the API request flow.
- *
- * @param results - An array of `ScenarioTestDetailResponseResult` containing the test results for each API request.
- * @returns An object containing the `nodes` and `edges` to be rendered in the flow diagram.
- */
 export const buildFlowElements = (
   results: ScenarioTestDetailResponseResult[],
 ): {
-  nodes: Node<ApiRequestData>[];
+  nodes: Node<ApiRequestData | Route>[];
   edges: Edge[];
 } => {
-  const nodes = results.map((result, index) => createNode(result, index));
-  const edges = results.slice(1).map((_, index) => createEdge(index, index + 1));
+  const nodes: Node<ApiRequestData | Route>[] = [];
+  const edges: Edge[] = [];
+  const stepIndexMap = new Map<string, number>();
+  const addedNodeIds = new Set<string>();
+
+  results.forEach((result, index) => {
+    stepIndexMap.set(result.stepName, index);
+    if (!addedNodeIds.has(result.stepName)) {
+      nodes.push(createNode(result, index));
+      addedNodeIds.add(result.stepName);
+    }
+  });
+
+  results.forEach((result, index) => {
+    const sourceId = result.stepName;
+
+    if (result.route && result.route.length > 0) {
+      let count = 0;
+
+      result.route.forEach((route, routeIdx) => {
+        const nextStepId = route.then?.step;
+        if (!nextStepId) return;
+
+        if (!addedNodeIds.has(nextStepId)) {
+          nodes.push({
+            id: nextStepId,
+            type: 'apiRequest',
+            position: {
+              x: (index + 1) * NODE_SPACING_X,
+              y: NODE_BASE_Y + (count++ + 1) * NODE_SPACING_Y,
+            },
+            data: {
+              ...(results.find(r => r.stepName === nextStepId) || route),
+            },
+          });
+          addedNodeIds.add(nextStepId);
+        }
+
+        edges.push(
+          createEdge(
+            sourceId,
+            nextStepId,
+            true,
+            route.expected,
+            results.find(r => r.stepName === sourceId)?.isRequestSuccess === false,
+          ),
+        );
+      });
+    } else if (result.nextStep && stepIndexMap.has(result.nextStep)) {
+      edges.push(createEdge(sourceId, result.nextStep, false, undefined, !result.isRequestSuccess));
+    }
+  });
 
   return { nodes, edges };
 };
 
-/**
- * Determines the status of a node based on the API request data.
- *
- * @param data - The `ApiRequestData` object representing the data for an API request.
- * @returns A `NodeStatus` value indicating whether the request was successful, erroneous, or unreachable.
- */
 export const getNodeStatusClass = (data: ApiRequestData): NodeStatus =>
   data.isRequestSuccess
     ? NodeStatus.Success

@@ -3,6 +3,7 @@ import { HttpMethod, ProtocolType, HttpRequest } from '@/common/types/apiTypes.t
 export interface ScenarioTestDetailResponseResult extends ScenarioTestBase {
   isRequestSuccess: boolean;
   route?: Route[];
+  nextStep?: string | null;
 }
 
 export interface ScenarioTestResultFileListResponse {
@@ -22,6 +23,7 @@ export interface ScenarioTestDetailResponse {
   totalDurationMs: number;
   averageDurationMs: number;
   filePath: string;
+  baseUrl: string;
   isScenarioSuccess: boolean;
   results: ScenarioTestDetailResponseResult[];
 }
@@ -90,10 +92,10 @@ interface ScenarioTestBase {
   type: ProtocolType;
   url: string;
   method: HttpMethod;
-  requestBody?: FormData;
+  requestBody?: FormData | null;
   requestHeader?: Record<string, string>;
-  responseBody?: object;
-  responseHeaders?: Record<string, string>;
+  responseBody?: string;
+  responseHeaders?: Record<string, string> | null;
   status: number;
   startTime: string;
   endTime: string;
