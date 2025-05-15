@@ -5,25 +5,18 @@ import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode';
 import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
 import styles from './styles/FlowCanvas.module.scss';
-import { COLORS } from '@/pages/flow-canvas/constants/color';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import { useAppSelector } from '@/store/hooks';
-
-import { NodeEndPoint } from '@/pages/flow-canvas/types';
-import {
-  getScenarioList,
-  getScenarioInfo,
-  scenarioTest,
-} from '@/pages/flow-canvas/service/scenarioService';
-import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
+import { scenarioTest } from '@/pages/flow-canvas/service/scenarioService';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
-import { useScenario } from './hooks/useScenario';
+import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
-const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode };
+import { NODE, EDGE } from '@/config/reactFlow';
 
-type NodeType = Node<NodeEndPoint>;
+const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: CustomNode };
+const edgeTypes = { flowCanvasEdge: CustomEdge };
 
 const FlowCanvas: React.FC = () => {
   const {
@@ -47,34 +40,6 @@ const FlowCanvas: React.FC = () => {
 
   const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
   const { saveScenario } = useScenario();
-
-  const onChangeLabel = useCallback(
-    (edgeId: string, newLabel: string) => {
-      setEdges(prev =>
-        prev.map(edge =>
-          edge.id === edgeId
-            ? {
-                ...edge,
-                data: {
-                  ...edge.data,
-                  expected: { ...edge.data?.expected, status: newLabel },
-                },
-              }
-            : edge,
-        ),
-      );
-    },
-    [setEdges],
-  );
-
-  const edgeTypes = useMemo(
-    () => ({
-      flowCanvasEdge: (edgeProps: any) => (
-        <CustomEdge {...edgeProps} onChangeLabel={onChangeLabel} />
-      ),
-    }),
-    [onChangeLabel],
-  );
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -173,15 +138,9 @@ const FlowCanvas: React.FC = () => {
           minZoom={0.5}
           edgeTypes={edgeTypes}
           defaultEdgeOptions={{
-            type: 'flowCanvasEdge',
+            type: EDGE.FLOW_CANVAS.type,
             animated: true,
-            data: {
-              expected: {
-                status: '200',
-                value: {},
-              },
-            },
-            markerEnd: { type: MarkerType.ArrowClosed, color: COLORS.allow },
+            markerEnd: { type: MarkerType.ArrowClosed, color: EDGE.FLOW_CANVAS.color },
           }}
         >
           <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
@@ -203,14 +162,16 @@ const FlowCanvas: React.FC = () => {
   );
 };
 
-const nodeColor = (node: any) => {
+const nodeColor = (node: Node) => {
   switch (node.type) {
-    case 'mockNode':
-      return '#6ede87';
-    case 'endpointNode':
-      return '#6865A5';
+    case NODE.MOCK.type:
+      return NODE.MOCK.color;
+    case NODE.ENDPOINT.type:
+      return NODE.ENDPOINT.color;
+    case NODE.SCENARIO.type:
+      return NODE.SCENARIO.color;
     default:
-      return '#ff0072';
+      return NODE.DEFALULT.color;
   }
 };
 

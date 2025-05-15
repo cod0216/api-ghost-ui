@@ -2,6 +2,7 @@ import { Node, Edge, MarkerType, Connection } from 'reactflow';
 import { NODE, EDGE } from '@/config/reactFlow';
 import { FlowRoute, FlowStep } from '@/pages/flow-canvas/types';
 import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
+import { parseBaseUrl, parseEndpoint } from '@/common/utils/jsonUtils';
 
 export const createMockNode = (vals: {
   baseUrl: string;
@@ -41,9 +42,9 @@ export const creatScenarioNode = (stepId: string, step: FlowStep): Node => ({
   data: {
     endpointId: stepId,
     header: step.request.header,
-    baseUrl: step.request.url,
+    baseUrl: parseBaseUrl(step.request.url),
     method: step.request.method,
-    path: step.request.url,
+    path: parseEndpoint(step.request.url),
     requestSchema: step.request.body,
     responseSchema: step.route.map(r => r.expected),
     showBody: false,
@@ -69,8 +70,8 @@ export const createEndpointNode = (
   };
 };
 
-export const createFlowEdge = (route: FlowRoute, source: string, target: string): Edge => ({
-  id: `${source}-${target}`,
+export const createFlowEdge = (route: FlowRoute, source: string): Edge => ({
+  id: `${source}-${route.then.step}`,
   type: EDGE.FLOW_CANVAS.type,
   source,
   target: route.then.step,

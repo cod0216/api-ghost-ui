@@ -1,7 +1,6 @@
 import { Node, Edge } from 'reactflow';
 import { ScenarioInfo } from '@/pages/flow-canvas/types';
-import { parseBaseUrl, parseEndpoint } from '@/common/utils/jsonUtils';
-
+import { createFlowEdge, creatScenarioNode } from '@/common/utils/reactFlowUtils';
 export const scenarioToFlowElements = (
   scenario: ScenarioInfo | null,
 ): { nodes: Node[]; edges: Edge[] } => {
@@ -11,35 +10,11 @@ export const scenarioToFlowElements = (
   if (!scenario) return { nodes, edges };
 
   Object.entries(scenario.steps).forEach(([stepId, step]) => {
-    const node: Node = {
-      id: stepId,
-      type: 'endpointNode',
-      position: step.position,
-      data: {
-        endpointId: stepId,
-        header: step.request.header,
-        baseUrl: parseBaseUrl(step.request.url),
-        method: step.request.method,
-        path: parseEndpoint(step.request.url),
-        requestSchema: step.request.body,
-        responseSchema: step.route.map(r => r.expected),
-        showBody: false,
-      },
-    };
+    const node: Node = creatScenarioNode(stepId, step);
     nodes.push(node);
 
     step.route.forEach((route, idx) => {
-      const edge: Edge = {
-        type: 'flowCanvasEdge',
-        id: `e-${stepId}-${route.then.step}-${idx}`,
-        source: stepId,
-        target: route.then.step,
-        animated: true,
-        data: {
-          expected: route.expected,
-          then: route.then,
-        },
-      };
+      const edge: Edge = createFlowEdge(route, stepId);
       edges.push(edge);
     });
   });
