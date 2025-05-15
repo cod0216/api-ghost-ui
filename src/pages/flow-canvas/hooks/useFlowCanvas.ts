@@ -33,7 +33,7 @@ export const useFlowCanvas = () => {
   // Use local state instead of useNodesState and useEdgesState
   const [nodes, setNodesLocal] = useState<Node<NodeEndPoint>[]>(storedNodes);
   const [edges, setEdgesLocal] = useState<ReactEdge[]>(storedEdges);
-
+  const { project } = useReactFlow();
   // Sync local state with Redux store (only when store changes)
   useEffect(() => {
     setNodesLocal(storedNodes);
@@ -170,6 +170,31 @@ export const useFlowCanvas = () => {
     [screenToFlowPosition],
   );
 
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent, endpoint: NodeEndPoint) => {
+      const position = project({ x: e.clientX, y: e.clientY });
+      const req = endpoint.requestSchema ?? [];
+      const res = endpoint.responseSchema ?? [];
+
+      setNodesLocal(ns => [
+        ...ns,
+        {
+          id: `${endpoint.endpointId}_${Date.now()}`,
+          type: 'endpointNode',
+          position,
+          data: {
+            ...endpoint,
+            requestSchema: req,
+            responseSchema: res,
+            showBody: false,
+          },
+        },
+      ]);
+      console.log('굿');
+    },
+    [screenToFlowPosition],
+  );
+
   const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {
     pendingEdgeRef.current = edge;
   }, []);
@@ -249,5 +274,6 @@ export const useFlowCanvas = () => {
     removeNode,
     setNodes,
     setEdges,
+    onDoubleClick,
   };
 };

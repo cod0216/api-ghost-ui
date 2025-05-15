@@ -40,33 +40,28 @@ const FlowCanvasMain: React.FC = () => {
   }, [selected]);
 
   return (
-    <div className={styles.container}>
-      <CommonSidebar
-        headerIcon={foldIcon}
-        sections={[
-          { title: 'API List', content: <ApiList /> },
-          {
-            title: 'Scenario List',
-            content: (
-              <ScenarioList
-                scenarios={scenarios}
-                selectedScenario={(selected?.name ?? '') + '.yaml'}
-                onSelect={handleSelect}
-              />
-            ),
-          },
-        ]}
-      />
-      <div className={styles.flex}>
-        {selected ? (
-          <ReactFlowProvider>
-            <FlowCanvas />
-          </ReactFlowProvider>
-        ) : (
-          <WelcomePage />
-        )}
+    <ReactFlowProvider>
+      <div className={styles.container}>
+        <CommonSidebar
+          className={styles.sidebarMargin}
+          headerIcon={foldIcon}
+          sections={[
+            { title: 'API List', content: <ApiList /> },
+            {
+              title: 'Scenario List',
+              content: (
+                <ScenarioList
+                  scenarios={scenarios}
+                  selectedScenario={(selected?.name ?? '') + '.yaml'}
+                  onSelect={handleSelect}
+                />
+              ),
+            },
+          ]}
+        />
+        <div className={styles.flex}>{selected ? <FlowCanvas /> : <WelcomePage />}</div>
       </div>
-    </div>
+    </ReactFlowProvider>
   );
 };
 

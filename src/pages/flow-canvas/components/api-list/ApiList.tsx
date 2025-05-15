@@ -10,6 +10,7 @@ import styles from '@/pages/flow-canvas/styles/ApiList.module.scss';
 import { ApiEndpoint, NodeEndPoint } from '@/pages/flow-canvas/types';
 import { nanoid } from 'nanoid';
 import { getEndpointList } from '@/pages/flow-canvas/service/endPointService';
+import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
 /**
  * ApiList component
@@ -29,7 +30,7 @@ const toNodeEndPoint = (ep: ApiEndpoint): NodeEndPoint => ({
 
 const ApiList: React.FC = () => {
   const [apiList, setApiList] = useState<ApiEndpoint[]>([]);
-
+  const { onDoubleClick } = useFlowCanvas();
   useEffect(() => {
     getEndpointList()
       .then(setApiList)
@@ -49,6 +50,7 @@ const ApiList: React.FC = () => {
               e.dataTransfer.setData('application/json', JSON.stringify(spec));
               e.dataTransfer.effectAllowed = 'move';
             }}
+            onDoubleClick={e => onDoubleClick(e, spec)}
           >
             <span className={styles[`${spec.method}Method`]}>{spec.method}</span> {spec.path}
           </li>
