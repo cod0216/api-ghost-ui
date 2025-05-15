@@ -43,7 +43,7 @@ export const exportScenario = createAsyncThunk(
       //   : (node.data.requestSchema ?? []);
       const jsonObj = finalRequestSchema.reduce(
         (acc: Record<string, any>, f: Field) => {
-          if (f.value !== undefined) acc[f.name] = f.value;
+          if (f && f.name && f.value !== undefined) acc[f.name] = f.value;
           return acc;
         },
         {} as Record<string, any>,
@@ -55,7 +55,7 @@ export const exportScenario = createAsyncThunk(
       const request = {
         method: node.data.method,
         url: `${node.data.baseUrl}${node.data.path}`,
-        header: { 'Content-Type': 'application/json' } as Record<string, string>,
+        header: node.data.header as Record<string, string>,
         body: reqBody,
       };
 
