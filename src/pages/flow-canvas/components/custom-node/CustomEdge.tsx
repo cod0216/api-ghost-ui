@@ -35,7 +35,7 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
   return (
     <>
       <path id={id} d={path} stroke="#222" strokeWidth={1.5} fill="none" markerEnd={markerEnd} />
-      {data?.expected?.status !== undefined && (
+      {data?.expected?.status && (
         <foreignObject
           width={150}
           height={40}

@@ -6,10 +6,9 @@ import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode';
 import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
 import styles from './styles/FlowCanvas.module.scss';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
-import { useMockApiModal } from '@/pages/flow-canvas/hooks/useMockApiModal';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
-
 import { useAppSelector } from '@/store/hooks';
+
 import { NodeEndPoint } from '@/pages/flow-canvas/types';
 import {
   getScenarioList,
@@ -22,8 +21,7 @@ import { useScenario } from './hooks/useScenario';
 import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
-
-const nodeTypes = { endpointNode: CustomNode };
+const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode };
 
 type NodeType = Node<NodeEndPoint>;
 
@@ -48,27 +46,6 @@ const FlowCanvas: React.FC = () => {
   } = useFlowCanvas();
 
   const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
-  const {
-    isVisible: isMockVisible, //TODO
-    formValues,
-    baseUrl,
-    path,
-    method,
-    isSchemaValid,
-    openMockApiModal,
-    saveMockApi,
-    closeMockApiModal,
-    reqSchemaText,
-    resSchemaText,
-    setBaseUrl,
-    setMethod,
-    setPath,
-    setIsSchemaValid,
-    setReqSchemaText,
-    setResSchemaText,
-    validateSchemas,
-  } = useMockApiModal();
-
   const { saveScenario } = useScenario();
 
   const onChangeLabel = useCallback(
@@ -80,7 +57,6 @@ const FlowCanvas: React.FC = () => {
                 ...edge,
                 data: {
                   ...edge.data,
-                  label: newLabel,
                   expected: { ...edge.data?.expected, status: newLabel },
                 },
               }
@@ -90,10 +66,6 @@ const FlowCanvas: React.FC = () => {
     },
     [setEdges],
   );
-
-  useEffect(() => {
-    console.log('[FlowCanvas] edges state →', edges);
-  }, [edges]);
 
   const edgeTypes = useMemo(
     () => ({
@@ -106,6 +78,8 @@ const FlowCanvas: React.FC = () => {
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
+  const [showMockApiModal, setShowMockApiModal] = useState<boolean>(false);
+
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
     setCurrentEdge(edge);
     setShowMappingModal(true);
@@ -115,8 +89,7 @@ const FlowCanvas: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     if (!wrapperRef.current) return;
-    const bounds = wrapperRef.current.getBoundingClientRect();
-    openMockApiModal(e.clientX - bounds.left, e.clientY - bounds.top);
+    setShowMockApiModal(true);
   };
 
   const selectedScenario = useAppSelector(state => state.scenario.selected);
@@ -222,26 +195,9 @@ const FlowCanvas: React.FC = () => {
             setEdges={setEdges}
           />
         )}
-        <MockApiModal
-          isVisible={isMockVisible}
-          formValues={formValues}
-          baseUrl={baseUrl}
-          path={path}
-          method={method}
-          isSchemaValid={isSchemaValid}
-          reqSchemaText={reqSchemaText}
-          resSchemaText={resSchemaText}
-          setBaseUrl={setBaseUrl}
-          setMethod={setMethod}
-          setPath={setPath}
-          setIsSchemaValid={setIsSchemaValid}
-          setReqSchemaText={setReqSchemaText}
-          setResSchemaText={setResSchemaText}
-          saveMockApi={saveMockApi}
-          onConfirm={addNode}
-          onCancel={closeMockApiModal}
-          validateSchemas={validateSchemas}
-        />
+        {showMockApiModal && (
+          <MockApiModal onConfirm={addNode} closeModal={() => setShowMockApiModal(false)} />
+        )}
       </div>
     </>
   );
@@ -249,8 +205,10 @@ const FlowCanvas: React.FC = () => {
 
 const nodeColor = (node: any) => {
   switch (node.type) {
-    case 'endpointNode':
+    case 'mockNode':
       return '#6ede87';
+    case 'endpointNode':
+      return '#6865A5';
     default:
       return '#ff0072';
   }

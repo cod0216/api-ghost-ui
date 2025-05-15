@@ -31,7 +31,7 @@ export interface ApiEndpoint {
 
 export interface NodeEndPoint {
   endpointId: string;
-  header?: string;
+  header?: Record<string, string>;
   method: HttpMethod | string;
   path: string;
   baseUrl: string;

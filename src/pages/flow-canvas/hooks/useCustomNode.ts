@@ -1,6 +1,6 @@
 import { useCallback, MouseEvent } from 'react';
-import { useReactFlow } from 'reactflow';
-import { Field, NodeEndPoint } from '@/pages/flow-canvas/types/index';
+import { Field } from '@/pages/flow-canvas/types/index';
+import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
 /**
  * Hook providing toggle and save handlers for a CustomNode.
@@ -8,7 +8,7 @@ import { Field, NodeEndPoint } from '@/pages/flow-canvas/types/index';
  * @param endpointId API spac ID
  */
 export const useNodeControls = (nodeId: string, endpointId?: string) => {
-  const { setNodes } = useReactFlow<NodeEndPoint>();
+  const { setNodes } = useFlowCanvas();
   /**
    * Toggle the showBody flag on the node.
    * If an event is passed, stop its propagation.
