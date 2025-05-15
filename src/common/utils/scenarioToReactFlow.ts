@@ -33,7 +33,6 @@ export const scenarioToFlowElements = (
         id: `e-${stepId}-${route.then.step}-${idx}`,
         source: stepId,
         target: route.then.step,
-        label: route.expected.status,
         animated: true,
         data: {
           expected: {

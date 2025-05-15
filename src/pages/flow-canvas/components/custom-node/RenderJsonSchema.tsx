@@ -3,7 +3,7 @@ import { Field } from '@/pages/flow-canvas/types/index.ts';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 
 interface RenderJsonSchemaProps {
-  data: Field[] | Field | undefined;
+  data: Field[];
   indent: number;
   onChange?: (updated: Field[]) => void;
 }
@@ -20,6 +20,8 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
     onChange?.(updated);
   };
 
+  if (!localData) return <></>;
+
   return (
     <>
       <div className={styles.jsonSchema} style={{ marginLeft: indent * 10 }}>
@@ -28,7 +30,7 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
       {localData.map((field, index) => (
         <div key={`${field.name}-${index}`} style={{ marginLeft: indent * 10 + 10 }}>
           <div>
-            <span title={field.type}>"{field.name}"</span>
+            <span title={field.type ? field.type : ''}>"{field.name}"</span>
             {' : '}
 
             {editingIndex === index ? (
@@ -46,7 +48,7 @@ const RenderJsonSchema: React.FC<RenderJsonSchemaProps> = ({ data, indent, onCha
                 indent={indent + 1}
                 onChange={updatedNested => {
                   const updated = [...localData];
-                  updated[index].nestedFields = updatedNested;
+                  updated[index].nestedFields = [...updatedNested];
                   setLocalData(updated);
                   onChange?.(updated);
                 }}
