@@ -18,7 +18,7 @@
   font-size: $font-size-sm;
   cursor: pointer;
   border-radius: $radius-sm;
-
+  white-space: nowrap;
   &:hover {
     background-color: $primary-100;
     z-index: 10;
