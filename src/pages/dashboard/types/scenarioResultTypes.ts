@@ -84,7 +84,7 @@ export interface ApiFlowResult {
 export interface FormData {
   file?: Record<string, string>;
   text?: Record<string, string>;
-  json?: object | null;
+  json?: string | null;
 }
 
 interface ScenarioTestBase {
