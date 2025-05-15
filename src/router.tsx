@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     errorElement: <NotFound />,
     children: [
-      { path: '', element: <Navigate to={ROUTES.FLOW_CANVAS.path} /> },
+      { path: '', element: <Navigate to={ROUTES.FLOW_CANVAS.path} replace /> },
       { path: ROUTES.FLOW_CANVAS.path, element: <FlowCanvasMain /> },
       { path: ROUTES.DASHBOARD.path, element: <Dashboard /> },
     ],

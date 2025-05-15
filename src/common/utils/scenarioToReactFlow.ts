@@ -1,5 +1,6 @@
 import { Node, Edge } from 'reactflow';
 import { ScenarioInfo } from '@/pages/flow-canvas/types';
+import { parseBaseUrl, parseEndpoint } from '@/common/utils/jsonUtils';
 
 export const scenarioToFlowElements = (
   scenario: ScenarioInfo | null,
@@ -17,9 +18,9 @@ export const scenarioToFlowElements = (
       data: {
         endpointId: stepId,
         header: step.request.header,
-        baseUrl: step.request.url,
+        baseUrl: parseBaseUrl(step.request.url),
         method: step.request.method,
-        path: step.request.url,
+        path: parseEndpoint(step.request.url),
         requestSchema: step.request.body,
         responseSchema: step.route.map(r => r.expected),
         showBody: false,
