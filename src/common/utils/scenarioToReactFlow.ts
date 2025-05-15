@@ -36,10 +36,8 @@ export const scenarioToFlowElements = (
         target: route.then.step,
         animated: true,
         data: {
-          expected: {
-            status: '200',
-            value: {},
-          },
+          expected: route.expected,
+          then: route.then,
         },
       };
       edges.push(edge);
