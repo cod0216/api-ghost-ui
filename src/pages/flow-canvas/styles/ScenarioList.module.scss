@@ -1,13 +1,12 @@
 /**
  * Styles for ScenarioList component.
 */
-
 .list {
   list-style: none;
   padding: 0;
   margin: 0;
   max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -17,8 +16,35 @@
   cursor: pointer;
   border-radius: $radius-sm;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  position: relative;
+
   &:hover {
     background-color: $primary-100;
+  }
+
+  &::after {
+    content: attr(title);
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    white-space: normal;
+    background: $white;
+    border: 1px solid $gray-300;
+    padding: 4px 8px;
+    border-radius: $radius-sm;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    max-width: 300px;
+  }
+
+  &:hover::after {
+    display: block;
   }
 }
 
