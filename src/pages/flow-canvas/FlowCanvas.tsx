@@ -18,7 +18,7 @@ import {
 import { ScenarioInfo } from '@/pages/flow-canvas/types/index.ts';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from './hooks/useScenario';
-import SaveButton from '@/common/components/SaveButton';
+import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode };
@@ -147,7 +147,7 @@ const FlowCanvas: React.FC = () => {
     <>
       <div className={styles.actionContainer}>
         <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
-        <SaveButton onSave={saveScenario} />
+        <SaveForm />
       </div>
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow

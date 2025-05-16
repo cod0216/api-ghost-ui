@@ -42,17 +42,19 @@ const ApiList: React.FC = () => {
       {apiList.map(api => {
         const spec = toNodeEndPoint(api);
         return (
-          <li
-            key={spec.endpointId}
-            className={styles.item}
-            draggable
-            onDragStart={e => {
-              e.dataTransfer.setData('application/json', JSON.stringify(spec));
-              e.dataTransfer.effectAllowed = 'move';
-            }}
-            onDoubleClick={e => onDoubleClick(e, spec)}
-          >
-            <span className={styles[`${spec.method}Method`]}>{spec.method}</span> {spec.path}
+          <li key={spec.endpointId} className={styles.wrapper}>
+            <div
+              className={styles.item}
+              title={`${spec.method} ${spec.path}`}
+              draggable
+              onDragStart={e => {
+                e.dataTransfer.setData('application/json', JSON.stringify(spec));
+                e.dataTransfer.effectAllowed = 'move';
+              }}
+              onDoubleClick={e => onDoubleClick(e, spec)}
+            >
+              <span className={styles[`${spec.method}Method`]}>{spec.method}</span> {spec.path}
+            </div>
           </li>
         );
       })}
