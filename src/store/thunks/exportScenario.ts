@@ -18,14 +18,10 @@ export const exportScenario = createAsyncThunk(
   async (meta: Payload, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const { nodes, edges } = state.flow;
-    // console.log('[exportScenario] nodes →', nodes);
-    // console.log('[exportScenario] edges →', edges);
 
     const schemaState = state.schemaEditor;
     console.log(
-      // '[exportScenario] state.flow.edges.mappingInfo →',
       edges.map(e => ({
-        //.map 하기 전에null  체크,
         id: e.id,
         mappingInfo: (e.data as any)?.mappingInfo ?? null,
       })),
@@ -39,13 +35,9 @@ export const exportScenario = createAsyncThunk(
 
       const rawSchema = entry?.requestSchema ?? node.data.requestSchema;
       const finalRequestSchema: Field[] = Array.isArray(rawSchema) ? rawSchema : [];
-      // const finalRequestSchema = entry?.requestSchema?.length
-      //   ? entry.requestSchema
-      //   : (node.data.requestSchema ?? []);
       const jsonObj = finalRequestSchema.reduce(
-        // 하기 전에 null  체크,
         (acc: Record<string, any>, f: Field) => {
-          if (f && f.name && f.value !== undefined) acc[f.name] = f.value; // null 체크
+          if (f && f.name && f.value !== undefined) acc[f.name] = f.value;
           return acc;
         },
         {} as Record<string, any>,
@@ -62,9 +54,8 @@ export const exportScenario = createAsyncThunk(
       };
 
       const routes: FlowRoute[] = edges
-        .filter(e => e.source === id) // 하기 전에null  체크, filter, 맵, 리듀스, foreach find 이런거 isArray랑 null 다 체크 해야됨
+        .filter(e => e.source === id)
         .map(e => {
-          // 하기 전에null  체크,
           const sourceId = e.source;
           const targetId = e.target;
           let pairs: MappingPair[] = (e.data as any)?.mappingInfo || [];

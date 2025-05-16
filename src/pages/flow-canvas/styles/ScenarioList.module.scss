@@ -1,6 +1,8 @@
 /**
  * Styles for ScenarioList component.
 */
+@use '@/styles/mixins/scrollbar';
+
 .list {
   list-style: none;
   padding: 0;
@@ -8,6 +10,7 @@
   max-height: 50vh;
   overflow-y: auto;
   overflow-x: hidden;
+  @include scrollbar.customScrollbar;
 }
 
 .item {
