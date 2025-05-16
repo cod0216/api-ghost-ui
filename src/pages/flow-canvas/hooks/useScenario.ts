@@ -86,9 +86,32 @@ export const useScenario = () => {
     [dispatch],
   );
 
+  const exportInline = useCallback(
+    async (name: string, description: string, timeoutMs: number) => {
+      try {
+        const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
+        const resp = unwrapResult(actionResult);
+        if (!resp.status) {
+          alert('Failed to save scenario.');
+          return;
+        }
+        const list = await getScenarioList();
+        dispatch(setScenarioList(list));
+
+        const info = await getScenarioInfo(`${name}.yaml`);
+        dispatch(selectScenario(info));
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred while saving the scenario.');
+      }
+    },
+    [dispatch],
+  );
+
   return {
     saveScenario,
     autoSave,
     autoLoad,
+    exportInline,
   };
 };

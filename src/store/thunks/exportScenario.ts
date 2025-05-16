@@ -25,6 +25,7 @@ export const exportScenario = createAsyncThunk(
     console.log(
       // '[exportScenario] state.flow.edges.mappingInfo →',
       edges.map(e => ({
+        //.map 하기 전에null  체크,
         id: e.id,
         mappingInfo: (e.data as any)?.mappingInfo ?? null,
       })),
@@ -42,8 +43,9 @@ export const exportScenario = createAsyncThunk(
       //   ? entry.requestSchema
       //   : (node.data.requestSchema ?? []);
       const jsonObj = finalRequestSchema.reduce(
+        // 하기 전에 null  체크,
         (acc: Record<string, any>, f: Field) => {
-          if (f.value !== undefined) acc[f.name] = f.value;
+          if (f && f.name && f.value !== undefined) acc[f.name] = f.value; // null 체크
           return acc;
         },
         {} as Record<string, any>,
@@ -60,8 +62,9 @@ export const exportScenario = createAsyncThunk(
       };
 
       const routes: FlowRoute[] = edges
-        .filter(e => e.source === id)
+        .filter(e => e.source === id) // 하기 전에null  체크, filter, 맵, 리듀스, foreach find 이런거 isArray랑 null 다 체크 해야됨
         .map(e => {
+          // 하기 전에null  체크,
           const sourceId = e.source;
           const targetId = e.target;
           let pairs: MappingPair[] = (e.data as any)?.mappingInfo || [];
