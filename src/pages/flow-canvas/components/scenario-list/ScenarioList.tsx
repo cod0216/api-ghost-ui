@@ -28,6 +28,7 @@ const ScenarioList: React.FC<ScenarioListProps> = ({ scenarios, selectedScenario
         return (
           <li
             key={fileName}
+            title={fileName}
             onClick={() => onSelect(fileName)}
             className={`${styles.item} ${isSelected ? styles.selectedScenarioFile : ''}`}
           >
