@@ -1,0 +1,61 @@
+.container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  width: 100vw;
+}
+
+.contentArea {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto 1fr 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: $gray-50;
+}
+
+.dataRow {
+  grid-column: span 2;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.dataField {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+}
+
+.dataField,
+.chartCard {
+  background: $white;
+  text-align: center;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: $radius-lg;
+
+  .value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.chartRow {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.percentileTable {
+  width: 100%;
+  border-collapse: collapse;
+  td,
+  th {
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+}
+
+canvas {
+  width: 200px;
+}
