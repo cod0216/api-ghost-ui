@@ -190,7 +190,6 @@ export const useFlowCanvas = () => {
           },
         },
       ]);
-      console.log('굿');
     },
     [screenToFlowPosition],
   );
