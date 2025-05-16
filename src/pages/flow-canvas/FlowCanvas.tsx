@@ -14,8 +14,9 @@ import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 import { NODE, EDGE } from '@/config/reactFlow';
+import ScenarioNode from '@/pages/flow-canvas/components/custom-node/ScenarioNode';
 
-const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: CustomNode };
+const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: ScenarioNode };
 const edgeTypes = { flowCanvasEdge: CustomEdge };
 
 const FlowCanvas: React.FC = () => {

@@ -30,7 +30,7 @@ export const useFlowCanvas = () => {
   const storedNodes = useAppSelector(state => state.flow.nodes);
   const storedEdges = useAppSelector(state => state.flow.edges);
 
-  const [nodes, setNodesLocal] = useState<Node<NodeEndPoint>[]>(storedNodes);
+  const [nodes, setNodesLocal] = useState<Node[]>(storedNodes);
   const [edges, setEdgesLocal] = useState<ReactEdge[]>(storedEdges);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export const useFlowCanvas = () => {
   const { screenToFlowPosition, addNodes } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
-  const setNodes = useCallback((updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
+  const setNodes = useCallback((updater: (ns: Node[]) => Node[]) => {
     setNodesLocal(updater);
   }, []);
 
@@ -72,7 +72,7 @@ export const useFlowCanvas = () => {
     setEdgesLocal(prev => applyEdgeChanges(changes, prev));
   }, []);
 
-  const updateNode = useCallback((node: Node<NodeEndPoint>) => {
+  const updateNode = useCallback((node: Node) => {
     setNodesLocal(prev => {
       const idx = prev.findIndex(n => n.id === node.id);
       if (idx === -1) return prev;
