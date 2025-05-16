@@ -1,0 +1,44 @@
+@use '@/styles/mixins/scrollbar';
+
+.jsonContainer {
+  border-radius: $radius-lg;
+  background-color: #fafafa;
+}
+
+.toggleWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.toggleButton {
+  font-size: $font-size-2xs;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: $font-weight-bold;
+  }
+}
+
+.textArea {
+  width: 100%;
+  min-height: 200px;
+  font-size: $font-size-2xs;
+  border-radius: $radius-md;
+  border: none;
+  resize: vertical;
+  white-space: pre-wrap;
+  background-color: $gray-50;
+  font-family: inherit;
+  padding: 10px;
+}
+
+.pre {
+  max-height: 350px;
+  overflow: auto;
+  font-size: $font-size-2xs;
+  font-family: inherit;
+  white-space: pre-wrap;
+}

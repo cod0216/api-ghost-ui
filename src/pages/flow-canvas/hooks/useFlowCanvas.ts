@@ -21,6 +21,7 @@ import {
 import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setNodes as setNodesInStore, setEdges as setEdgesInStore } from '@/store/slices/flowSlice';
+import { createMockNode, createEndpointNode } from '@/common/utils/reactFlowUtils';
 
 export const useFlowCanvas = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -28,13 +29,10 @@ export const useFlowCanvas = () => {
   const dispatch = useAppDispatch();
   const storedNodes = useAppSelector(state => state.flow.nodes);
   const storedEdges = useAppSelector(state => state.flow.edges);
-  const viewport = useAppSelector(state => state.flow.viewport);
 
-  // Use local state instead of useNodesState and useEdgesState
-  const [nodes, setNodesLocal] = useState<Node<NodeEndPoint>[]>(storedNodes);
+  const [nodes, setNodesLocal] = useState<Node[]>(storedNodes);
   const [edges, setEdgesLocal] = useState<ReactEdge[]>(storedEdges);
 
-  // Sync local state with Redux store (only when store changes)
   useEffect(() => {
     setNodesLocal(storedNodes);
   }, [storedNodes]);
@@ -43,13 +41,11 @@ export const useFlowCanvas = () => {
     setEdgesLocal(storedEdges);
   }, [storedEdges]);
 
-  // Batch updates to Redux store
   const syncToRedux = useCallback(() => {
     dispatch(setNodesInStore(nodes));
     dispatch(setEdgesInStore(edges));
   }, [dispatch, nodes, edges]);
 
-  // Debounced sync to Redux (prevents too many dispatches)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       syncToRedux();
@@ -57,10 +53,10 @@ export const useFlowCanvas = () => {
     return () => clearTimeout(timeoutId);
   }, [nodes, edges, syncToRedux]);
 
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, addNodes } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
-  const setNodes = useCallback((updater: (ns: Node<NodeEndPoint>[]) => Node<NodeEndPoint>[]) => {
+  const setNodes = useCallback((updater: (ns: Node[]) => Node[]) => {
     setNodesLocal(updater);
   }, []);
 
@@ -76,7 +72,7 @@ export const useFlowCanvas = () => {
     setEdgesLocal(prev => applyEdgeChanges(changes, prev));
   }, []);
 
-  const updateNode = useCallback((node: Node<NodeEndPoint>) => {
+  const updateNode = useCallback((node: Node) => {
     setNodesLocal(prev => {
       const idx = prev.findIndex(n => n.id === node.id);
       if (idx === -1) return prev;
@@ -149,23 +145,9 @@ export const useFlowCanvas = () => {
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
       });
-      const req = endpoint.requestSchema ?? [];
-      const res = endpoint.responseSchema ?? [];
 
-      setNodesLocal(ns => [
-        ...ns,
-        {
-          id: `${endpoint.endpointId}_${Date.now()}`,
-          type: 'endpointNode',
-          position,
-          data: {
-            ...endpoint,
-            requestSchema: req,
-            responseSchema: res,
-            showBody: false,
-          },
-        },
-      ]);
+      const node: Node = createEndpointNode(endpoint, position);
+      setNodesLocal(ns => [...ns, node]);
     },
     [screenToFlowPosition],
   );
@@ -206,30 +188,34 @@ export const useFlowCanvas = () => {
       y: number;
       header?: Record<string, string>;
     }) => {
-      const id = `mock-${Date.now()}`;
-      const newNode = {
-        id,
-        type: 'mockNode',
-        position: { x: vals.x, y: vals.y },
-        data: {
-          endpointId: id,
-          baseUrl: vals.baseUrl,
-          method: vals.method,
-          path: vals.path,
-          requestSchema: vals.requestSchema,
-          responseSchema: vals.responseSchema,
-          showBody: false,
-          header: vals.header,
-        } as NodeEndPoint,
-      };
+      const newNode = createMockNode(vals);
       setNodesLocal(ns => ns.concat(newNode));
     },
     [],
   );
 
-  const removeNode = useCallback((nodeId: String) => {
+  const removeNode = useCallback((nodeId: string) => {
     setNodesLocal(prev => prev.filter(n => n.id !== nodeId));
   }, []);
+
+  const onChangeLabel = useCallback(
+    (edgeId: string, newLabel: string) => {
+      setEdges(prev =>
+        prev.map(edge =>
+          edge.id === edgeId
+            ? {
+                ...edge,
+                data: {
+                  ...edge.data,
+                  expected: { ...edge.data?.expected, status: newLabel },
+                },
+              }
+            : edge,
+        ),
+      );
+    },
+    [setEdges],
+  );
 
   return {
     wrapperRef,
@@ -249,5 +235,6 @@ export const useFlowCanvas = () => {
     removeNode,
     setNodes,
     setEdges,
+    onChangeLabel,
   };
 };

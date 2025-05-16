@@ -14,5 +14,13 @@ export const COLORS = {
   edge: {
     stroke: '#888',
     marker: '#888',
+    failureStroke: '#e74c3c',
+    failureMarker: '#e74c3c',
   },
+};
+
+export const FLOW_LAYOUT = {
+  NODE_SPACING_X: 250,
+  NODE_SPACING_Y: 150,
+  NODE_BASE_Y: 250,
 };
