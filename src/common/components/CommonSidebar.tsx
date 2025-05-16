@@ -36,7 +36,7 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
       className={`${styles.sidebarContainer} ${isExpand ? styles.expand : ''} ${className}`.trim()}
     >
       <div className={styles.wrappHeader}>
-        {!isExpand && <div className={`${styles.title} ${className}`}>{header}</div>}
+        {!isExpand && <div className={`${styles.title}`}>{header}</div>}
         <button
           className={styles.iconButton}
           aria-label={isExpand ? 'expand sidebar' : 'Collapse sidebar'}
