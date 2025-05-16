@@ -6,20 +6,27 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: $white;
+  background: $white;
   padding: 5px 20px;
   border-radius: $radius-xl;
   box-shadow: 0 0 5px $gray-300;
-  display: flex;
-  gap: 10px;
-  align-items: center;
   z-index: 1000;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 .container {
   display: flex;
   height: 100vh;
 }
-
+.buttonsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .canvas {
   flex-grow: 1;
   height: 100vh;
@@ -48,4 +55,8 @@
     stroke-dasharray: 5 5 !important;
     color: $primary-700 !important;
   }
+}
+.separator {
+  margin: 0 6px;
+  color: $gray-400;
 }

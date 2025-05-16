@@ -17,6 +17,13 @@
   background-color: $white;
   border-right: 1px solid $outline-color;
 }
+.wrappHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  height: 48px;
+}
 
 /**
   * A search input field in the sidebar.
@@ -27,4 +34,54 @@
   border: 0;
   border-radius: $radius-3xl;
   background-color: $gray-200;
+}
+
+.sidebarContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  height: 100%;
+  width: 250px;
+  background-color: $white;
+  border-right: 1px solid $outline-color;
+  transition:
+    width 0.3s ease,
+    padding 0.3s ease;
+}
+
+.expand {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  background-color: $white;
+  border-radius: $radius-3xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    border-radius 0.3s ease;
+  z-index: 1000;
+}
+
+.iconButton {
+  background: none;
+  margin-top: 5px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 1001;
+}
+
+img {
+  width: 20px;
+  height: 20px;
 }

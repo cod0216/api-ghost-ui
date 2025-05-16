@@ -16,17 +16,26 @@ import { getScenarioInfo } from '@/pages/flow-canvas/service/scenarioService';
  */
 interface ScenarioListProps {
   scenarios: string[];
+  selectedScenario: string;
   onSelect: (fileName: string) => void;
 }
 
-const ScenarioList: React.FC<ScenarioListProps> = ({ scenarios, onSelect }) => {
+const ScenarioList: React.FC<ScenarioListProps> = ({ scenarios, selectedScenario, onSelect }) => {
   return (
     <ul className={styles.list}>
-      {scenarios.map(fileName => (
-        <li key={fileName} onClick={() => onSelect(fileName)} className={styles.item}>
-          {fileName}
-        </li>
-      ))}
+      {scenarios.map(fileName => {
+        const isSelected = fileName === selectedScenario;
+        return (
+          <li
+            key={fileName}
+            title={fileName}
+            onClick={() => onSelect(fileName)}
+            className={`${styles.item} ${isSelected ? styles.selectedScenarioFile : ''}`}
+          >
+            {fileName}
+          </li>
+        );
+      })}
     </ul>
   );
 };

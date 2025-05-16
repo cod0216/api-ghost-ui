@@ -10,6 +10,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
 import { getScenarioInfo, getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
 import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
+import foldIcon from '@/assets/icons/fold.svg';
 
 const FlowCanvasMain: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -39,26 +40,28 @@ const FlowCanvasMain: React.FC = () => {
   }, [selected]);
 
   return (
-    <div className={styles.container}>
-      <CommonSidebar
-        sections={[
-          { title: 'API List', content: <ApiList /> },
-          {
-            title: 'Scenario List',
-            content: <ScenarioList scenarios={scenarios} onSelect={handleSelect} />,
-          },
-        ]}
-      />
-      <div className={styles.flex}>
-        {selected ? (
-          <ReactFlowProvider>
-            <FlowCanvas />
-          </ReactFlowProvider>
-        ) : (
-          <WelcomePage />
-        )}
+    <ReactFlowProvider>
+      <div className={styles.container}>
+        <CommonSidebar
+          className={styles.sidebarMargin}
+          headerIcon={foldIcon}
+          sections={[
+            { title: 'API List', content: <ApiList /> },
+            {
+              title: 'Scenario List',
+              content: (
+                <ScenarioList
+                  scenarios={scenarios}
+                  selectedScenario={(selected?.name ?? '') + '.yaml'}
+                  onSelect={handleSelect}
+                />
+              ),
+            },
+          ]}
+        />
+        <div className={styles.flex}>{selected ? <FlowCanvas /> : <WelcomePage />}</div>
       </div>
-    </div>
+    </ReactFlowProvider>
   );
 };
 

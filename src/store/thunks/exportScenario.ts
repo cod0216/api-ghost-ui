@@ -18,12 +18,9 @@ export const exportScenario = createAsyncThunk(
   async (meta: Payload, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const { nodes, edges } = state.flow;
-    // console.log('[exportScenario] nodes →', nodes);
-    // console.log('[exportScenario] edges →', edges);
 
     const schemaState = state.schemaEditor;
     console.log(
-      // '[exportScenario] state.flow.edges.mappingInfo →',
       edges.map(e => ({
         id: e.id,
         mappingInfo: (e.data as any)?.mappingInfo ?? null,
@@ -38,9 +35,6 @@ export const exportScenario = createAsyncThunk(
 
       const rawSchema = entry?.requestSchema ?? node.data.requestSchema;
       const finalRequestSchema: Field[] = Array.isArray(rawSchema) ? rawSchema : [];
-      // const finalRequestSchema = entry?.requestSchema?.length
-      //   ? entry.requestSchema
-      //   : (node.data.requestSchema ?? []);
       const jsonObj = finalRequestSchema.reduce(
         (acc: Record<string, any>, f: Field) => {
           if (f && f.name && f.value !== undefined) acc[f.name] = f.value;
