@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
+import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
-type EdgeLabelEditorProps = {
+interface EdgeLabelEditorProps {
   edgeId: string;
   initialLabel?: string;
   onChangeLabel?: (newLabel: string) => void;
-};
+}
 
-const EdgeLabelEditor: React.FC<EdgeLabelEditorProps> = ({
-  edgeId,
-  initialLabel = '200',
-  onChangeLabel,
-}) => {
+const EdgeLabelEditor: React.FC<EdgeLabelEditorProps> = ({ edgeId, initialLabel = '200' }) => {
   const [label, setLabel] = useState(initialLabel);
   const [editing, setEditing] = useState(false);
 
@@ -23,11 +20,11 @@ const EdgeLabelEditor: React.FC<EdgeLabelEditorProps> = ({
     setLabel(e.target.value);
   };
 
+  const { onChangeLabel } = useFlowCanvas();
+
   const handleBlur = () => {
     setEditing(false);
-    if (onChangeLabel) {
-      onChangeLabel(label);
-    }
+    onChangeLabel(edgeId, label);
   };
 
   return (

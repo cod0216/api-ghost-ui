@@ -49,7 +49,7 @@ export const exportScenario = createAsyncThunk(
       const request = {
         method: node.data.method,
         url: `${node.data.baseUrl}${node.data.path}`,
-        header: { 'Content-Type': 'application/json' } as Record<string, string>,
+        header: node.data.header as Record<string, string>,
         body: reqBody,
       };
 
