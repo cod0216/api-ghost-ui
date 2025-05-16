@@ -18,60 +18,43 @@ export const exportScenario = createAsyncThunk(
   async (meta: Payload, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const { nodes, edges } = state.flow;
-
     const schemaState = state.schemaEditor;
-    console.log(
-      edges.map(e => ({
-        id: e.id,
-        mappingInfo: (e.data as any)?.mappingInfo ?? null,
-      })),
-    );
 
     const steps: Record<string, FlowStep> = {};
 
     nodes.forEach(node => {
       const id = node.id;
-      const entry = schemaState[id];
+      const entry = schemaState[id] ?? {};
 
-      const rawSchema = entry?.requestSchema ?? node.data.requestSchema;
-      const finalRequestSchema: Field[] = Array.isArray(rawSchema) ? rawSchema : [];
-      const jsonObj = finalRequestSchema.reduce(
-        (acc: Record<string, any>, f: Field) => {
-          if (f && f.name && f.value !== undefined) acc[f.name] = f.value;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-      const reqBody = finalRequestSchema.length
-        ? { formdata: null, json: JSON.stringify(jsonObj, null, 2) }
-        : null;
+      const reqFields = sanitizeFieldArray(entry.requestSchema || node.data.requestSchema);
+      const resFields = sanitizeFieldArray(entry.responseSchema || node.data.responseSchema);
+
+      const jsonBody = buildJsonBody(reqFields);
 
       const request = {
         method: node.data.method,
         url: `${node.data.baseUrl}${node.data.path}`,
         header: node.data.header as Record<string, string>,
-        body: reqBody,
+        body: jsonBody ? { formdata: null, json: jsonBody } : null,
       };
 
       const routes: FlowRoute[] = edges
         .filter(e => e.source === id)
         .map(e => {
-          const sourceId = e.source;
-          const targetId = e.target;
-          let pairs: MappingPair[] = (e.data as any)?.mappingInfo || [];
+          let pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
+            ? (e.data as any).mappingInfo
+            : [];
           if (pairs.length === 0) {
-            const respList = flattenSchema(
-              nodes.find(n => n.id === sourceId)!.data.responseSchema ?? [],
-            );
-            const reqList = flattenSchema(
-              nodes.find(n => n.id === targetId)!.data.requestSchema ?? [],
-            );
+            const respList = flattenSchema(resFields);
+            const reqList = flattenSchema(reqFields);
+
             pairs = respList.flatMap(rk =>
               reqList
                 .filter(qk => qk.key.split('.').pop() === rk.key.split('.').pop())
                 .map(qk => ({ sourceKey: rk.key, targetKey: qk.key })),
             );
           }
+
           const thenStore: Record<string, string> = {};
           pairs.forEach(({ sourceKey, targetKey }) => {
             const sourceLeaf = sourceKey.split('.').pop()!;
@@ -79,12 +62,12 @@ export const exportScenario = createAsyncThunk(
             thenStore[targetLeaf] = sourceLeaf;
           });
 
-          const respFields =
-            schemaState[sourceId]?.responseSchema ?? node.data.responseSchema ?? [];
           const expectedValue = pairs.reduce<Record<string, any>>((acc, { sourceKey }) => {
             const leaf = sourceKey.split('.').pop()!;
-            const field = respFields.find(f => f.name === leaf);
-            if (field?.value !== undefined) acc[leaf] = field.value;
+            const field = resFields.find(f => f.name === leaf);
+            if (field?.value !== undefined) {
+              acc[leaf] = field.value;
+            }
             return acc;
           }, {});
 
@@ -95,7 +78,7 @@ export const exportScenario = createAsyncThunk(
             },
             then: {
               store: thenStore,
-              step: targetId,
+              step: e.target,
             },
           };
         });
