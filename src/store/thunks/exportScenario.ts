@@ -124,3 +124,18 @@ export const exportScenario = createAsyncThunk(
     }
   },
 );
+
+const sanitizeFieldArray = (fields: unknown): Field[] => {
+  return Array.isArray(fields) ? fields.filter(f => f && typeof f.name === 'string') : [];
+};
+
+const buildJsonBody = (fields: Field[]): string | null => {
+  const obj = fields.reduce(
+    (acc, f) => {
+      if (f.name && f.value !== undefined) acc[f.name] = f.value;
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+  return Object.keys(obj).length ? JSON.stringify(obj, null, 2) : null;
+};

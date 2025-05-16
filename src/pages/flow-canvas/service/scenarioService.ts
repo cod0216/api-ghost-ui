@@ -4,6 +4,8 @@ import {
   ScenarioNameListResponse,
 } from '@/pages/flow-canvas/types/index.ts';
 import { apiClient } from '@/common/service/apiClient.ts';
+import { promises } from 'dns';
+import { buildQueryString } from '@/common/utils/apiUtils';
 
 export const getScenarioList = async (): Promise<string[]> => {
   const response: ScenarioNameListResponse = await apiClient.get('/apighost/scenario-list');
@@ -29,4 +31,10 @@ export const scenarioTest = (name: string): EventSource => {
   const queryString = new URLSearchParams({ scenarioName: name }).toString();
   const fullUrl = `http://localhost:8080/apighost/scenario-test?${queryString}`;
   return new EventSource(fullUrl);
+};
+
+export const scenarioDelete = async (fileName: string): Promise<boolean> => {
+  console.log('', fileName);
+  const response: boolean = await apiClient.delete(`/apighost/file-remove/${fileName}`);
+  return response;
 };
