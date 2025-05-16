@@ -4,6 +4,11 @@ export interface ScenarioNameListResponse {
   scenarioNameList: string[];
 }
 
+export interface ScenarioInfoResponse {
+  fileName: string;
+  file: ScenarioInfo;
+}
+
 export interface ScenarioInfo {
   fileName?: string;
   name: string;

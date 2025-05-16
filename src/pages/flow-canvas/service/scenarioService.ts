@@ -1,4 +1,8 @@
-import { ScenarioInfo, ScenarioNameListResponse } from '@/pages/flow-canvas/types/index.ts';
+import {
+  ScenarioInfo,
+  ScenarioInfoResponse,
+  ScenarioNameListResponse,
+} from '@/pages/flow-canvas/types/index.ts';
 import { apiClient } from '@/common/service/apiClient.ts';
 
 export const getScenarioList = async (): Promise<string[]> => {
@@ -7,9 +11,10 @@ export const getScenarioList = async (): Promise<string[]> => {
 };
 
 export const getScenarioInfo = async (fileName: string): Promise<ScenarioInfo> => {
-  return await apiClient.get('/apighost/scenario-info', {
+  const response: ScenarioInfoResponse = await apiClient.get('/apighost/scenario-info', {
     scenarioName: fileName,
   });
+  return response.file;
 };
 
 export const exportScenario = async (
