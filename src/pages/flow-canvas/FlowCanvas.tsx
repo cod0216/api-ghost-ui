@@ -15,6 +15,7 @@ import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 import { NODE, EDGE } from '@/config/reactFlow';
 import ScenarioNode from '@/pages/flow-canvas/components/custom-node/ScenarioNode';
+import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 
 const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: ScenarioNode };
 const edgeTypes = { flowCanvasEdge: CustomEdge };
@@ -40,7 +41,6 @@ const FlowCanvas: React.FC = () => {
   } = useFlowCanvas();
 
   const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
-  const { saveScenario } = useScenario();
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -72,9 +72,7 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
-    console.log('hihihihi');
     if (!fileName) {
-      console.log('heelo!!');
       return;
     }
     if (isConnected) {

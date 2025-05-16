@@ -85,3 +85,17 @@ img {
   width: 20px;
   height: 20px;
 }
+
+.expandButton {
+  background-color: $white;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    scale: 105%;
+  }
+}

@@ -38,7 +38,7 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
       <div className={styles.wrappHeader}>
         {!isExpand && <div className={`${styles.title} ${className}`}>{header}</div>}
         <button
-          className={styles.iconButton}
+          className={styles.expandButton}
           aria-label={isExpand ? 'expand sidebar' : 'Collapse sidebar'}
           onClick={toggleExpand}
         >
@@ -47,9 +47,9 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
       </div>
       {!isExpand && search && <input type="text" placeholder="Search" className={styles.search} />}
       {!isExpand &&
-        sections.map(({ title, content }, index) => (
+        sections.map(({ title, titleComponent, content }, index) => (
           <div key={index} className={styles.section}>
-            {title && <h4>{title}</h4>}
+            {titleComponent ? titleComponent : title && <h4>{title}</h4>}
             {content}
           </div>
         ))}

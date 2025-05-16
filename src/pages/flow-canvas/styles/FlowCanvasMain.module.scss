@@ -6,3 +6,41 @@
 .flex {
   flex: 1;
 }
+
+.deleteButton {
+  background-color: $white;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    scale: 105%;
+  }
+}
+
+.createButton {
+  background-color: $white;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    scale: 105%;
+  }
+}
+
+.sectionTitleWithAction {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 2px;
+}
