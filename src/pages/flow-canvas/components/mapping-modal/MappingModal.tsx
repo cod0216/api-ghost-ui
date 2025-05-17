@@ -34,22 +34,24 @@ export const MappingModal: React.FC<MappingModalProps> = ({
 
   const leftNode = nodes.find(n => n.id === edge.source)!;
   const rightNode = nodes.find(n => n.id === edge.target)!;
-  let parsedData = null;
-  if (leftNode.data.responseSchema) parsedData = flattenSchema(leftNode.data.responseSchema);
+
+  const leftDataList = leftNode.data.responseSchema
+    ? flattenSchema(leftNode.data.responseSchema)
+    : [];
 
   const [leftData, setLeftDate] = useState<MappingData>({
-    valueList: parsedData,
+    valueList: leftDataList,
     title: leftNode.data.path,
     baseURl: leftNode.data.baseUrl,
     path: leftNode.data.path,
     method: leftNode.data.method,
   });
 
-  parsedData = null;
-  if (rightNode.data.responseSchema) parsedData = flattenSchema(rightNode.data.responseSchema);
-
+  const rightDataList = rightNode.data.requestSchema
+    ? flattenSchema(rightNode.data.requestSchema)
+    : [];
   const [rightData, setRightDate] = useState<MappingData>({
-    valueList: parsedData,
+    valueList: rightDataList,
     title: rightNode.data.path,
     baseURl: rightNode.data.baseUrl,
     path: rightNode.data.path,

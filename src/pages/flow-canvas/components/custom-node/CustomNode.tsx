@@ -42,7 +42,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     updatedHeader?: Record<string, string>,
   ) => {
     save(MainTabType.REQUEST, request);
-    save(MainTabType.REQUEST, response);
+    save(MainTabType.RESPONSE, response);
 
     const updatedNode = {
       id,

@@ -48,15 +48,6 @@ export const useScenario = () => {
       }
     }
 
-    if (selected?.name !== name && existingFiles.includes(fileName)) {
-      const overwrite = window.confirm(
-        `A file named "${fileName}" already exists. Do you want to overwrite it?`,
-      );
-      if (!overwrite) {
-        return;
-      }
-    }
-
     const descInput = prompt('input scenario description');
     const description = descInput ?? '';
     let timeoutMs: number;

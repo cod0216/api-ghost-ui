@@ -115,7 +115,8 @@ const sanitizeFieldArray = (fields: unknown): Field[] => {
 const buildJsonBody = (fields: Field[]): string | null => {
   const obj = fields.reduce(
     (acc, f) => {
-      if (f.name && f.value !== undefined) acc[f.name] = f.value;
+      if (!f.name) return acc;
+      acc[f.name] = f.value !== undefined ? f.value : null;
       return acc;
     },
     {} as Record<string, any>,

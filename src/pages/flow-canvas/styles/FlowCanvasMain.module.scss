@@ -19,6 +19,11 @@
   &:hover {
     scale: 105%;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .createButton {
@@ -41,6 +46,7 @@
 }
 
 .buttonGroup {
+  margin-right: 10px;
   display: flex;
   gap: 2px;
 }
