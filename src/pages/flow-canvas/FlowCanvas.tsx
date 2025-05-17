@@ -3,7 +3,7 @@ import ReactFlow, { MarkerType, Edge, Node, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 import CustomNode from '@/pages/flow-canvas/components/custom-node/CustomNode';
-import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
+// import { MappingModal } from '@/pages/flow-canvas/components/mapping-modal/MappingModal';
 import styles from './styles/FlowCanvas.module.scss';
 import { MockApiModal } from '@/pages/flow-canvas/components/mock-api-modal/MockApiModal';
 import { useAppSelector } from '@/store/hooks';
@@ -39,7 +39,7 @@ const FlowCanvas: React.FC = () => {
     setNodes,
   } = useFlowCanvas();
   const { autoSave } = useScenario();
-  const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
+  // const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -47,7 +47,7 @@ const FlowCanvas: React.FC = () => {
 
   const handleEdgeDoubleClick = (_: React.MouseEvent, edge: Edge) => {
     setCurrentEdge(edge);
-    setShowMappingModal(true);
+    // setShowMappingModal(true);
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
@@ -143,14 +143,14 @@ const FlowCanvas: React.FC = () => {
           <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
         </ReactFlow>
 
-        {showMappingModal && currentEdge && (
+        {/* {showMappingModal && currentEdge && (
           <MappingModal
             closeModal={() => setShowMappingModal(false)}
             edge={currentEdge}
             nodes={nodes}
             setEdges={setEdges}
           />
-        )}
+        )} */}
         {showMockApiModal && (
           <MockApiModal onConfirm={addNode} closeModal={() => setShowMockApiModal(false)} />
         )}
