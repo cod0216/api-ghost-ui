@@ -147,12 +147,13 @@ const FlowCanvas: React.FC = () => {
           <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
         </ReactFlow>
 
-        <EdgeModal
-          isOpen={isEdgeModalOpen}
-          edgeInfo={currentEdge}
-          setEdges={setEdges}
-          onClose={() => setEdgeModalOpen(false)}
-        />
+        {isEdgeModalOpen && currentEdge && (
+          <EdgeModal
+            edgeInfo={currentEdge}
+            setEdges={setEdges}
+            onClose={() => setEdgeModalOpen(false)}
+          />
+        )}
 
         {showMockApiModal && (
           <MockApiModal onConfirm={addNode} closeModal={() => setShowMockApiModal(false)} />

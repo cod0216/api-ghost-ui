@@ -5,18 +5,16 @@ import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 import { CommonButton } from '@/common/components/CommonButton';
 
 interface EdgeModalProps {
-  isOpen: boolean;
   edgeInfo: Edge | null;
   setEdges: (updater: (edges: Edge[]) => Edge[]) => void;
   onClose: () => void;
 }
 
-const EdgeModal: React.FC<EdgeModalProps> = ({ isOpen, edgeInfo, setEdges, onClose }) => {
-  if (!isOpen || !edgeInfo) return null;
+const EdgeModal: React.FC<EdgeModalProps> = ({ edgeInfo, setEdges, onClose }) => {
+  if (!edgeInfo) return null;
 
-  const initialStatus = edgeInfo.data?.expected?.status ?? '';
+  const initialStatus = edgeInfo?.data?.expected?.status ?? '';
   const [statusCode, setStatusCode] = useState<string>(initialStatus);
-
   const [expectedRows, setExpectedRows] = useState<MappingPair[]>([
     { sourceKey: '', targetKey: '' },
   ]);
