@@ -104,17 +104,13 @@ const EdgeModal: React.FC<EdgeModalProps> = ({ isOpen, edgeInfo, setEdges, onClo
     onClose();
   };
 
-  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    onClose();
-  };
   const stopPropagation = (e: MouseEvent<HTMLDivElement>) => e.stopPropagation();
 
   return (
-    <div className={styles.edgeContainer} onClick={handleBackdropClick}>
+    <div className={styles.edgeContainer}>
       <div className={styles.modal} onClick={stopPropagation}>
         <div className={styles.mappingHeader}>
-          <div className={styles.title}>Edge Mapping</div>
+          <div className={styles.title}>Edge Setting</div>
         </div>
         <div className={styles.fieldRow}>
           <label>Status:</label>

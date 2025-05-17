@@ -46,6 +46,15 @@
   color: $white;
 }
 
+.input {
+  border: none;
+  &:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+}
+
 .fieldRow {
   display: flex;
   align-items: center;
@@ -56,16 +65,24 @@
     width: 60px;
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
+    border: none;
   }
 
   input,
   textarea {
     flex: 1;
     padding: 6px 8px;
-    border: 1px solid $outline-color;
+    border: none;
+    outline: none;
+    box-shadow: none;
     border-radius: $radius-sm;
     font-size: $font-size-sm;
-    background-color: $gray-50;
+    &:hover {
+      background-color: $gray-50;
+    }
+    &:focus {
+      background-color: $gray-50;
+    }
   }
 
   textarea {
@@ -74,6 +91,7 @@
     resize: none;
   }
 }
+
 .mappingTableWrapper {
   padding: 0 1.5rem;
 }
