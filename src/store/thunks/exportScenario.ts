@@ -41,40 +41,24 @@ export const exportScenario = createAsyncThunk(
       const routes: FlowRoute[] = edges
         .filter(e => e.source === id)
         .map(e => {
-          let pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
+          // 1) UI에서 세팅된 expected.value를 그대로 사용
+          const expectedValue = (e.data?.expected?.value as Record<string, any>) ?? null;
+
+          // 2) mappingInfo로 store 생성
+          const pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
             ? (e.data as any).mappingInfo
             : [];
-          if (pairs.length === 0) {
-            const respList = flattenSchema(resFields);
-            const reqList = flattenSchema(reqFields);
-
-            pairs = respList.flatMap(rk =>
-              reqList
-                .filter(qk => qk.key.split('.').pop() === rk.key.split('.').pop())
-                .map(qk => ({ sourceKey: rk.key, targetKey: qk.key })),
-            );
-          }
-
-          const thenStore: Record<string, string> = {};
+          const thenStore: Record<string, any> = {};
           pairs.forEach(({ sourceKey, targetKey }) => {
-            const sourceLeaf = sourceKey.split('.').pop()!;
-            const targetLeaf = targetKey.split('.').pop()!;
-            thenStore[targetLeaf] = sourceLeaf;
+            const leafSource = sourceKey.split('.').pop()!;
+            const leafTarget = targetKey.split('.').pop()!;
+            thenStore[leafTarget] = leafSource;
           });
-
-          const expectedValue = pairs.reduce<Record<string, any>>((acc, { sourceKey }) => {
-            const leaf = sourceKey.split('.').pop()!;
-            const field = resFields.find(f => f.name === leaf);
-            if (field?.value !== undefined) {
-              acc[leaf] = field.value;
-            }
-            return acc;
-          }, {});
 
           return {
             expected: {
               status: e.data?.expected?.status ? e.data.expected.status : '200',
-              value: Object.keys(expectedValue).length ? expectedValue : null,
+              value: expectedValue ? expectedValue : null,
             },
             then: {
               store: thenStore,

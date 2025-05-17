@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
@@ -11,6 +11,10 @@ interface EdgeLabelEditorProps {
 const EdgeLabelEditor: React.FC<EdgeLabelEditorProps> = ({ edgeId, initialLabel = '200' }) => {
   const [label, setLabel] = useState(initialLabel);
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    setLabel(initialLabel);
+  }, [initialLabel]);
 
   const handleClick = () => {
     setEditing(true);
