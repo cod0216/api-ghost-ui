@@ -52,7 +52,7 @@ export const useScenario = () => {
     const description = descInput ?? '';
     let timeoutMs: number;
     while (true) {
-      const input = prompt('input test timeout', String(1000));
+      const input = prompt('input test timeout', String(60000));
       if (input === null) {
         return;
       }
@@ -158,27 +158,31 @@ export const useScenario = () => {
     }
 
     const fileName = `${selected.name}.yaml`;
-    console.log(fileName);
     if (!window.confirm(`Are you sure you want to delete ${fileName}?`)) {
       return;
     }
 
     try {
-      const success = await scenarioDelete(fileName).then().catch();
+      const success = await scenarioDelete(fileName);
       if (!success) {
         alert('Failed to delete scenario.');
         return;
       }
 
-      const list = await getScenarioList();
-      dispatch(setScenarioList(list));
+      try {
+        const list = await getScenarioList();
+        dispatch(setScenarioList(list));
+      } catch (listErr) {
+        console.warn('Scenario deleted, but list fetch failed:', listErr);
+        alert('Scenario deleted, but failed to refresh the scenario list.');
+      }
 
       dispatch(clearSelection());
     } catch (err) {
       console.error('removeScenario error:', err);
       alert('An error occurred while deleting the scenario.');
     }
-  }, [dispatch, selected]);
+  }, [selected, dispatch]);
 
   return {
     createScenario,

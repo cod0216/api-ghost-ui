@@ -9,7 +9,7 @@ interface ScenarioState {
 const emptyScenario: ScenarioInfo = {
   name: '',
   description: '',
-  timeoutMs: 1000,
+  timeoutMs: 60000,
   store: {},
   steps: {},
 };
