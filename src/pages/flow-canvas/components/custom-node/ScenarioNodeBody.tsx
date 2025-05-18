@@ -13,9 +13,9 @@ interface ScenarioNodeBodyProps {
   initialMainTabLabel?: MainTabType;
   initialSubTabLabel?: SubTabType;
   onTabChange?: (main: MainTabType, sub: SubTabType) => void;
-  onSaveData: (request: RequestBody, response: string, newHeader?: Record<string, string>) => void;
+  onSaveData: (request: RequestBody, response: string, newHeader?: string) => void;
   onClose: () => void;
-  header?: Record<string, string>;
+  header?: string;
 }
 
 const ScenarioNodeBody: React.FC<ScenarioNodeBodyProps> = ({
@@ -26,12 +26,12 @@ const ScenarioNodeBody: React.FC<ScenarioNodeBodyProps> = ({
   onTabChange,
   onClose,
   onSaveData,
-  header,
+  header = '',
 }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
-  const [requestHeader, setRequestHeader] = useState<Record<string, string>>({ ...header });
+  const [requestHeader, setRequestHeader] = useState<string>(header);
   const [reqSchema, setReqSchema] = useState<RequestBody>(requestSchema);
   const [resSchema, setResSchema] = useState<string>(responseSchema);
 

@@ -1,12 +1,5 @@
 import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
 
-export interface Field {
-  type: string;
-  name: string;
-  nestedFields?: Field[];
-  value?: string | number | boolean;
-}
-
 export interface FlowNode {
   nodeId: string;
   spec: NodeEndPoint;
@@ -21,21 +14,21 @@ export interface ApiEndpoint {
   path: string;
   produces: string[];
   consumes: string[];
-  requestSchema: Field[] | null;
-  responseSchema: Field[] | null;
-  headers?: { key: string; value: string }[] | null;
-  cookies?: { key: string; value: string }[] | null;
-  requestParams?: { key: string; value: string }[] | null;
-  pathVariables?: { key: string; value: string }[] | null;
+  requestSchema: string | null;
+  responseSchema: string | null;
+  headers?: string | null;
+  cookies?: string | null;
+  requestParams?: string | null;
+  pathVariables?: string | null;
 }
 
 export interface NodeEndPoint {
   endpointId: string;
-  header?: Record<string, string>;
+  header?: string;
   method: HttpMethod | string;
   path: string;
   baseUrl: string;
-  requestSchema?: Field[];
-  responseSchema?: Field[];
+  requestSchema?: string;
+  responseSchema?: string;
   showBody: boolean;
 }

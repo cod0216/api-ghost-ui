@@ -1,12 +1,11 @@
-import { Field } from '@/pages/flow-canvas/types/index';
 import { HttpMethod } from '@/common/types/index.ts';
 
 export interface MockApiFormValues {
   baseUrl: string;
   method: HttpMethod;
   path: string;
-  requestSchema: Field[];
-  responseSchema: Field[];
+  requestSchema: string;
+  responseSchema: string;
   x: number;
   y: number;
 }

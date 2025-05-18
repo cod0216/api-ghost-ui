@@ -2,7 +2,7 @@ import React from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
 import NodeBody from '@/pages/flow-canvas/components/custom-node/NodeBody';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { MainTabType, SubTabType, NodeEndPoint, Field } from '@/pages/flow-canvas/types';
+import { MainTabType, SubTabType, NodeEndPoint } from '@/pages/flow-canvas/types';
 import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setNodeTab } from '@/store/slices/nodeTabSlice';
@@ -36,11 +36,7 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
     );
   };
 
-  const handleSave = (
-    request: RequestBody,
-    response: string,
-    updatedHeader?: Record<string, string>,
-  ) => {
+  const handleSave = (request: RequestBody, response: string, updatedHeader?: string) => {
     const updatedNode = {
       id,
       type: type,

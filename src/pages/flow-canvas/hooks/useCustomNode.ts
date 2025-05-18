@@ -1,5 +1,4 @@
 import { useCallback, MouseEvent } from 'react';
-import { Field } from '@/pages/flow-canvas/types/index';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 
 /**
@@ -31,7 +30,7 @@ export const useNodeControls = (nodeId: string, endpointId?: string) => {
    * Save a new request schema on the node.
    */
   const saveRequestSchema = useCallback(
-    (newSchema: Field[]) => {
+    (newSchema: string) => {
       setNodes(nodes =>
         nodes.map(n =>
           n.id === nodeId ? { ...n, data: { ...n.data, requestSchema: newSchema } } : n,
@@ -42,7 +41,7 @@ export const useNodeControls = (nodeId: string, endpointId?: string) => {
   );
 
   const saveResponseSchema = useCallback(
-    (newSchema: Field[]) => {
+    (newSchema: string) => {
       setNodes(nodes =>
         nodes.map(n =>
           n.id === nodeId ? { ...n, data: { ...n.data, responseSchema: newSchema } } : n,

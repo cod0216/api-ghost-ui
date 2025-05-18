@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 
 interface HeaderInputTableProps {
-  header?: Record<string, string>;
-  onChange: (updated: Record<string, string>) => void;
+  header: string;
+  onChange: (updated: string) => void;
 }
 
 interface HeaderRow {
@@ -12,14 +12,27 @@ interface HeaderRow {
 }
 
 const RenderHeaderInputTable: React.FC<HeaderInputTableProps> = ({ header, onChange }) => {
-  const [rows, setRows] = useState<HeaderRow[]>([]);
+  const [rows, setRows] = useState<HeaderRow[]>([{ key: '', value: '' }]);
+  const prevHeaderRef = useRef<string>('');
 
   useEffect(() => {
-    const initialRows = header
-      ? Object.entries(header).map(([key, value]) => ({ key, value }))
-      : [];
-    setRows([...initialRows, { key: '', value: '' }]);
-  }, [JSON.stringify(header)]);
+    if (prevHeaderRef.current !== header) {
+      prevHeaderRef.current = header;
+
+      let parsed: Record<string, string>;
+      try {
+        parsed = JSON.parse(header || '{}');
+      } catch {
+        parsed = {};
+      }
+      const initialRows = Object.entries(parsed).map(([key, value]) => ({ key, value }));
+      setRows(
+        initialRows.length > 0
+          ? [...initialRows, { key: '', value: '' }]
+          : [{ key: '', value: '' }],
+      );
+    }
+  }, [header]);
 
   const handleChange = (index: number, field: 'key' | 'value', value: string) => {
     const newRows = [...rows];
@@ -36,8 +49,11 @@ const RenderHeaderInputTable: React.FC<HeaderInputTableProps> = ({ header, onCha
     setRows(newRows);
     const filtered = newRows.filter(row => row.key.trim() !== '');
     const updatedHeaders = Object.fromEntries(filtered.map(row => [row.key, row.value]));
-
-    onChange(updatedHeaders);
+    try {
+      onChange(JSON.stringify(updatedHeaders));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDelete = (index: number) => {
@@ -46,7 +62,11 @@ const RenderHeaderInputTable: React.FC<HeaderInputTableProps> = ({ header, onCha
 
     const filtered = newRows.filter(row => row.key.trim() !== '');
     const updatedHeaders = Object.fromEntries(filtered.map(row => [row.key, row.value]));
-    onChange(updatedHeaders);
+    try {
+      onChange(JSON.stringify(updatedHeaders));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

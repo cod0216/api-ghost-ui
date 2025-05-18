@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Field, MainTabType } from '@/pages/flow-canvas/types';
+import { MainTabType } from '@/pages/flow-canvas/types';
 
 type SchemaEntry = {
-  requestSchema: Field[];
-  responseSchema: Field[];
+  requestSchema: string;
+  responseSchema: string;
 };
 
 type SchemaState = Record<string, SchemaEntry>;
@@ -17,12 +17,12 @@ const schemaEditorSlice = createSlice({
       action: PayloadAction<{
         nodeId: string;
         type: MainTabType;
-        schema: Field[];
+        schema: string;
       }>,
     ) {
       const { nodeId, type, schema } = action.payload;
       if (!state[nodeId]) {
-        state[nodeId] = { requestSchema: [], responseSchema: [] };
+        state[nodeId] = { requestSchema: '{}', responseSchema: '{}' };
       }
 
       const key = type === MainTabType.REQUEST ? 'requestSchema' : 'responseSchema';

@@ -1,20 +1,20 @@
-import React, { MouseEvent, useState, useEffect } from 'react';
+import React, { MouseEvent, useState, useEffect, useMemo } from 'react';
 import styles from '@/pages/flow-canvas/styles/BodyEditor.module.scss';
 import { useBodyEditorController } from '@/pages/flow-canvas/hooks/useBodyEditorController';
 import { BODY_EDITOR_TABS, Tab } from '@/pages/flow-canvas/types/index';
-import { Field, MainTabType, SubTabType } from '@/pages/flow-canvas/types';
+import { MainTabType, SubTabType } from '@/pages/flow-canvas/types';
 import RenderJsonSchema from '@/pages/flow-canvas/components/custom-node/RenderJsonSchema';
 import RenderHeaderInputTable from './RenderHeaderInputTable';
 
 interface NodeBodyProps {
-  requestSchema: Field[];
-  responseSchema: Field[];
+  requestSchema: string;
+  responseSchema: string;
   initialMainTabLabel?: MainTabType;
   initialSubTabLabel?: SubTabType;
   onTabChange?: (main: MainTabType, sub: SubTabType) => void;
-  onSaveData: (request: Field[], response: Field[], newHeader?: Record<string, string>) => void;
+  onSaveData: (request: string, response: string, newHeader?: string) => void;
   onClose: () => void;
-  header?: Record<string, string>;
+  header?: string;
 }
 
 const NodeBody: React.FC<NodeBodyProps> = ({
@@ -25,14 +25,14 @@ const NodeBody: React.FC<NodeBodyProps> = ({
   onTabChange,
   onClose,
   onSaveData,
-  header,
+  header = '',
 }) => {
   const { mainTab, subTab, availableSubTabs, selectMainTab, selectSubTab } =
     useBodyEditorController(BODY_EDITOR_TABS, initialMainTabLabel, initialSubTabLabel);
 
-  const [reqSchema, setReqSchema] = useState<Field[]>(requestSchema);
-  const [resSchema, setResSchema] = useState<Field[]>(responseSchema);
-  const [requestHeader, setRequestHeader] = useState<Record<string, string>>({ ...header });
+  const [reqSchema, setReqSchema] = useState<string>(requestSchema);
+  const [resSchema, setResSchema] = useState<string>(responseSchema);
+  const [requestHeader, setRequestHeader] = useState<string>(header);
 
   useEffect(() => {
     setReqSchema(requestSchema);
@@ -95,17 +95,9 @@ const NodeBody: React.FC<NodeBodyProps> = ({
       {subTab.showSchema && (
         <section className={styles.contentArea}>
           {isRequestTab ? (
-            <RenderJsonSchema
-              data={reqSchema}
-              indent={0}
-              onChange={updated => setReqSchema(updated)}
-            />
+            <RenderJsonSchema data={reqSchema} indent={0} onChange={setReqSchema} />
           ) : (
-            <RenderJsonSchema
-              data={resSchema}
-              indent={0}
-              onChange={updated => setResSchema(updated)}
-            />
+            <RenderJsonSchema data={resSchema} indent={0} onChange={setResSchema} />
           )}
         </section>
       )}

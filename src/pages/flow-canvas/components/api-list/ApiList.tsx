@@ -23,8 +23,8 @@ const toNodeEndPoint = (ep: ApiEndpoint): NodeEndPoint => ({
   method: ep.httpMethod,
   path: ep.path,
   baseUrl: ep.baseUrl,
-  requestSchema: ep.requestSchema ?? [],
-  responseSchema: ep.responseSchema ?? [],
+  requestSchema: ep.requestSchema ?? '{}',
+  responseSchema: ep.responseSchema ?? '{}',
   showBody: false,
 });
 

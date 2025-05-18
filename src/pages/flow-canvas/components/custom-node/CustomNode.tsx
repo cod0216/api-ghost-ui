@@ -2,7 +2,7 @@ import React from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
 import NodeBody from '@/pages/flow-canvas/components/custom-node/NodeBody';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
-import { MainTabType, SubTabType, NodeEndPoint, Field } from '@/pages/flow-canvas/types';
+import { MainTabType, SubTabType, NodeEndPoint } from '@/pages/flow-canvas/types';
 import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setNodeTab } from '@/store/slices/nodeTabSlice';
@@ -17,9 +17,9 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     method,
     path,
     showBody,
-    requestSchema: dataReq = [],
-    responseSchema: dataRes = [],
-    header: dataHeader,
+    requestSchema: dataReq = '{}',
+    responseSchema: dataRes = '{}',
+    header: dataHeader = '',
   } = data;
 
   const { requestSchema, responseSchema, save } = useSchemaEditor(id, dataReq, dataRes);
@@ -36,11 +36,7 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     );
   };
 
-  const handleSave = (
-    request: Field[],
-    response: Field[],
-    updatedHeader?: Record<string, string>,
-  ) => {
+  const handleSave = (request: string, response: string, updatedHeader?: string) => {
     save(MainTabType.REQUEST, request);
     save(MainTabType.RESPONSE, response);
 
@@ -54,9 +50,8 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
         responseSchema: response,
         header: updatedHeader,
         showBody: false,
-      },
+      } as NodeEndPoint,
     };
-
     updateNode(updatedNode);
   };
 
@@ -84,8 +79,8 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
 
         {showBody && (
           <NodeBody
-            requestSchema={requestSchema}
-            responseSchema={responseSchema}
+            requestSchema={requestSchema as string}
+            responseSchema={responseSchema as string}
             initialMainTabLabel={savedTab.mainTab}
             initialSubTabLabel={savedTab.subTab}
             onTabChange={(main, sub) =>
