@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '@/pages/load-test/styles/LoadTest.module.scss';
+import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import CommonSidebar from '@/common/components/CommonSidebar';
 import { LoadTestParamInfo, LoadTestParamName } from '@/pages/loadtest/types';
 import {

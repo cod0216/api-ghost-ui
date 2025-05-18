@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '@/pages/load-test/styles/LoadTest.module.scss';
+import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import DataCard from '@/pages/loadtest/components/DataCard';
 import ChartCard from '@/pages/loadtest/components/ChartCard';
 import LineChart from '@/pages/loadtest/components/chart/LineChart';

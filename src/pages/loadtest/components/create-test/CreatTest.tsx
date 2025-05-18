@@ -3,8 +3,7 @@ import { getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
 import { Stage } from '@/pages/loadtest/types';
 import { createLoadTest } from '@/pages/loadtest/service/loadTestService';
 import { CommonButton } from '@/common/components/CommonButton';
-import styles from '@/pages/load-test/styles/CreatTest.module.scss';
-import { setDefaultResultOrder } from 'dns/promises';
+import styles from '@/pages/loadtest/styles/CreatTest.module.scss';
 
 interface CreatTestProps {
   onClose: () => void;
@@ -47,7 +46,6 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
     newStages[index][key] = value;
     setStages(newStages);
   };
-  setDefaultResultOrder;
   const addStage = () => setStages(prev => [...prev, { vus: 0, duration: 0 }]);
 
   const submitLoadTest = async () => {

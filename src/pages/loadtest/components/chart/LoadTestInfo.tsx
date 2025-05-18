@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import styles from '@/pages/load-test/styles/LoadTest.module.scss';
+import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import playIcon from '@/assets/icons/play.svg';
-
 import { LoadTestParamInfo } from '@/pages/loadtest/types';
 import ChartArea from './ChartArea';
 import buttonStyles from '@/common/components/SaveButton.module.scss';
