@@ -1,18 +1,22 @@
 import { Node, Edge, MarkerType, Connection } from 'reactflow';
 import { NODE, EDGE } from '@/config/reactFlow';
 import { FlowRoute, FlowStep } from '@/pages/flow-canvas/types';
-import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
+import { NodeEndPoint } from '@/pages/flow-canvas/types/index';
 import { parseBaseUrl, parseEndpoint } from '@/common/utils/jsonUtils';
+import { HttpMethod } from '@/common/types/index';
+
+const DEFAULT_HEADER_OBJ = { 'Content-Type': 'application/json' };
+const DEFAULT_HEADER_JSON = JSON.stringify(DEFAULT_HEADER_OBJ, null, 2);
 
 export const createMockNode = (vals: {
   baseUrl: string;
-  method: string;
+  method: HttpMethod | string;
   path: string;
-  requestSchema: Field[];
-  responseSchema: Field[];
+  requestSchema: string;
+  responseSchema: string;
   x: number;
   y: number;
-  header?: Record<string, string>;
+  header?: string;
 }): Node<NodeEndPoint> => {
   const id = `mock-${vals.baseUrl}-${vals.method}-${vals.path}`;
 
@@ -35,21 +39,30 @@ export const createMockNode = (vals: {
   return newNode;
 };
 
-export const creatScenarioNode = (stepId: string, step: FlowStep): Node => ({
-  id: stepId,
-  type: NODE.SCENARIO.type,
-  position: step.position,
-  data: {
-    endpointId: stepId,
-    header: step.request.header,
-    baseUrl: parseBaseUrl(step.request.url),
-    method: step.request.method,
-    path: parseEndpoint(step.request.url),
-    requestSchema: step.request.body,
-    responseSchema: null,
-    showBody: false,
-  },
-});
+export const creatScenarioNode = (stepId: string, step: FlowStep): Node => {
+  const headerJson = JSON.stringify(step.request.header ?? {}, null, 2);
+  const displayHeader = headerJson === DEFAULT_HEADER_JSON ? '' : headerJson;
+
+  const rawJson = step.request.body;
+  const requestJsonString =
+    typeof rawJson === 'string' ? rawJson : JSON.stringify(rawJson ?? {}, null, 2);
+
+  return {
+    id: stepId,
+    type: NODE.SCENARIO.type,
+    position: step.position,
+    data: {
+      endpointId: stepId,
+      header: displayHeader,
+      baseUrl: parseBaseUrl(step.request.url),
+      method: step.request.method,
+      path: parseEndpoint(step.request.url),
+      requestSchema: step.request.body,
+      responseSchema: null,
+      showBody: false,
+    },
+  };
+};
 
 export const createEndpointNode = (
   endpoint: NodeEndPoint,
@@ -63,8 +76,8 @@ export const createEndpointNode = (
     position,
     data: {
       ...endpoint,
-      requestSchema: endpoint.requestSchema ?? [],
-      responseSchema: endpoint.responseSchema ?? [],
+      requestSchema: endpoint.requestSchema ?? '{}',
+      responseSchema: endpoint.responseSchema ?? '{}',
       showBody: false,
     },
   };

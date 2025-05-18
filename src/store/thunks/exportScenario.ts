@@ -2,11 +2,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '@/store';
 import { ScenarioInfo, FlowStep, FlowRoute } from '@/pages/flow-canvas/types';
 import { exportScenario as exportService } from '@/pages/flow-canvas/service/scenarioService';
-import { ProtocolType } from '@/common/types';
+import { HttpRequest, ProtocolType } from '@/common/types';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
-import { flattenSchema } from '@/common/utils/schemaUtils';
-import { Field } from '@/pages/flow-canvas/types';
-
+const DEFAULT_HEADER_OBJ = JSON.stringify({ 'Content-Type': 'application/json' });
 interface Payload {
   name: string;
   description: string;
@@ -24,27 +22,64 @@ export const exportScenario = createAsyncThunk(
 
     nodes.forEach(node => {
       const id = node.id;
-      const entry = schemaState[id] ?? {};
+      const rawValue = schemaState[id]?.requestSchema ?? node.data.requestSchema;
+      let entry: string;
 
-      const reqFields = sanitizeFieldArray(entry.requestSchema || node.data.requestSchema);
-      const resFields = sanitizeFieldArray(entry.responseSchema || node.data.responseSchema);
+      if (typeof rawValue === 'string') {
+        try {
+          const parsed = JSON.parse(rawValue);
+          entry =
+            parsed && typeof parsed === 'object' && typeof (parsed as any).json === 'string'
+              ? (parsed as any).json
+              : rawValue;
+        } catch {
+          entry = rawValue;
+        }
+      } else if (rawValue && typeof rawValue === 'object') {
+        const maybeJson = (rawValue as any).json;
+        entry =
+          typeof maybeJson === 'string' ? maybeJson : JSON.stringify(maybeJson ?? {}, null, 2);
+      } else {
+        entry = '';
+      }
 
-      const jsonBody = buildJsonBody(reqFields);
+      const headerString = node.data.header?.trim() ? node.data.header : DEFAULT_HEADER_OBJ;
 
-      const request = {
+      let headerObj: Record<string, string>;
+      try {
+        headerObj = JSON.parse(headerString);
+      } catch {
+        headerObj = {};
+      }
+
+      const request: HttpRequest = {
         method: node.data.method,
         url: `${node.data.baseUrl}${node.data.path}`,
-        header: node.data.header as Record<string, string>,
-        body: jsonBody ? { formdata: null, json: jsonBody } : null,
+        header: headerObj,
+        body: entry ? { formdata: null, json: entry } : null,
+      };
+
+      const normalizeKey = (raw: string): string => {
+        if (raw.startsWith('${') && raw.endsWith('}')) {
+          return raw.slice(2, -1);
+        } else if (raw.startsWith('$')) {
+          return `\${${raw.slice(1)}}`;
+        } else {
+          return `\${${raw}}`;
+        }
       };
 
       const routes: FlowRoute[] = edges
         .filter(e => e.source === id)
         .map(e => {
-          // 1) UI에서 세팅된 expected.value를 그대로 사용
-          const expectedValue = (e.data?.expected?.value as Record<string, any>) ?? null;
+          const rawExpected = (e.data?.expected?.value as Record<string, any>) ?? {};
 
-          // 2) mappingInfo로 store 생성
+          const expectedValue: Record<string, any> = {};
+          Object.entries(rawExpected).forEach(([k, v]) => {
+            const key = normalizeKey(k);
+            expectedValue[key] = v;
+          });
+
           const pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
             ? (e.data as any).mappingInfo
             : [];
@@ -52,13 +87,24 @@ export const exportScenario = createAsyncThunk(
           pairs.forEach(({ sourceKey, targetKey }) => {
             const leafSource = sourceKey.split('.').pop()!;
             const leafTarget = targetKey.split('.').pop()!;
-            thenStore[leafTarget] = leafSource;
+
+            let val = leafSource;
+
+            if (val.startsWith('${') && val.endsWith('}')) {
+              val = val.slice(2, -1);
+            } else if (val.startsWith('$')) {
+              val = `\${${val.slice(1)}}`;
+            } else {
+              val = `\${${val}}`;
+            }
+
+            thenStore[leafTarget] = val;
           });
 
           return {
             expected: {
-              status: e.data?.expected?.status ? e.data.expected.status : '200',
-              value: expectedValue ? expectedValue : null,
+              status: e.data?.expected?.status ?? '200',
+              value: expectedValue,
             },
             then: {
               store: thenStore,
@@ -91,19 +137,3 @@ export const exportScenario = createAsyncThunk(
     }
   },
 );
-
-const sanitizeFieldArray = (fields: unknown): Field[] => {
-  return Array.isArray(fields) ? fields.filter(f => f && typeof f.name === 'string') : [];
-};
-
-const buildJsonBody = (fields: Field[]): string | null => {
-  const obj = fields.reduce(
-    (acc, f) => {
-      if (!f.name) return acc;
-      acc[f.name] = f.value !== undefined ? f.value : null;
-      return acc;
-    },
-    {} as Record<string, any>,
-  );
-  return Object.keys(obj).length ? JSON.stringify(obj, null, 2) : null;
-};

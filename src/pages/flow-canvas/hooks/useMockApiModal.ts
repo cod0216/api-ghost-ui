@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { HttpMethod } from '@/common/types';
-import { parseJsonToFields, fieldsToJson } from '@/common/utils/jsonUtils';
 import { MockApiFormValues } from '@/pages/flow-canvas/types/index';
-import { Field } from '@/pages/flow-canvas/types';
 
 export const useMockApiModal = () => {
   const [isSchemaValid, setIsSchemaValid] = useState(true);
@@ -10,8 +8,8 @@ export const useMockApiModal = () => {
     baseUrl: '',
     method: HttpMethod.GET,
     path: '',
-    requestSchema: [],
-    responseSchema: [],
+    requestSchema: '{}',
+    responseSchema: '{}',
     x: 0,
     y: 0,
   });
@@ -22,17 +20,17 @@ export const useMockApiModal = () => {
   const [path, setPath] = useState(formValues.path);
 
   const [reqSchemaText, setReqSchemaText] = useState(
-    JSON.stringify(fieldsToJson(formValues.requestSchema), null, 2),
+    JSON.stringify(formValues.requestSchema, null, 2),
   );
   const [resSchemaText, setResSchemaText] = useState(
-    JSON.stringify(fieldsToJson(formValues.responseSchema), null, 2),
+    JSON.stringify(formValues.responseSchema, null, 2),
   );
   const init: MockApiFormValues = {
     baseUrl: '',
     method: HttpMethod.GET,
     path: '',
-    requestSchema: [],
-    responseSchema: [],
+    requestSchema: '{}',
+    responseSchema: '{}',
     x: 0,
     y: 0,
   };
@@ -48,8 +46,8 @@ export const useMockApiModal = () => {
 
   const saveMockApi = (): MockApiFormValues => {
     try {
-      const requestSchema: Field[] = parseJsonToFields(reqSchemaText, 'value')[0].nestedFields!;
-      const responseSchema: Field[] = parseJsonToFields(resSchemaText, 'value')[0].nestedFields!;
+      const requestSchema: string = reqSchemaText;
+      const responseSchema: string = resSchemaText;
 
       const values: MockApiFormValues = {
         ...formValues,

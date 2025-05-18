@@ -90,6 +90,7 @@ const FlowCanvas: React.FC = () => {
 
       eventSource.addEventListener('stepResult', event => {
         const data = JSON.parse(event.data);
+        console.log(data);
       });
 
       eventSource.addEventListener('complete', event => {

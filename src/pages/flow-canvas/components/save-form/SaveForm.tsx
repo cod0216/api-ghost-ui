@@ -13,14 +13,14 @@ const SaveForm: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [timeoutMs, setTimeoutMs] = useState(1000);
+  const [timeoutMs, setTimeoutMs] = useState(6000);
 
   // Populate fields when expanded
   useEffect(() => {
     if (expanded) {
       setName(selected?.name ?? '');
       setDescription(selected?.description ?? '');
-      setTimeoutMs(selected?.timeoutMs ?? 1000);
+      setTimeoutMs(selected?.timeoutMs ?? 60000);
     }
   }, [expanded, selected]);
 

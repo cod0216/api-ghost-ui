@@ -38,8 +38,6 @@ const FlowCanvasMain: React.FC = () => {
     }
   };
 
-  useEffect(() => {}, [selected]);
-
   useEffect(() => {
     getScenarioList()
       .then(names => dispatch(setScenarioList(names)))

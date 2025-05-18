@@ -18,7 +18,7 @@ import {
   EdgeChange,
   Edge as ReactEdge,
 } from 'reactflow';
-import { NodeEndPoint, Field } from '@/pages/flow-canvas/types/index';
+import { NodeEndPoint } from '@/pages/flow-canvas/types/index';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setNodes as setNodesInStore, setEdges as setEdgesInStore } from '@/store/slices/flowSlice';
 import { createMockNode, createEndpointNode } from '@/common/utils/reactFlowUtils';
@@ -81,20 +81,11 @@ export const useFlowCanvas = () => {
       updated[idx] = {
         ...prev[idx],
         ...node,
-        position: {
-          ...prev[idx].position,
-          ...node.position,
-        },
         data: {
           ...prev[idx].data,
           ...node.data,
-          header: {
-            ...prev[idx].data?.header,
-            ...node.data?.header,
-          },
         },
       };
-
       return updated;
     });
   }, []);
@@ -182,11 +173,11 @@ export const useFlowCanvas = () => {
       baseUrl: string;
       method: string;
       path: string;
-      requestSchema: Field[];
-      responseSchema: Field[];
+      requestSchema: string;
+      responseSchema: string;
       x: number;
       y: number;
-      header?: Record<string, string>;
+      header?: string;
     }) => {
       const newNode = createMockNode(vals);
       setNodesLocal(ns => ns.concat(newNode));

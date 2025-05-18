@@ -139,9 +139,18 @@
 }
 
 .jsonSchema {
-  width: max-content;
+  width: 100%;
+  min-height: 200px;
+  font-size: $font-size-2xs;
+  border-radius: $radius-md;
+  border: none;
+  resize: vertical;
+  white-space: pre-wrap;
+  background-color: $gray-50;
+  font-family: inherit;
+  padding: 10px;
+  @include scrollbar.customScrollbar;
 }
-
 .headerTable {
   background-color: $white;
   width: 100%;
