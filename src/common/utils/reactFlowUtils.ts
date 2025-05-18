@@ -70,17 +70,26 @@ export const createEndpointNode = (
   };
 };
 
-export const createFlowEdge = (route: FlowRoute, source: string): Edge => ({
-  id: `${source}-${route.then.step}`,
-  type: EDGE.FLOW_CANVAS.type,
-  source,
-  target: route.then.step,
-  animated: true,
-  data: {
-    expected: route.expected ? route.expected : '200',
-    then: route.then,
-  },
-});
+export const createFlowEdge = (route: FlowRoute, source: string): Edge => {
+  const mappingInfo = route.then.store
+    ? Object.entries(route.then.store).map(([targetKey, sourceKey]) => ({
+        sourceKey,
+        targetKey,
+      }))
+    : [];
+
+  return {
+    id: `${source}-${route.then.step}`,
+    type: EDGE.FLOW_CANVAS.type,
+    source,
+    target: route.then.step,
+    animated: true,
+    data: {
+      expected: route.expected,
+      mappingInfo,
+    },
+  };
+};
 
 export const createConnectedEdge = (params: Connection): Edge => {
   const { source, target, sourceHandle, targetHandle } = params;
