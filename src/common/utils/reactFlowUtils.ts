@@ -46,6 +46,7 @@ export const creatScenarioNode = (stepId: string, step: FlowStep): Node => ({
     method: step.request.method,
     path: parseEndpoint(step.request.url),
     requestSchema: step.request.body,
+    requestOriginal: step.request.body,
     responseSchema: null,
     showBody: false,
   },
