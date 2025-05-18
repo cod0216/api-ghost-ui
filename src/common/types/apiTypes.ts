@@ -20,7 +20,7 @@ export interface HttpRequest {
 }
 
 export interface RequestBody {
-  formdata?: FormData | null;
+  formdata?: string | null;
   json?: string | null;
 }
 
