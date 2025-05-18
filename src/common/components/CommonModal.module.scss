@@ -1,0 +1,62 @@
+@use '@/styles/mixins/scrollbar';
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.baseUrl {
+  font-size: $font-size-xl;
+}
+
+.label {
+  font-size: $font-size-lg;
+  margin: 0;
+  color: $gray-700;
+}
+
+.pathGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.methodPathGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1px;
+}
+
+.modal {
+  background-color: $white;
+  border-radius: $radius-md;
+  width: 80%;
+  max-width: 700px;
+  max-height: 90%;
+  box-shadow: 0 4px 12px rgba($black, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  @include scrollbar.customScrollbar;
+}
+
+.header {
+  padding: 1rem 1.5rem;
+  background-color: $primary-800;
+  border-bottom: 1px solid $gray-200;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $white;
+}

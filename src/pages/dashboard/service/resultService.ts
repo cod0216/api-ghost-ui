@@ -1,5 +1,6 @@
 import { apiClient } from '@/common/service/apiClient.ts';
 import {
+  ScenarioTestDetailResponseWrapper,
   ScenarioTestDetailResponse,
   ScenarioTestResultFileListResponse,
   ScenarioTestResultFileListItem,
@@ -13,7 +14,8 @@ export const getScenarioResultList = async (): Promise<ScenarioTestResultFileLis
 export const getScenarioDetailResult = async (
   fileName: string,
 ): Promise<ScenarioTestDetailResponse> => {
-  return await apiClient.get<ScenarioTestDetailResponse>('/apighost/result-info', {
+  const response: ScenarioTestDetailResponseWrapper = await apiClient.get('/apighost/result-info', {
     testResultName: fileName,
   });
+  return response.file;
 };

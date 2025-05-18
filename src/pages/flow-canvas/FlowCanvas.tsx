@@ -113,8 +113,7 @@ const FlowCanvas: React.FC = () => {
   return (
     <>
       <div className={styles.actionContainer}>
-        <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |
-        <SaveForm />
+        <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |{/* <SaveForm /> */}
       </div>
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow
