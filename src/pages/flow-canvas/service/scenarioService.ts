@@ -1,7 +1,7 @@
 import {
   ScenarioInfo,
-  ScenarioInfoResponse,
   ScenarioNameListResponse,
+  ScenarioInfoResponse,
 } from '@/pages/flow-canvas/types/index.ts';
 import { apiClient } from '@/common/service/apiClient.ts';
 
