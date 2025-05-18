@@ -14,7 +14,7 @@ const PlayButton: React.FC<PalyButtonProps> = ({ onPlay, selectedScenario }) => 
       className={styles.container}
       onClick={() => {
         if (!selectedScenario) return;
-        onPlay(selectedScenario.fileName);
+        onPlay(selectedScenario.name);
       }}
     >
       <img src={playIcon} alt="Play Scenario" width={24} height={24} />

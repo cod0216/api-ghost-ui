@@ -10,11 +10,11 @@ import { useAppSelector } from '@/store/hooks';
 import { scenarioTest } from '@/pages/flow-canvas/service/scenarioService';
 import { scenarioToFlowElements } from '@/common/utils/scenarioToReactFlow';
 import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
-import SaveButton from '@/common/components/SaveButton';
 import PlayButton from '@/common/components/PlayButton';
 import CustomEdge from '@/pages/flow-canvas/components/custom-node/CustomEdge';
 import { NODE, EDGE } from '@/config/reactFlow';
 import ScenarioNode from '@/pages/flow-canvas/components/custom-node/ScenarioNode';
+import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 
 const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: ScenarioNode };
 const edgeTypes = { flowCanvasEdge: CustomEdge };
@@ -38,9 +38,8 @@ const FlowCanvas: React.FC = () => {
     removeNode,
     setNodes,
   } = useFlowCanvas();
-
+  const { autoSave } = useScenario();
   const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
-  const { saveScenario } = useScenario();
 
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
 
@@ -72,24 +71,21 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
-    console.log('hihihihi');
     if (!fileName) {
-      console.log('heelo!!');
       return;
     }
+    const ok = autoSave(selectedScenario);
     if (isConnected) {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;
       setIsConnected(false);
     } else {
-      const eventSource = scenarioTest(fileName);
-      console.log(fileName);
+      const eventSource = scenarioTest(fileName + '.yaml');
       eventSourceRef.current = eventSource;
       setIsConnected(true);
 
       eventSource.addEventListener('stepResult', event => {
         const data = JSON.parse(event.data);
-        console.log(data);
       });
 
       eventSource.addEventListener('complete', event => {

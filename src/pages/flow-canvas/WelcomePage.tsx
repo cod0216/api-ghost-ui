@@ -6,31 +6,12 @@ import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
 import { ScenarioInfo } from '@/pages/flow-canvas/types';
 import { exportScenario } from '@/pages/flow-canvas/service/scenarioService';
 import { getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
+import { useScenario } from './hooks/useScenario';
 
 const WelcomePage: React.FC = () => {
+  const { createScenario } = useScenario();
+
   const dispatch = useDispatch();
-
-  const onCreate = async () => {
-    const name = prompt('Input Scenario file name');
-    if (!name) return;
-
-    const newScenario: ScenarioInfo = {
-      name,
-      description: '',
-      timeoutMs: 0,
-      store: null,
-      steps: {},
-    };
-
-    dispatch(selectScenario(newScenario));
-
-    const resp = await exportScenario(newScenario);
-    if (!resp.status) {
-      alert('Scenario file save is fail');
-    }
-    const list = await getScenarioList();
-    dispatch(setScenarioList(list));
-  };
 
   return (
     <div className={styles.container}>
@@ -38,7 +19,7 @@ const WelcomePage: React.FC = () => {
         <h1 className={styles.title}>API Ghost</h1>
       </div>
       <div className={styles.middle}>
-        <button className={styles.createButton} onClick={onCreate}>
+        <button className={styles.createButton} onClick={createScenario}>
           Create New Scenario File
         </button>
       </div>

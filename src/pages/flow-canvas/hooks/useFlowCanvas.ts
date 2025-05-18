@@ -32,8 +32,6 @@ export const useFlowCanvas = () => {
 
   const [nodes, setNodesLocal] = useState<Node[]>(storedNodes);
   const [edges, setEdgesLocal] = useState<ReactEdge[]>(storedEdges);
-  const { project } = useReactFlow();
-  // Sync local state with Redux store (only when store changes)
 
   useEffect(() => {
     setNodesLocal(storedNodes);
@@ -55,7 +53,7 @@ export const useFlowCanvas = () => {
     return () => clearTimeout(timeoutId);
   }, [nodes, edges, syncToRedux]);
 
-  const { screenToFlowPosition, addNodes } = useReactFlow();
+  const { screenToFlowPosition, project, addNodes } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
 
   const setNodes = useCallback((updater: (ns: Node[]) => Node[]) => {
@@ -154,30 +152,6 @@ export const useFlowCanvas = () => {
     [screenToFlowPosition],
   );
 
-  const onDoubleClick = useCallback(
-    (e: React.MouseEvent, endpoint: NodeEndPoint) => {
-      const position = project({ x: e.clientX, y: e.clientY });
-      const req = endpoint.requestSchema ?? [];
-      const res = endpoint.responseSchema ?? [];
-
-      setNodesLocal(ns => [
-        ...ns,
-        {
-          id: `${endpoint.endpointId}_${Date.now()}`,
-          type: 'endpointNode',
-          position,
-          data: {
-            ...endpoint,
-            requestSchema: req,
-            responseSchema: res,
-            showBody: false,
-          },
-        },
-      ]);
-    },
-    [screenToFlowPosition],
-  );
-
   const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {
     pendingEdgeRef.current = edge;
   }, []);
@@ -243,6 +217,30 @@ export const useFlowCanvas = () => {
     [setEdges],
   );
 
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent, endpoint: NodeEndPoint) => {
+      const position = project({ x: e.clientX, y: e.clientY });
+      const req = endpoint.requestSchema ?? [];
+      const res = endpoint.responseSchema ?? [];
+
+      setNodesLocal(ns => [
+        ...ns,
+        {
+          id: `${endpoint.endpointId}_${Date.now()}`,
+          type: 'endpointNode',
+          position,
+          data: {
+            ...endpoint,
+            requestSchema: req,
+            responseSchema: res,
+            showBody: false,
+          },
+        },
+      ]);
+    },
+    [screenToFlowPosition],
+  );
+
   return {
     wrapperRef,
     nodes,
@@ -261,7 +259,7 @@ export const useFlowCanvas = () => {
     removeNode,
     setNodes,
     setEdges,
-    onDoubleClick,
     onChangeLabel,
+    onDoubleClick,
   };
 };

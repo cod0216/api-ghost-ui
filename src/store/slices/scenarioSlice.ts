@@ -5,6 +5,14 @@ interface ScenarioState {
   list: string[];
   selected: ScenarioInfo | null;
 }
+
+const emptyScenario: ScenarioInfo = {
+  name: '',
+  description: '',
+  timeoutMs: 1000,
+  store: {},
+  steps: {},
+};
 const initialState: ScenarioState = { list: [], selected: null };
 
 const scenarioSlice = createSlice({
@@ -20,8 +28,12 @@ const scenarioSlice = createSlice({
     clearSelection(state) {
       state.selected = null;
     },
+    resetScenarioContent(state) {
+      state.selected = emptyScenario;
+    },
   },
 });
 
-export const { setScenarioList, selectScenario, clearSelection } = scenarioSlice.actions;
+export const { setScenarioList, selectScenario, clearSelection, resetScenarioContent } =
+  scenarioSlice.actions;
 export default scenarioSlice.reducer;

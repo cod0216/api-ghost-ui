@@ -11,12 +11,14 @@ import { selectScenario, setScenarioList } from '@/store/slices/scenarioSlice';
 import { getScenarioInfo, getScenarioList } from '@/pages/flow-canvas/service/scenarioService';
 import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
 import foldIcon from '@/assets/icons/fold.svg';
+import deleteIcon from '@/assets/icons/delete.svg';
+import createIcon from '@/assets/icons/create.svg';
 
 const FlowCanvasMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const scenarios = useAppSelector(state => state.scenario.list);
   const selected = useAppSelector(state => state.scenario.selected);
-  const { autoSave } = useScenario();
+  const { autoSave, removeScenario, createScenario } = useScenario();
 
   const handleSelect = async (name: string) => {
     if (selected) {
@@ -25,6 +27,15 @@ const FlowCanvasMain: React.FC = () => {
     const info = await getScenarioInfo(name);
     console.log('newFile Name: ', name);
     dispatch(selectScenario(info));
+  };
+
+  const handleRemove = async (name: string) => {
+    if (selected?.name === name) {
+      removeScenario();
+    } else {
+      alert('select file first');
+      return;
+    }
   };
 
   useEffect(() => {}, [selected]);
@@ -48,7 +59,23 @@ const FlowCanvasMain: React.FC = () => {
           sections={[
             { title: 'API List', content: <ApiList /> },
             {
-              title: 'Scenario List',
+              titleComponent: (
+                <div className={styles.sectionTitleWithAction}>
+                  <h4>Scenario List</h4>
+                  <div className={styles.buttonGroup}>
+                    <button className={styles.createButton} onClick={() => createScenario()}>
+                      <img src={createIcon} alt="create Scenario" width={24} height={24} />
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => handleRemove(selected?.name ?? '')}
+                      disabled={!selected}
+                    >
+                      <img src={deleteIcon} alt="delete Scenario" width={24} height={24} />
+                    </button>
+                  </div>
+                </div>
+              ),
               content: (
                 <ScenarioList
                   scenarios={scenarios}

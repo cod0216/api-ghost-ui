@@ -10,7 +10,6 @@ export interface ScenarioInfoResponse {
 }
 
 export interface ScenarioInfo {
-  fileName?: string;
   name: string;
   description: string;
   timeoutMs: number;
