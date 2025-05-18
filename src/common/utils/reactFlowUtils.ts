@@ -43,7 +43,7 @@ export const creatScenarioNode = (stepId: string, step: FlowStep): Node => {
   const headerJson = JSON.stringify(step.request.header ?? {}, null, 2);
   const displayHeader = headerJson === DEFAULT_HEADER_JSON ? '' : headerJson;
 
-  const rawJson = step.request.body?.json;
+  const rawJson = step.request.body;
   const requestJsonString =
     typeof rawJson === 'string' ? rawJson : JSON.stringify(rawJson ?? {}, null, 2);
 

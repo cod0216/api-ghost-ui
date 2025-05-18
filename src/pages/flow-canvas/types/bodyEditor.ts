@@ -29,3 +29,11 @@ export const BODY_EDITOR_TABS: readonly CombineTab[] = [
     subTabs: [{ label: SubTabType.HEADER }, { label: SubTabType.BODY, showSchema: true }],
   },
 ] as const satisfies readonly CombineTab[];
+
+export interface GenerateDataRequest {
+  jsonBody: string;
+}
+
+export interface GenerateDataReponse {
+  jsonBody: string;
+}
