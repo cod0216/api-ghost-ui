@@ -10,7 +10,7 @@ interface DataCardProps {
 const DataCard: React.FC<DataCardProps> = ({ title, value, className }) => {
   return (
     <div className={`${className ? className : ''}`.trim()}>
-      <h5>{title}</h5>
+      <h4>{title}</h4>
       <h2>{value}</h2>
     </div>
   );
