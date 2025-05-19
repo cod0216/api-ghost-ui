@@ -59,16 +59,6 @@ export const exportScenario = createAsyncThunk(
         body: entry ? { formdata: null, json: entry } : null,
       };
 
-      const normalizeKey = (raw: string): string => {
-        if (raw.startsWith('${') && raw.endsWith('}')) {
-          return raw.slice(2, -1);
-        } else if (raw.startsWith('$')) {
-          return `\${${raw.slice(1)}}`;
-        } else {
-          return `\${${raw}}`;
-        }
-      };
-
       const routes: FlowRoute[] = edges
         .filter(e => e.source === id)
         .map(e => {
@@ -76,8 +66,7 @@ export const exportScenario = createAsyncThunk(
 
           const expectedValue: Record<string, any> = {};
           Object.entries(rawExpected).forEach(([k, v]) => {
-            const key = normalizeKey(k);
-            expectedValue[key] = v;
+            expectedValue[k] = v;
           });
 
           const pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
@@ -94,12 +83,7 @@ export const exportScenario = createAsyncThunk(
             const leafTarget = rawTarget.split('.').pop()!;
 
             let val = leafSource;
-
-            if (val.startsWith('${') && val.endsWith('}')) {
-              val = val.slice(2, -1);
-            } else if (val.startsWith('$')) {
-              val = `\${${val.slice(1)}}`;
-            } else {
+            if (!(val.includes('${') && val.includes('}'))) {
               val = `\${${val}}`;
             }
 
