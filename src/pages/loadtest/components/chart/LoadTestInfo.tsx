@@ -20,8 +20,6 @@ const LoadTestInfo: React.FC<LoadTestInfoProps> = ({ loadTest }) => {
   return (
     <div className={styles.contentArea}>
       <div className={styles.loadTestInfo}>
-        {/* TODO : loadTest? 제거 */}
-
         <div>
           <h2>{loadTest?.name}</h2>
           <p>{loadTest?.description}</p>
