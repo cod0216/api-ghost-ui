@@ -1,3 +1,5 @@
+@use '@/styles/mixins/scrollbar';
+
 .loadTestInfo {
   display: flex;
   justify-content: space-between;
@@ -7,6 +9,25 @@
   grid-template-columns: auto 1fr;
   width: 100%;
   height: 100vh;
+}
+
+.sidebarTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.createButton {
+  background-color: $white;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    scale: 105%;
+  }
 }
 
 .contentArea {
@@ -72,4 +93,39 @@
 
 canvas {
   max-width: 200px;
+}
+
+.sidebarListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  @include scrollbar.customScrollbar;
+}
+
+.sidebarListItem {
+  padding: 10px 12px;
+  font-size: $font-size-sm;
+  color: $gray-700;
+  cursor: pointer;
+  border-radius: $radius-sm;
+  background-color: transparent;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background-color: $primary-50;
+    color: $gray-900;
+  }
+}
+
+.selectedSidebarListItem {
+  font-weight: $font-weight-bold;
+  background-color: $primary-50;
+  border: 1.5px solid $primary-100;
 }

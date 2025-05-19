@@ -58,7 +58,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
 
     const payload = {
       fileName,
-      name: fileName,
+      name,
       description,
       thinkTimeMs,
       stage: finalStages,
@@ -68,6 +68,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
     try {
       await createLoadTest(payload);
       alert('Load Test successfully created!');
+      onClose();
     } catch (error) {
       console.error('[CreatTest] submitLoadTest Error', error);
     }
@@ -249,7 +250,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
       </fieldset>
 
       <div className={styles.buttonWrapper}>
-        <CommonButton onCancel={onClose} onConfirm={submitLoadTest} />
+        <CommonButton onCancel={onClose} onConfirm={() => {}} />
       </div>
     </form>
   );
