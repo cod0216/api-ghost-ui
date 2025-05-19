@@ -2,7 +2,6 @@
 
 .jsonContainer {
   border-radius: $radius-lg;
-  background-color: $withe;
 }
 
 .toggleWrapper {
@@ -16,19 +15,9 @@
   font-size: $font-size-2xs;
   border-radius: $radius-sm;
   cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: $font-weight-bold;
-  }
-}
-
-.aiButton {
-  cursor: pointer;
-  font-size: $font-size-2xs;
-  border-radius: $radius-sm;
   border: none;
   background: none;
+
   &:hover {
     background-color: $font-weight-bold;
   }

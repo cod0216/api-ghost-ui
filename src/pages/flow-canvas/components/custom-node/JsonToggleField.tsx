@@ -95,12 +95,12 @@ const JsonToggleField: React.FC<JsonToggleFieldProps> = ({
   return (
     <div className={`${styles.jsonContainer} ${className}`}>
       <div className={styles.toggleWrapper}>
-        <button type="button" className={styles.aiButton} onClick={handleGenerate}>
+        <div className={styles.toggleButton} onClick={handleGenerate}>
           {'Ai'}
-        </button>
-        <button type="button" className={styles.aiButton} onClick={handleUndo}>
+        </div>
+        <div className={styles.toggleButton} onClick={handleUndo}>
           Undo
-        </button>
+        </div>
         <div className={styles.toggleButton} onClick={toggleView}>
           {isJsonView ? 'Text' : 'JSON'}
         </div>
