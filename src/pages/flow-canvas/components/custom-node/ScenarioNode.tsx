@@ -122,8 +122,8 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
           />
         )}
       </div>
-      <Handle type="target" position={Position.Left} className={styles.handle} />
-      <Handle type="source" position={Position.Right} className={styles.handle} />
+      <Handle id="target" type="target" position={Position.Left} className={styles.handle} />
+      <Handle id="source" type="source" position={Position.Right} className={styles.handle} />
     </div>
   );
 };
