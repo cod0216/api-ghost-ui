@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import DataCard from '@/pages/loadtest/components/DataCard';
 import ChartCard from '@/pages/loadtest/components/ChartCard';
@@ -20,9 +20,6 @@ import {
   ParsedSnapshot,
   getEndpointMetrics,
 } from '@/pages/loadtest/utils/loadTestUtils';
-// import { snaptshat as mockSnapshat } from '../../__mock__';
-
-const POLL_INTERVAL = 5000;
 
 interface ChartAreaProps {
   loadTest: LoadTestParamInfo | null;
@@ -36,91 +33,84 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
   const [timeline, setTimeline] = useState<ParsedSnapshot[]>([]);
   const [endpointResultMap, setEndpointResultMap] = useState<Record<string, EndpointResult[]>>({});
   const [isConnected, setIsConnected] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (lastSnapshot) {
-  //     const parsedSnapshot = parseSnapshot(lastSnapshot);
-  //     setTimeline([parsedSnapshot]);
-  //   }
-  // }, []);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    if (snapshots.length === 0 || !lastSnapshot) return;
+    if (!onTest || !loadTest?.fileName) return;
 
-    const updatedTimeline = snapshots.map(snapshot => parseSnapshot(snapshot));
-    setTimeline(updatedTimeline);
+    // 이전 이벤트 소스가 있으면 정리
+    if (eventSourceRef.current) {
+      console.log('Cleaning up previous EventSource');
+      eventSourceRef.current.close();
+    }
 
-    const updatedResultMap: Record<string, EndpointResult[]> = { ...endpointResultMap };
+    const eventSource = new EventSource(
+      `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
+    );
+    eventSourceRef.current = eventSource;
 
-    lastSnapshot.endpoints.forEach(item => {
-      const url = item.url;
-      if (!updatedResultMap[url]) {
-        updatedResultMap[url] = [];
-      }
-      updatedResultMap[url] = [...updatedResultMap[url], item.result];
-    });
-
-    setEndpointResultMap(updatedResultMap);
-  }, [snapshots, lastSnapshot]);
-
-  useEffect(() => {
-    const setupSSE = () => {
+    const handleSnapshot = (event: MessageEvent) => {
       try {
-        const eventSource = new EventSource(
-          `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
-        );
-
-        eventSource.onopen = () => {
-          console.log('SSE connection opened');
-          setIsConnected(true);
-        };
-
-        eventSource.addEventListener('snapshot', event => {
-          try {
-            const newSnapshot = JSON.parse(event.data) as Snapshot;
-            console.log(newSnapshot);
-            setLastSnapshot(newSnapshot);
-            setSnapshots(prev => [...prev, newSnapshot]);
-          } catch (err) {
-            console.error('Error parsing SSE data:', err);
-          }
-        });
-
-        eventSource.addEventListener('summary', event => {
-          try {
-            const summary = JSON.parse(event.data);
-            console.log('Load test summary:', summary);
-          } catch (err) {
-            console.error('Error parsing SSE summary data:', err);
-          }
-        });
-
-        eventSource.onerror = error => {
-          console.error('SSE connection error:', error);
-          setIsConnected(false);
-          eventSource.close();
-          setTimeout(setupSSE, POLL_INTERVAL);
-        };
-
-        return () => {
-          eventSource.close();
-        };
+        const newSnapshot = JSON.parse(event.data) as Snapshot;
+        console.log('snapshot:', newSnapshot);
+        updateChart(newSnapshot);
       } catch (err) {
-        console.error('Failed to establish SSE connection:', err);
-
-        const interval = setInterval(() => {
-          if (!lastSnapshot) return;
-
-          setLastSnapshot(lastSnapshot);
-          setSnapshots(prev => [...prev, lastSnapshot]);
-        }, POLL_INTERVAL);
-
-        return () => clearInterval(interval);
+        console.error('Error parsing snapshot:', err);
       }
     };
 
-    setupSSE();
-  }, [loadTest]);
+    const handleSummary = (event: MessageEvent) => {
+      try {
+        const summary = JSON.parse(event.data);
+        console.log('summary:', summary);
+      } catch (err) {
+        console.error('Error parsing summary:', err);
+      }
+    };
+
+    eventSource.addEventListener('snapshot', handleSnapshot);
+    eventSource.addEventListener('summary', handleSummary);
+
+    eventSource.onopen = () => {
+      console.log('SSE opened');
+      setIsConnected(true);
+    };
+
+    eventSource.onerror = error => {
+      console.error('SSE error:', error);
+      setIsConnected(false);
+      eventSource.close();
+    };
+
+    return () => {
+      console.log('Cleaning up SSE in return');
+      eventSource.removeEventListener('snapshot', handleSnapshot);
+      eventSource.removeEventListener('summary', handleSummary);
+      eventSource.close();
+      eventSourceRef.current = null;
+    };
+  }, [onTest, loadTest?.fileName]);
+
+  const updateChart = (snapshot: Snapshot) => {
+    setSnapshots(prev => {
+      const newSnapshots = [...prev, snapshot];
+      setTimeline(newSnapshots.map(s => parseSnapshot(s)));
+
+      const updatedResultMap: Record<string, EndpointResult[]> = {};
+      newSnapshots.forEach(s => {
+        s.endpoints.forEach(item => {
+          const url = item.url;
+          if (!updatedResultMap[url]) updatedResultMap[url] = [];
+          updatedResultMap[url].push(item.result);
+        });
+      });
+      setEndpointResultMap(updatedResultMap);
+
+      return newSnapshots;
+    });
+
+    setLastSnapshot(snapshot);
+  };
 
   if (!lastSnapshot) return <></>;
   const result: AggregatedResult = lastSnapshot.result;
