@@ -1,0 +1,131 @@
+@use '@/styles/mixins/scrollbar';
+
+.loadTestInfo {
+  display: flex;
+  justify-content: space-between;
+}
+.container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  width: 100%;
+  height: 100vh;
+}
+
+.sidebarTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.createButton {
+  background-color: $white;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    scale: 105%;
+  }
+}
+
+.contentArea {
+  display: flex;
+  flex-direction: column;
+  background-color: $gray-50;
+
+  & > * {
+    padding: 1.5rem;
+  }
+}
+
+.chartArea {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto 1fr 1fr 1fr;
+  gap: 1.5rem;
+  background-color: $gray-50;
+}
+
+.dataRow {
+  grid-column: span 2;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.dataField {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+}
+
+.dataField,
+.chartCard {
+  background: $white;
+  text-align: center;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: $radius-lg;
+
+  .value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.chartRow {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.percentileTable {
+  width: 100%;
+  border-collapse: collapse;
+  td,
+  th {
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+}
+
+canvas {
+  max-width: 200px;
+}
+
+.sidebarListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  @include scrollbar.customScrollbar;
+}
+
+.sidebarListItem {
+  padding: 10px 12px;
+  font-size: $font-size-sm;
+  color: $gray-700;
+  cursor: pointer;
+  border-radius: $radius-sm;
+  background-color: transparent;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background-color: $primary-50;
+    color: $gray-900;
+  }
+}
+
+.selectedSidebarListItem {
+  font-weight: $font-weight-bold;
+  background-color: $primary-50;
+  border: 1.5px solid $primary-100;
+}

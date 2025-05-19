@@ -16,6 +16,11 @@ export interface ScenarioTestResultFileListItem {
   timeStamp: string;
 }
 
+export interface ScenarioTestDetailResponseWrapper {
+  fileName: string;
+  file: ScenarioTestDetailResponse;
+}
+
 export interface ScenarioTestDetailResponse {
   name: string;
   description: string;
