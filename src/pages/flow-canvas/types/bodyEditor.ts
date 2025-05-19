@@ -12,7 +12,7 @@ export const enum MainTabType {
 export const enum SubTabType {
   HEADER = 'Header',
   BODY = 'Body',
-  PARAMS = 'Params',
+  // PARAMS = 'Params',
 }
 
 export const BODY_EDITOR_TABS: readonly CombineTab[] = [
@@ -21,7 +21,7 @@ export const BODY_EDITOR_TABS: readonly CombineTab[] = [
     subTabs: [
       { label: SubTabType.HEADER },
       { label: SubTabType.BODY, showSchema: true, showSave: true },
-      { label: SubTabType.PARAMS },
+      // { label: SubTabType.PARAMS },
     ],
   },
   {
