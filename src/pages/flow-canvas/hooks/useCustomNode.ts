@@ -51,5 +51,14 @@ export const useNodeControls = (nodeId: string, endpointId?: string) => {
     [nodeId, setNodes],
   );
 
-  return { toggleBody, saveRequestSchema, saveResponseSchema };
+  const savePath = useCallback(
+    (newPath: string) => {
+      setNodes(nodes =>
+        nodes.map(n => (n.id === nodeId ? { ...n, data: { ...n.data, path: newPath } } : n)),
+      );
+    },
+    [nodeId, setNodes],
+  );
+
+  return { toggleBody, saveRequestSchema, saveResponseSchema, savePath };
 };
