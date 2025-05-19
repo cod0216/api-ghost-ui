@@ -45,11 +45,12 @@
 .PUTMethod {
   @include httpMethod.method-button($put-bg, $put-font);
 }
-.CONNECT,
-.DISCONNECT,
-.SEND,
-.SUBSCRIBE,
-.UNSUBSCRIBE,
+
+.CONNECTMethod,
+.DISCONNECTMethod,
+.SENDMethod,
+.SUBSCRIBEMethod,
+.UNSUBSCRIBEMethod,
 .PATCHMethod,
 .WEBSOCKETMethod {
   @include httpMethod.method-button($patch-bg, $patch-font);

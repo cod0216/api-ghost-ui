@@ -5,6 +5,15 @@ import { exportScenario as exportService } from '@/pages/flow-canvas/service/sce
 import { HttpRequest, ProtocolType } from '@/common/types';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 const DEFAULT_HEADER_OBJ = JSON.stringify({ 'Content-Type': 'application/json' });
+const STOMP_METHODS = [
+  'CONNECT',
+  'DISCONNECT',
+  'SEND',
+  'SUBSCRIBE',
+  'UNSUBSCRIBE',
+  'WEBSOCKET',
+] as const;
+
 interface Payload {
   name: string;
   description: string;
@@ -102,8 +111,15 @@ export const exportScenario = createAsyncThunk(
           };
         });
 
+      const method = node.data.method as string;
+      const isStomp =
+        node.data.type === ProtocolType.WEBSOCKET ||
+        STOMP_METHODS.includes(method as (typeof STOMP_METHODS)[number]);
+
+      const protocolType = isStomp ? ProtocolType.WEBSOCKET : ProtocolType.HTTP;
+
       steps[id] = {
-        type: ProtocolType.HTTP,
+        type: protocolType,
         position: { x: node.position.x, y: node.position.y },
         request,
         route: routes,
