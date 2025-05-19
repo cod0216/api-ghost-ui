@@ -17,6 +17,7 @@ import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 import EdgeModal from '@/pages/flow-canvas/components/custom-node/EdgeModal';
 import { TestStatus } from '@/pages/flow-canvas/types';
 import { StepResult } from '@/pages/flow-canvas/types/endpointTypes';
+import { COLORS } from '@/pages/flow-canvas/constants/color';
 
 import PLAY from '@/assets/icons/play.svg';
 import SUCCESS from '@/assets/icons/success.svg';
@@ -105,12 +106,8 @@ const FlowCanvas: React.FC = () => {
 
         try {
           const stepResult = JSON.parse(event.data) as StepResult;
-          // 파싱된 stepResult 확인
-          console.log('Parsed stepResult:', stepResult);
-
+          const { stepName, nextStep, isRequestSuccess } = stepResult;
           const success = stepResult.isRequestSuccess;
-          // 성공 여부 확인
-          console.log(`Request Success: ${success}`);
 
           setNodes(prev =>
             prev.map(node =>
@@ -127,9 +124,25 @@ const FlowCanvas: React.FC = () => {
             ),
           );
 
+          if (nextStep) {
+            setEdges(prevEdges =>
+              prevEdges.map(edge => {
+                if (edge.source === stepName && edge.target === nextStep) {
+                  return {
+                    ...edge,
+                    style: {
+                      stroke: COLORS.complete,
+                      strokeWidth: 10,
+                    },
+                    animated: false,
+                  };
+                }
+                return edge;
+              }),
+            );
+          }
           setStepResults(prev => [...prev, stepResult]);
         } catch (error) {
-          // 파싱 오류 등 예외 확인
           console.error('Error parsing stepResult:', error);
         }
       });
@@ -137,7 +150,7 @@ const FlowCanvas: React.FC = () => {
       eventSource.addEventListener('complete', event => {
         setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
-        eventSource.close(); // close
+        eventSource.close();
         eventSourceRef.current = null;
         setIsConnected(false);
         console.log(result);

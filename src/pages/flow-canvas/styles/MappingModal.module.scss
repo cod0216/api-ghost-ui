@@ -100,6 +100,11 @@
   @include httpMethod.method-button($put-bg, $put-font);
 }
 
+.CONNECT,
+.DISCONNECT,
+.SEND,
+.SUBSCRIBE,
+.UNSUBSCRIBE,
 .PATCHMethod,
 .WEBSOCKETMethod {
   @include httpMethod.method-button($patch-bg, $patch-font);
