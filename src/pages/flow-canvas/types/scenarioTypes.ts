@@ -42,4 +42,5 @@ export enum TestStatus {
   IDLE = 'idle',
   RUNNING = 'running',
   COMPLETE = 'complete',
+  ERROR = 'error',
 }

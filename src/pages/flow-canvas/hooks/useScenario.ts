@@ -121,6 +121,7 @@ export const useScenario = () => {
   const exportInline = useCallback(
     async (name: string, description: string, timeoutMs: number) => {
       const fileName = `${name}.yaml`;
+      console.log('ㅎㅇ');
 
       if (selected?.name !== name && existingFiles.includes(fileName)) {
         const overwrite = window.confirm(
@@ -130,18 +131,29 @@ export const useScenario = () => {
           return;
         }
       }
+      console.log('ㅎㅇ2');
 
       try {
+        console.log('ㅎㅇ2');
+
         const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
+        console.log('ㅎㅇ4');
+
         const resp = unwrapResult(actionResult);
+        console.log('sdg');
         if (!resp.status) {
           alert('Failed to save scenario.');
           return;
         }
+        console.log('ㅎㅇ3');
+
         const list = await getScenarioList();
         dispatch(setScenarioList(list));
+        console.log('ㅎㅇ4');
 
         const info = await getScenarioInfo(`${name}.yaml`);
+        console.log('ㅎㅇ5');
+
         dispatch(selectScenario(info));
       } catch (err) {
         console.error(err);

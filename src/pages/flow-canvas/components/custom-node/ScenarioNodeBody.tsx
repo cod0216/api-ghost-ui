@@ -106,7 +106,6 @@ const ScenarioNodeBody: React.FC<ScenarioNodeBodyProps> = ({
             editable={true}
             onChange={updateRequestJson}
           />
-          )
           {/* :
            (
             <JsonToggleField

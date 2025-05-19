@@ -22,6 +22,8 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
     requestSchema: dataReq = '',
     responseSchema: dataRes = '',
     header: dataHeader,
+    isSuccess: pass = false,
+    isFail: nonPass = false,
   } = data;
 
   const savedTab = useAppSelector(state => state.nodeTab[id]) ?? {
@@ -68,12 +70,20 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
     updateNode(updatedNode);
   };
 
+  const isPassStyle = pass === true ? 'success' : '';
+  const isFailStyle = nonPass === true ? 'fail' : '';
   return (
     <div className={styles.nodeWrapper}>
       <div className={`${styles.node} ${styles[method]}`}>
-        <div className={`${styles.header}`}>{baseUrl}</div>
+        <div
+          className={`${styles.header} ${isPassStyle && styles.passHeader} ${isFailStyle && styles.nonPassHeader}`}
+        >
+          {baseUrl}
+        </div>
 
-        <div className={styles.actions}>
+        <div
+          className={`${styles.actions} ${isPassStyle && styles.passBody} ${isFailStyle && styles.nonpassBody} `}
+        >
           <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
           {isEditingPath ? (
             <input

@@ -16,9 +16,12 @@ import ScenarioNode from '@/pages/flow-canvas/components/custom-node/ScenarioNod
 import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 import EdgeModal from '@/pages/flow-canvas/components/custom-node/EdgeModal';
 import { TestStatus } from '@/pages/flow-canvas/types';
-import playIcon from '@/assets/icons/play.svg';
-import success from '@/assets/icons/success.svg';
-import playing from '@/assets/icons/playing.svg';
+import { StepResult } from '@/pages/flow-canvas/types/endpointTypes';
+
+import PLAY from '@/assets/icons/play.svg';
+import SUCCESS from '@/assets/icons/success.svg';
+import PLAYING from '@/assets/icons/playing.svg';
+import ERROR from '@/assets/icons/error.svg';
 
 const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: ScenarioNode };
 const edgeTypes = { flowCanvasEdge: CustomEdge };
@@ -72,7 +75,6 @@ const FlowCanvas: React.FC = () => {
 
   useEffect(() => {
     if (!selectedScenario) return;
-    setTestStatus(TestStatus.IDLE);
     const { nodes: parsedNodes, edges: parsedEdges } = scenarioToFlowElements(selectedScenario);
     setNodes(() => parsedNodes);
     setEdges(() => parsedEdges);
@@ -99,15 +101,43 @@ const FlowCanvas: React.FC = () => {
       setIsConnected(true);
 
       eventSource.addEventListener('stepResult', event => {
-        const data = JSON.parse(event.data);
-        console.log(data);
-        setStepResults(prev => [...prev, data]);
+        console.log('Received event:', event);
+
+        try {
+          const stepResult = JSON.parse(event.data) as StepResult;
+          // 파싱된 stepResult 확인
+          console.log('Parsed stepResult:', stepResult);
+
+          const success = stepResult.isRequestSuccess;
+          // 성공 여부 확인
+          console.log(`Request Success: ${success}`);
+
+          setNodes(prev =>
+            prev.map(node =>
+              node.id === stepResult.stepName
+                ? {
+                    ...node,
+                    data: {
+                      ...node.data,
+                      isSuccess: success,
+                      isFail: !success,
+                    } as typeof node.data,
+                  }
+                : node,
+            ),
+          );
+
+          setStepResults(prev => [...prev, stepResult]);
+        } catch (error) {
+          // 파싱 오류 등 예외 확인
+          console.error('Error parsing stepResult:', error);
+        }
       });
 
       eventSource.addEventListener('complete', event => {
         setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
-        eventSource.close();
+        eventSource.close(); // close
         eventSourceRef.current = null;
         setIsConnected(false);
         console.log(result);
@@ -118,7 +148,7 @@ const FlowCanvas: React.FC = () => {
         eventSource.close();
         eventSourceRef.current = null;
         setIsConnected(false);
-        setTestStatus(TestStatus.IDLE);
+        setTestStatus(TestStatus.ERROR);
       };
     }
   };
@@ -127,18 +157,21 @@ const FlowCanvas: React.FC = () => {
     <>
       <div className={styles.actionContainer}>
         {testStatus === TestStatus.IDLE && (
-          <PlayButton path={playIcon} onPlay={handlePlay} selectedScenario={selectedScenario} />
+          <PlayButton path={PLAY} onPlay={handlePlay} selectedScenario={selectedScenario} />
         )}
         {testStatus === TestStatus.RUNNING && (
           <PlayButton
-            path={playing}
+            path={PLAYING}
             onPlay={handlePlay}
             selectedScenario={selectedScenario}
             loading={testStatus === TestStatus.RUNNING}
           />
         )}
         {testStatus === TestStatus.COMPLETE && (
-          <PlayButton path={success} onPlay={handlePlay} selectedScenario={selectedScenario} />
+          <PlayButton path={SUCCESS} onPlay={handlePlay} selectedScenario={selectedScenario} />
+        )}
+        {testStatus === TestStatus.ERROR && (
+          <PlayButton path={ERROR} onPlay={handlePlay} selectedScenario={selectedScenario} />
         )}
         |
         <SaveForm />

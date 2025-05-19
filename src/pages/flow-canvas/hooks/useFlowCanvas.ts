@@ -92,7 +92,7 @@ export const useFlowCanvas = () => {
 
   const onConnect = useCallback((params: Connection) => {
     console.log('[onConnect] params:', params);
-
+    params.source;
     const newEdge: Edge = {
       ...params,
       id: `${params.source}-${params.target}`,

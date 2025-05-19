@@ -45,7 +45,11 @@
 .PUTMethod {
   @include httpMethod.method-button($put-bg, $put-font);
 }
-
+.CONNECT,
+.DISCONNECT,
+.SEND,
+.SUBSCRIBE,
+.UNSUBSCRIBE,
 .PATCHMethod,
 .WEBSOCKETMethod {
   @include httpMethod.method-button($patch-bg, $patch-font);
@@ -63,6 +67,38 @@
 
 .mockHeader {
   background-color: $green-700;
+}
+
+.passHeader {
+  border: none;
+  border-top: 2px solid $green-300;
+  border-left: 2px solid $green-300;
+  border-right: 2px solid $green-300;
+  box-shadow: 0 6px 6px rgba($green-300, 0.3);
+}
+
+.nonPassHeader {
+  border: none;
+  border-top: 2px solid $red-300;
+  border-left: 2px solid $red-300;
+  border-right: 2px solid $red-300;
+  box-shadow: 0 6px 6px rgba($red-300, 0.3);
+}
+
+.passBody {
+  border: none;
+  border-bottom: 2px solid $green-300;
+  border-left: 2px solid $green-300;
+  border-right: 2px solid $green-300;
+  box-shadow: 0 -6px 6px rgba($green-300, 0.3);
+}
+
+.nonpassBody {
+  border: none;
+  border-bottom: 2px solid $red-300;
+  border-left: 2px solid $red-300;
+  border-right: 2px solid $red-300;
+  box-shadow: 0 -6px 6px rgba($red-300, 0.3);
 }
 
 .actions {
@@ -125,6 +161,12 @@
   border-radius: $radius-sm;
   max-height: 120px;
   overflow: auto;
+  .success {
+    background: $red-500;
+  }
+  .fail {
+    background: $primary-500;
+  }
 }
 
 .bodyEditor {

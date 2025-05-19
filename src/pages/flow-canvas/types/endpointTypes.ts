@@ -1,4 +1,5 @@
-import { HttpMethod, ProtocolType } from '@/common/types/index.ts';
+import { HttpMethod, ProtocolType, RequestBody } from '@/common/types/index.ts';
+import { FlowRoute } from './scenarioTypes';
 
 export interface FlowNode {
   nodeId: string;
@@ -31,4 +32,24 @@ export interface NodeEndPoint {
   requestSchema?: string;
   responseSchema?: string;
   showBody: boolean;
+  isSuccess?: boolean;
+  isFail?: boolean;
+}
+
+export interface StepResult {
+  stepName: string;
+  type: ProtocolType;
+  method: HttpMethod;
+  url: string;
+  requestHeader: Record<string, string>;
+  requestBody: RequestBody;
+  status: number;
+  responseHeaders: Record<string, string>;
+  responseBody: string;
+  startTime: string;
+  endTime: string;
+  durationMs: number;
+  route: FlowRoute[] | null;
+  nextStep: string;
+  isRequestSuccess: boolean;
 }

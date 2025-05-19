@@ -85,8 +85,13 @@ export const exportScenario = createAsyncThunk(
             : [];
           const thenStore: Record<string, any> = {};
           pairs.forEach(({ sourceKey, targetKey }) => {
-            const leafSource = sourceKey.split('.').pop()!;
-            const leafTarget = targetKey.split('.').pop()!;
+            if (!sourceKey.toString || !targetKey.toString) return;
+
+            const rawSource = sourceKey.toString();
+            const rawTarget = targetKey.toString();
+
+            const leafSource = rawSource.split('.').pop()!;
+            const leafTarget = rawTarget.split('.').pop()!;
 
             let val = leafSource;
 
