@@ -31,7 +31,7 @@ export const useScenario = () => {
       const input = prompt('Enter save file name', '');
       if (input === null || input.trim() === '') {
         alert('File name is required.');
-        continue;
+        return;
       }
       name = input.trim();
       break;

@@ -5,6 +5,7 @@ import { BODY_EDITOR_TABS, Tab } from '@/pages/flow-canvas/types/index';
 import { MainTabType, SubTabType } from '@/pages/flow-canvas/types';
 import RenderJsonSchema from '@/pages/flow-canvas/components/custom-node/RenderJsonSchema';
 import RenderHeaderInputTable from './RenderHeaderInputTable';
+import JsonToggleField from '@/pages/flow-canvas/components/custom-node/JsonToggleField';
 
 interface NodeBodyProps {
   requestSchema: string;
@@ -95,9 +96,19 @@ const NodeBody: React.FC<NodeBodyProps> = ({
       {subTab.showSchema && (
         <section className={styles.contentArea}>
           {isRequestTab ? (
-            <RenderJsonSchema data={reqSchema} indent={0} onChange={setReqSchema} />
+            <JsonToggleField
+              initialJson={reqSchema}
+              editable={true}
+              onChange={setReqSchema}
+              className={styles.jsonSchemaField}
+            />
           ) : (
-            <RenderJsonSchema data={resSchema} indent={0} onChange={setResSchema} />
+            <JsonToggleField
+              initialJson={resSchema}
+              editable={true}
+              onChange={setResSchema}
+              className={styles.jsonSchemaField}
+            />
           )}
         </section>
       )}
