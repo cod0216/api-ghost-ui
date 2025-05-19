@@ -50,6 +50,11 @@ const LoadTest: React.FC = () => {
     load();
   }, []);
 
+  useEffect(() => {
+    if (loadTestFiles.length == 0 || selectedLoadTest) return;
+    handleSelectItem(loadTestFiles[0]);
+  }, [loadTestFiles]);
+
   const handleSelectItem = (item: LoadTestParamName) => {
     const fileName = item.fileName;
     if (!fileName) return;
