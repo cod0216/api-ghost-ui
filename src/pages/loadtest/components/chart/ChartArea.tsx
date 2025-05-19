@@ -25,22 +25,21 @@ interface ChartAreaProps {
   loadTest: LoadTestParamInfo | null;
   onTest: boolean;
 }
-
 const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
-  if (!onTest || !loadTest) return <></>;
   const [lastSnapshot, setLastSnapshot] = useState<Snapshot>();
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [timeline, setTimeline] = useState<ParsedSnapshot[]>([]);
   const [endpointResultMap, setEndpointResultMap] = useState<Record<string, EndpointResult[]>>({});
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+  const [result, setResult] = useState<AggregatedResult | EndpointResult | null>(null);
+
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
     if (!onTest || !loadTest?.fileName) return;
 
-    // 이전 이벤트 소스가 있으면 정리
     if (eventSourceRef.current) {
-      console.log('Cleaning up previous EventSource');
       eventSourceRef.current.close();
     }
 
@@ -52,27 +51,14 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
     const handleSnapshot = (event: MessageEvent) => {
       try {
         const newSnapshot = JSON.parse(event.data) as Snapshot;
-        console.log('snapshot:', newSnapshot);
         updateChart(newSnapshot);
       } catch (err) {
         console.error('Error parsing snapshot:', err);
       }
     };
 
-    const handleSummary = (event: MessageEvent) => {
-      try {
-        const summary = JSON.parse(event.data);
-        console.log('summary:', summary);
-      } catch (err) {
-        console.error('Error parsing summary:', err);
-      }
-    };
-
     eventSource.addEventListener('snapshot', handleSnapshot);
-    eventSource.addEventListener('summary', handleSummary);
-
     eventSource.onopen = () => {
-      console.log('SSE opened');
       setIsConnected(true);
     };
 
@@ -83,9 +69,7 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
     };
 
     return () => {
-      console.log('Cleaning up SSE in return');
       eventSource.removeEventListener('snapshot', handleSnapshot);
-      eventSource.removeEventListener('summary', handleSummary);
       eventSource.close();
       eventSourceRef.current = null;
     };
@@ -110,35 +94,61 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
     });
 
     setLastSnapshot(snapshot);
+    setResult(snapshot.result);
+    setSelectedUrl(null);
   };
 
-  if (!lastSnapshot) return <></>;
-  const result: AggregatedResult = lastSnapshot.result;
-  const duration: HttpReqDuration = result.http_req_duration;
+  useEffect(() => {
+    if (!lastSnapshot) return;
+
+    if (selectedUrl && endpointResultMap[selectedUrl]?.length > 0) {
+      const latestEndpointResult = endpointResultMap[selectedUrl].at(-1);
+      if (latestEndpointResult) {
+        setResult(latestEndpointResult);
+      }
+    } else {
+      setResult(lastSnapshot.result);
+    }
+  }, [selectedUrl, endpointResultMap, lastSnapshot]);
+
+  const duration = result?.http_req_duration;
 
   return (
     <div className={styles.chartArea}>
-      {/* Top metrics cards */}
+      {Object.keys(endpointResultMap).length > 0 && (
+        <div className={styles.endpointSelector}>
+          <label>API Select: </label>
+          <select value={selectedUrl || ''} onChange={e => setSelectedUrl(e.target.value || null)}>
+            <option value="">Total</option>
+            {Object.keys(endpointResultMap).map((url, idx) => (
+              <option key={idx} value={url}>
+                {url}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className={styles.dataRow}>
         <DataCard
           className={styles.dataField}
           title="Virtual Users"
-          value={result.vus.toString()}
+          value={result?.vus.toString()}
         />
         <DataCard
           className={styles.dataField}
           title="Total Requests"
-          value={result.http_reqs.count.toLocaleString()}
+          value={result?.http_reqs.count.toLocaleString()}
         />
         <DataCard
           className={styles.dataField}
           title="RPS"
-          value={result.http_reqs.rate.toFixed(2)}
+          value={result?.http_reqs.rate.toFixed(2)}
         />
         <DataCard
           className={styles.dataField}
           title="Avg. Response Time"
-          value={`${duration.avg.toFixed(2)} ms`}
+          value={`${duration && duration.avg && duration.avg.toFixed(2)} ms`}
         />
       </div>
 
@@ -189,27 +199,27 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
           <tbody>
             <tr>
               <td>Min</td>
-              <td>{duration.min.toFixed(2)}</td>
+              <td>{duration?.min.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Median</td>
-              <td>{duration.med.toFixed(2)}</td>
+              <td>{duration?.med.toFixed(2)}</td>
             </tr>
             <tr>
               <td>P90</td>
-              <td>{duration['p(90)'].toFixed(2)}</td>
+              <td>{duration && duration['p(90)'].toFixed(2)}</td>
             </tr>
             <tr>
               <td>P95</td>
-              <td>{duration['p(95)'].toFixed(2)}</td>
+              <td>{duration && duration['p(95)'].toFixed(2)}</td>
             </tr>
             <tr>
               <td>Max</td>
-              <td>{duration.max.toFixed(2)}</td>
+              <td>{duration && duration.max.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Avg</td>
-              <td>{duration.avg.toFixed(2)}</td>
+              <td>{duration && duration.avg.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
