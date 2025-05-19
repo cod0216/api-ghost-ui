@@ -72,33 +72,33 @@
 
 .passHeader {
   border: none;
-  border-top: 2px solid $green-300;
-  border-left: 2px solid $green-300;
-  border-right: 2px solid $green-300;
-  box-shadow: 0 6px 6px rgba($green-300, 0.3);
+  border-top: 4px solid $primary-300;
+  border-left: 4px solid $primary-300;
+  border-right: 4px solid $primary-300;
+  box-shadow: 0 6px 6px rgba($primary-300, 0.3);
 }
 
 .nonPassHeader {
   border: none;
-  border-top: 2px solid $red-300;
-  border-left: 2px solid $red-300;
-  border-right: 2px solid $red-300;
+  border-top: 4px solid $red-300;
+  border-left: 4px solid $red-300;
+  border-right: 4px solid $red-300;
   box-shadow: 0 6px 6px rgba($red-300, 0.3);
 }
 
 .passBody {
   border: none;
-  border-bottom: 2px solid $green-300;
-  border-left: 2px solid $green-300;
-  border-right: 2px solid $green-300;
-  box-shadow: 0 -6px 6px rgba($green-300, 0.3);
+  border-bottom: 4px solid $primary-300;
+  border-left: 4px solid $primary-300;
+  border-right: 4px solid $primary-300;
+  box-shadow: 0 -6px 6px rgba($primary-300, 0.3);
 }
 
 .nonpassBody {
   border: none;
-  border-bottom: 2px solid $red-300;
-  border-left: 2px solid $red-300;
-  border-right: 2px solid $red-300;
+  border-bottom: 4px solid $red-300;
+  border-left: 4px solid $red-300;
+  border-right: 4px solid $red-300;
   box-shadow: 0 -6px 6px rgba($red-300, 0.3);
 }
 
