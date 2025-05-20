@@ -119,6 +119,11 @@
   @include httpMethod.method-button($put-bg, $put-font);
 }
 
+.CONNECTMethod,
+.DISCONNECTMethod,
+.SENDMethod,
+.SUBSCRIBEMethod,
+.UNSUBSCRIBEMethod,
 .PATCHMethod,
 .WEBSOCKETMethod {
   @include httpMethod.method-button($patch-bg, $patch-font);

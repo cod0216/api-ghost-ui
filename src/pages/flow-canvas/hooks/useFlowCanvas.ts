@@ -22,8 +22,10 @@ import { NodeEndPoint } from '@/pages/flow-canvas/types/index';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setNodes as setNodesInStore, setEdges as setEdgesInStore } from '@/store/slices/flowSlice';
 import { createMockNode, createEndpointNode } from '@/common/utils/reactFlowUtils';
+import { HttpMethod, WEBSOCKETMethod } from '@/common/types';
 
 export const useFlowCanvas = () => {
+  const { getNodes } = useReactFlow();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
@@ -91,16 +93,24 @@ export const useFlowCanvas = () => {
   }, []);
 
   const onConnect = useCallback((params: Connection) => {
-    console.log('[onConnect] params:', params);
+    const nodes = getNodes();
 
+    const sourceNode = nodes.find(node => node.id === params.source);
+
+    const isWebSocketNode = sourceNode?.data.protocolType === HttpMethod.WEBSOCKET;
+    const isWebSocketMethod =
+      sourceNode?.data.method && Object.values(WEBSOCKETMethod).includes(sourceNode.data.method);
+
+    const statusLabel = isWebSocketNode || isWebSocketMethod ? 'OK' : '200';
+    params.source;
     const newEdge: Edge = {
       ...params,
       id: `${params.source}-${params.target}`,
       animated: true,
       type: 'flowCanvasEdge',
       data: {
-        expected: { status: '200', value: {} },
-        label: '200',
+        expected: { status: statusLabel, value: {} },
+        label: statusLabel,
       },
       source: params.source!,
       target: params.target!,

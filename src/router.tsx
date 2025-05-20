@@ -15,7 +15,7 @@ const router = createBrowserRouter([
       { path: '', element: <Navigate to={ROUTES.FLOW_CANVAS.path} replace /> },
       { path: ROUTES.FLOW_CANVAS.path, element: <FlowCanvasMain /> },
       { path: ROUTES.DASHBOARD.path, element: <Dashboard /> },
-      { path: 'loadtest', element: <LoadTest /> },
+      { path: ROUTES.LOADTEST.path, element: <LoadTest /> },
     ],
   },
 ]);

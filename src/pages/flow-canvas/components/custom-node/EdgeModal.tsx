@@ -156,7 +156,7 @@ const EdgeModal: React.FC<EdgeModalProps> = ({ edgeInfo, setEdges, onClose }) =>
             </tbody>
           </table>
         </div>
-        <div className={styles.sectionTitle}>Mapping</div>
+        <div className={styles.sectionTitle}>Store Mapping</div>
         <div className={styles.mappingTableWrapper}>
           <table className={styles.mappingTable}>
             <thead>

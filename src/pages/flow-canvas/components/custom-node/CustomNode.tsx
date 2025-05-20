@@ -21,6 +21,8 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     requestSchema: dataReq = '{}',
     responseSchema: dataRes = '{}',
     header: dataHeader = '',
+    isSuccess: pass = false,
+    isFail: nonPass = false,
   } = data;
 
   const { requestSchema, responseSchema, save } = useSchemaEditor(id, dataReq, dataRes);
@@ -83,13 +85,22 @@ const CustomNode: React.FC<NodeProps<NodeEndPoint>> = ({ id, data, xPos, yPos, t
     updateNode(updatedNode);
   };
 
+  const isPassStyle = pass === true ? 'success' : '';
+  const isFailStyle = nonPass === true ? 'fail' : '';
   const isMockNode = type === 'mockNode';
+
   return (
     <div className={styles.nodeWrapper}>
-      <div className={`${styles.node} ${styles[method]}`}>
-        <div className={`${styles.header} ${isMockNode && styles.mockHeader}`}>{baseUrl}</div>
+      <div className={`${styles.node}`}>
+        <div
+          className={`${styles.header} ${isPassStyle && styles.passHeader} ${isFailStyle && styles.nonPassHeader} ${isMockNode && styles.mockHeader}`}
+        >
+          {baseUrl}
+        </div>
 
-        <div className={styles.actions}>
+        <div
+          className={`${styles.actions} ${isPassStyle && styles.passBody} ${isFailStyle && styles.nonpassBody} `}
+        >
           <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
           {isEditingPath ? (
             <input
