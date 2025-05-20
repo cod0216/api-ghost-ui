@@ -3,7 +3,7 @@ import { ChartOptions } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
 interface BarChartProps {
-  data: {
+  data?: {
     labels: string[];
     datasets: any[];
   };
@@ -11,6 +11,7 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, title }) => {
+  if (!data) return;
   const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,

@@ -46,17 +46,21 @@ const LoadTest: React.FC = () => {
 
   useEffect(() => {
     const load = async () => {
-      await getLoadTestParamNameList()
-        .then(files => setLoadTestFiles(files))
-        .catch(err => console.error('[LoadTest] getLoadTestParamNameList Error', err));
+      try {
+        const files = await getLoadTestParamNameList();
+        setLoadTestFiles(files);
+      } catch (err) {
+        console.error('[LoadTest] getLoadTestParamNameList Error', err);
+      }
     };
     load();
   }, []);
 
   useEffect(() => {
-    if (loadTestFiles.length == 0 || selectedLoadTest) return;
-    handleSelectItem(loadTestFiles[0]);
-  }, [loadTestFiles]);
+    if (loadTestFiles.length > 0 && !selectedLoadTest) {
+      handleSelectItem(loadTestFiles[0]);
+    }
+  }, [loadTestFiles, selectedLoadTest]);
 
   useEffect(() => {
     if (loadTestFiles.length === 0) return;
