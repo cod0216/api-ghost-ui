@@ -18,6 +18,7 @@ import EdgeModal from '@/pages/flow-canvas/components/custom-node/EdgeModal';
 import { TestStatus } from '@/pages/flow-canvas/types';
 import { StepResult } from '@/pages/flow-canvas/types/endpointTypes';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
+import { useToast } from '@/common/components/toast/ToastContext';
 
 import PLAY from '@/assets/icons/play.svg';
 import SUCCESS from '@/assets/icons/success.svg';
@@ -57,6 +58,7 @@ const FlowCanvas: React.FC = () => {
 
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.IDLE);
   const [stepResults, setStepResults] = useState<any[]>([]);
+  const { addToast } = useToast();
 
   const handleEdgeDoubleClick = (e: React.MouseEvent, edge: Edge) => {
     e.preventDefault();
@@ -85,6 +87,7 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
+    addToast('test is running..', 4000);
     if (!fileName) {
       return;
     }
@@ -151,6 +154,7 @@ const FlowCanvas: React.FC = () => {
         setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
         eventSource.close();
+        addToast('테스트가 성공적으로 완료 되었습니다.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
         console.log(result);
@@ -159,6 +163,7 @@ const FlowCanvas: React.FC = () => {
       eventSource.onerror = e => {
         console.log(e);
         eventSource.close();
+        addToast('테스트 실행 중 문제가 발생하였습니다.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
         setTestStatus(TestStatus.ERROR);
