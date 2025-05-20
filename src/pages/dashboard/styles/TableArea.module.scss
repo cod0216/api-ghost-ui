@@ -1,6 +1,8 @@
+@use '@/styles/mixins/scrollbar';
 .tableDataArea {
   overflow-x: auto;
   border-radius: $radius-lg;
+  @include scrollbar.customScrollbar(#000, #000, 0px);
 
   table {
     width: 100%;
