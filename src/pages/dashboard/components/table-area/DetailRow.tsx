@@ -63,7 +63,7 @@ const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
             {Array.isArray(item?.route) &&
               item.route.length > 0 &&
               item.route.map((step, idx) => (
-                <div className={styles.detailColumn}>
+                <div key={idx} className={styles.detailColumn}>
                   <h3 className={styles.sectionTitle}>{`Step ${idx + 1}`}</h3>
                   <div key={idx} className={styles.stepCard}>
                     {step?.expected && (
