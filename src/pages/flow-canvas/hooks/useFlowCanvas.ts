@@ -51,12 +51,13 @@ export const useFlowCanvas = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       syncToRedux();
-    }, 50);
+    }, 100);
     return () => clearTimeout(timeoutId);
   }, [nodes, edges, syncToRedux]);
 
   const { screenToFlowPosition, project, addNodes } = useReactFlow();
   const pendingEdgeRef = useRef<Edge | null>(null);
+  const newEdgeCreatedRef = useRef<boolean>(false);
 
   const setNodes = useCallback((updater: (ns: Node[]) => Node[]) => {
     setNodesLocal(updater);
@@ -64,6 +65,7 @@ export const useFlowCanvas = () => {
 
   const setEdges = useCallback((updater: (es: ReactEdge[]) => ReactEdge[]) => {
     setEdgesLocal(updater);
+    newEdgeCreatedRef.current = false;
   }, []);
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
@@ -71,6 +73,9 @@ export const useFlowCanvas = () => {
   }, []);
 
   const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    if (newEdgeCreatedRef.current) {
+      return;
+    }
     setEdgesLocal(prev => applyEdgeChanges(changes, prev));
   }, []);
 
@@ -92,40 +97,50 @@ export const useFlowCanvas = () => {
     });
   }, []);
 
-  const onConnect = useCallback((params: Connection) => {
-    const nodes = getNodes();
+  const onConnect = useCallback(
+    (params: Connection) => {
+      const nodes = getNodes();
 
-    const sourceNode = nodes.find(node => node.id === params.source);
+      const sourceNode = nodes.find(node => node.id === params.source);
 
-    const isWebSocketNode = sourceNode?.data.protocolType === HttpMethod.WEBSOCKET;
-    const isWebSocketMethod =
-      sourceNode?.data.method && Object.values(WEBSOCKETMethod).includes(sourceNode.data.method);
+      const isWebSocketNode = sourceNode?.data.protocolType === HttpMethod.WEBSOCKET;
+      const isWebSocketMethod =
+        sourceNode?.data.method && Object.values(WEBSOCKETMethod).includes(sourceNode.data.method);
 
-    const statusLabel = isWebSocketNode || isWebSocketMethod ? 'OK' : '200';
-    params.source;
-    const newEdge: Edge = {
-      ...params,
-      id: `${params.source}-${params.target}`,
-      animated: true,
-      type: 'flowCanvasEdge',
-      data: {
-        expected: { status: statusLabel, value: {} },
-        label: statusLabel,
-      },
-      source: params.source!,
-      target: params.target!,
-      sourceHandle: params.sourceHandle!,
-      targetHandle: params.targetHandle!,
-    };
+      const statusLabel = isWebSocketNode || isWebSocketMethod ? 'OK' : '200';
 
-    console.log('[onConnect] newEdge:', newEdge);
+      const newEdge: Edge = {
+        ...params,
+        id: `${params.source}-${params.target}`,
+        animated: true,
+        type: 'flowCanvasEdge',
+        data: {
+          expected: { status: statusLabel, value: {} },
+          label: statusLabel,
+        },
+        source: params.source!,
+        target: params.target!,
+        sourceHandle: params.sourceHandle!,
+        targetHandle: params.targetHandle!,
+      };
 
-    setEdgesLocal(prev => {
-      const updated = addEdge(newEdge, prev);
-      console.log('[onConnect] updated edges:', updated);
-      return updated;
-    });
-  }, []);
+      console.log('[onConnect] newEdge:', newEdge);
+
+      newEdgeCreatedRef.current = true;
+
+      setEdgesLocal(prev => {
+        const updated = addEdge(newEdge, prev);
+        console.log('[onConnect] updated edges:', updated);
+
+        setTimeout(() => {
+          dispatch(setEdgesInStore(updated));
+        }, 0);
+
+        return updated;
+      });
+    },
+    [getNodes, dispatch],
+  );
 
   /**
    * Prevents default behavior and sets move effect during drag over.
@@ -167,29 +182,53 @@ export const useFlowCanvas = () => {
     pendingEdgeRef.current = edge;
   }, []);
 
-  const onEdgeUpdate = useCallback((oldEdge: Edge, newConn: Connection) => {
-    console.log('[onEdgeUpdate] newConn:', newConn);
-    if (newConn.target) {
-      console.log('[onEdgeUpdate] reconnecting');
-      setEdgesLocal(es => reconnectEdge(oldEdge, newConn, es));
-      pendingEdgeRef.current = null;
-    }
-  }, []);
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge, newConn: Connection) => {
+      console.log('[onEdgeUpdate] newConn:', newConn);
+      if (newConn.target) {
+        console.log('[onEdgeUpdate] reconnecting');
+        setEdgesLocal(es => {
+          const updatedEdges = reconnectEdge(oldEdge, newConn, es);
+          setTimeout(() => {
+            dispatch(setEdgesInStore(updatedEdges));
+          }, 0);
+          return updatedEdges;
+        });
+        pendingEdgeRef.current = null;
+      }
+    },
+    [dispatch],
+  );
 
   const onEdgeUpdateEnd = useCallback(() => {
     console.log('[onEdgeUpdateEnd] pendingEdge still exists?', pendingEdgeRef.current?.id);
     if (pendingEdgeRef.current) {
       console.log('[onEdgeUpdateEnd] deleting:', pendingEdgeRef.current.id);
-      setEdgesLocal(es => es.filter(e => e.id !== pendingEdgeRef.current!.id));
+      setEdgesLocal(es => {
+        const filteredEdges = es.filter(e => e.id !== pendingEdgeRef.current!.id);
+        setTimeout(() => {
+          dispatch(setEdgesInStore(filteredEdges));
+        }, 0);
+        return filteredEdges;
+      });
       pendingEdgeRef.current = null;
     }
-  }, []);
+  }, [dispatch]);
 
-  const onEdgeContextMenu = useCallback((event: React.MouseEvent, edge: Edge) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setEdgesLocal(es => es.filter(e => e.id !== edge.id));
-  }, []);
+  const onEdgeContextMenu = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setEdgesLocal(es => {
+        const filteredEdges = es.filter(e => e.id !== edge.id);
+        setTimeout(() => {
+          dispatch(setEdgesInStore(filteredEdges));
+        }, 0);
+        return filteredEdges;
+      });
+    },
+    [dispatch],
+  );
 
   const addNode = useCallback(
     (vals: {
@@ -203,19 +242,42 @@ export const useFlowCanvas = () => {
       header?: string;
     }) => {
       const newNode = createMockNode(vals);
-      setNodesLocal(ns => ns.concat(newNode));
+      setNodesLocal(ns => {
+        const updatedNodes = ns.concat(newNode);
+        setTimeout(() => {
+          dispatch(setNodesInStore(updatedNodes));
+        }, 0);
+        return updatedNodes;
+      });
     },
-    [],
+    [dispatch],
   );
 
-  const removeNode = useCallback((nodeId: string) => {
-    setNodesLocal(prev => prev.filter(n => n.id !== nodeId));
-  }, []);
+  const removeNode = useCallback(
+    (nodeId: string) => {
+      setNodesLocal(prev => {
+        const updatedNodes = prev.filter(n => n.id !== nodeId);
+        setTimeout(() => {
+          dispatch(setNodesInStore(updatedNodes));
+        }, 0);
+        return updatedNodes;
+      });
+
+      setEdgesLocal(prev => {
+        const updatedEdges = prev.filter(e => e.source !== nodeId && e.target !== nodeId);
+        setTimeout(() => {
+          dispatch(setEdgesInStore(updatedEdges));
+        }, 0);
+        return updatedEdges;
+      });
+    },
+    [dispatch],
+  );
 
   const onChangeLabel = useCallback(
     (edgeId: string, newLabel: string) => {
-      setEdges(prev =>
-        prev.map(edge =>
+      setEdges(prev => {
+        const updatedEdges = prev.map(edge =>
           edge.id === edgeId
             ? {
                 ...edge,
@@ -225,10 +287,14 @@ export const useFlowCanvas = () => {
                 },
               }
             : edge,
-        ),
-      );
+        );
+        setTimeout(() => {
+          dispatch(setEdgesInStore(updatedEdges));
+        }, 0);
+        return updatedEdges;
+      });
     },
-    [setEdges],
+    [setEdges, dispatch],
   );
 
   const onDoubleClick = useCallback(
@@ -237,22 +303,28 @@ export const useFlowCanvas = () => {
       const req = endpoint.requestSchema ?? [];
       const res = endpoint.responseSchema ?? [];
 
-      setNodesLocal(ns => [
-        ...ns,
-        {
-          id: `${endpoint.endpointId}_${Date.now()}`,
-          type: 'endpointNode',
-          position,
-          data: {
-            ...endpoint,
-            requestSchema: req,
-            responseSchema: res,
-            showBody: false,
+      setNodesLocal(ns => {
+        const updatedNodes = [
+          ...ns,
+          {
+            id: `${endpoint.endpointId}_${Date.now()}`,
+            type: 'endpointNode',
+            position,
+            data: {
+              ...endpoint,
+              requestSchema: req,
+              responseSchema: res,
+              showBody: false,
+            },
           },
-        },
-      ]);
+        ];
+        setTimeout(() => {
+          dispatch(setNodesInStore(updatedNodes));
+        }, 0);
+        return updatedNodes;
+      });
     },
-    [screenToFlowPosition],
+    [project, dispatch],
   );
 
   return {

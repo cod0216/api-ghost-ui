@@ -5,11 +5,12 @@ import { ScenarioInfo } from '@/pages/flow-canvas/types';
 import { useScenario } from '@/pages/flow-canvas/hooks/useScenario';
 import { CommonButton } from '@/common/components/CommonButton';
 import saveIcon from '@/assets/icons/save.svg';
+import { useToast } from '@/common/components/toast/ToastContext';
 
 const SaveForm: React.FC = () => {
   const selected = useAppSelector(state => state.scenario.selected) as ScenarioInfo | null;
   const { exportInline } = useScenario();
-
+  const { addToast } = useToast();
   const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -26,14 +27,15 @@ const SaveForm: React.FC = () => {
 
   const onConfirm = async () => {
     if (name.length > 250) {
-      alert('Scenario Name must be at most 250 characters.');
+      addToast('Scenario Name must be at most 250 characters.', 4000);
       return;
     }
     if (description.length > 255) {
-      alert('Description must be at most 255 characters.');
+      addToast('Description must be at most 255 characters.', 4000);
       return;
     }
     await exportInline(name.trim(), description.trim(), timeoutMs);
+    addToast('Scenario file save is complete', 4000);
     setExpanded(false);
   };
   const onCancel = () => setExpanded(false);

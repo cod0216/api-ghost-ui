@@ -49,13 +49,9 @@ const FlowCanvas: React.FC = () => {
   } = useFlowCanvas();
 
   const { autoSave } = useScenario();
-
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
-
   const [showMockApiModal, setShowMockApiModal] = useState<boolean>(false);
-
   const [isEdgeModalOpen, setEdgeModalOpen] = useState(false);
-
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.IDLE);
   const [stepResults, setStepResults] = useState<any[]>([]);
   const { addToast } = useToast();
@@ -105,8 +101,6 @@ const FlowCanvas: React.FC = () => {
       setIsConnected(true);
 
       eventSource.addEventListener('stepResult', event => {
-        console.log('Received event:', event);
-
         try {
           const stepResult = JSON.parse(event.data) as StepResult;
           const { stepName, nextStep, isRequestSuccess } = stepResult;
@@ -154,16 +148,15 @@ const FlowCanvas: React.FC = () => {
         setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
         eventSource.close();
-        addToast('테스트가 성공적으로 완료 되었습니다.', 4000);
+        addToast('The test was successfully completed.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
-        console.log(result);
       });
 
       eventSource.onerror = e => {
         console.log(e);
         eventSource.close();
-        addToast('테스트 실행 중 문제가 발생하였습니다.', 4000);
+        addToast('An error occurred during test execution.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
         setTestStatus(TestStatus.ERROR);
