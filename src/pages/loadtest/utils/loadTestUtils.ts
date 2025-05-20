@@ -61,7 +61,8 @@ export const getDoughnutChartData = (snapshot: Snapshot) => {
   };
 };
 
-export const getBarChartData = (duration: HttpReqDuration) => {
+export const getBarChartData = (duration: HttpReqDuration | undefined) => {
+  if (!duration) return;
   return {
     labels: ['Min', 'Median', 'P90', 'P95', 'Max'],
     datasets: [
