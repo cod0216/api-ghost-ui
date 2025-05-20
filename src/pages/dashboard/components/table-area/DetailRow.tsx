@@ -6,6 +6,7 @@ interface DetailRowProps {
   isOpen: boolean;
   item: ScenarioTestDetailResponseResult;
 }
+1;
 
 const safeParseJson = (data?: string): any => {
   if (!data) return data;
@@ -58,6 +59,45 @@ const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
                 {item.responseBody && JSON.stringify(safeParseJson(item.responseBody), null, 2)}
               </pre>
             </div>
+
+            {Array.isArray(item?.route) &&
+              item.route.length > 0 &&
+              item.route.map((step, idx) => (
+                <div className={styles.detailColumn}>
+                  <h3 className={styles.sectionTitle}>{`Step ${idx + 1}`}</h3>
+                  <div key={idx} className={styles.stepCard}>
+                    {step?.expected && (
+                      <>
+                        <h4>Expected</h4>
+                        <div className={styles.stepRow}>
+                          <span className={styles.label}>Status:</span>
+                          <span className={styles.value}>{step.expected.status}</span>
+                        </div>
+                        <div className={styles.stepRow}>
+                          <span className={styles.label}>Value:</span>
+                          <pre className={styles.value}>
+                            {step.expected.value
+                              ? JSON.stringify(step.expected.value, null, 2)
+                              : ''}
+                          </pre>
+                        </div>
+
+                        <h4>Then</h4>
+                        <div className={styles.stepRow}>
+                          <span className={styles.label}>Next Step:</span>
+                          <span className={styles.value}>{step.then?.step || ''}</span>
+                        </div>
+                        <div className={styles.stepRow}>
+                          <span className={styles.label}>Store:</span>
+                          <pre className={styles.value}>
+                            {step.then?.store ? JSON.stringify(step.then.store, null, 2) : ''}
+                          </pre>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </td>
