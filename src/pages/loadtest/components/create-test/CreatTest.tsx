@@ -4,12 +4,14 @@ import { Stage } from '@/pages/loadtest/types';
 import { createLoadTest } from '@/pages/loadtest/service/loadTestService';
 import { CommonButton } from '@/common/components/CommonButton';
 import styles from '@/pages/loadtest/styles/CreatTest.module.scss';
+import { ScenarioInfo } from '@/pages/flow-canvas/types';
 
 interface CreatTestProps {
   onClose: () => void;
+  selectedScenario?: ScenarioInfo | null;
 }
 
-const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
+const CreatTest: React.FC<CreatTestProps> = ({ onClose, selectedScenario }) => {
   const [scenarioList, setScenarioList] = useState<string[]>([]);
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>([]);
   const [fileName, setFileName] = useState('');
@@ -34,6 +36,15 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose }) => {
     };
     loadScenario();
   }, []);
+
+  useEffect(() => {
+    if (scenarioList.length === 0 || !selectedScenario) return;
+
+    const targetFile = `${selectedScenario.name}.yaml`;
+    if (scenarioList.includes(targetFile)) {
+      setSelectedScenarios([targetFile]);
+    }
+  }, [scenarioList, selectedScenario]);
 
   const toggleScenario = (item: string) => {
     setSelectedScenarios(prev =>
