@@ -15,6 +15,10 @@ import { NODE, EDGE } from '@/config/reactFlow';
 import ScenarioNode from '@/pages/flow-canvas/components/custom-node/ScenarioNode';
 import SaveForm from '@/pages/flow-canvas/components/save-form/SaveForm';
 import EdgeModal from '@/pages/flow-canvas/components/custom-node/EdgeModal';
+import { TestStatus } from '@/pages/flow-canvas/types';
+import playIcon from '@/assets/icons/play.svg';
+import success from '@/assets/icons/success.svg';
+import playing from '@/assets/icons/playing.svg';
 
 const nodeTypes = { endpointNode: CustomNode, mockNode: CustomNode, scenarioNode: ScenarioNode };
 const edgeTypes = { flowCanvasEdge: CustomEdge };
@@ -47,6 +51,9 @@ const FlowCanvas: React.FC = () => {
 
   const [isEdgeModalOpen, setEdgeModalOpen] = useState(false);
 
+  const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.IDLE);
+  const [stepResults, setStepResults] = useState<any[]>([]);
+
   const handleEdgeDoubleClick = (e: React.MouseEvent, edge: Edge) => {
     e.preventDefault();
     e.stopPropagation();
@@ -65,7 +72,7 @@ const FlowCanvas: React.FC = () => {
 
   useEffect(() => {
     if (!selectedScenario) return;
-
+    setTestStatus(TestStatus.IDLE);
     const { nodes: parsedNodes, edges: parsedEdges } = scenarioToFlowElements(selectedScenario);
     setNodes(() => parsedNodes);
     setEdges(() => parsedEdges);
@@ -83,7 +90,10 @@ const FlowCanvas: React.FC = () => {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;
       setIsConnected(false);
+      setTestStatus(TestStatus.IDLE);
     } else {
+      setStepResults([]);
+      setTestStatus(TestStatus.RUNNING);
       const eventSource = scenarioTest(fileName + '.yaml');
       eventSourceRef.current = eventSource;
       setIsConnected(true);
@@ -91,9 +101,11 @@ const FlowCanvas: React.FC = () => {
       eventSource.addEventListener('stepResult', event => {
         const data = JSON.parse(event.data);
         console.log(data);
+        setStepResults(prev => [...prev, data]);
       });
 
       eventSource.addEventListener('complete', event => {
+        setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
         eventSource.close();
         eventSourceRef.current = null;
@@ -106,6 +118,7 @@ const FlowCanvas: React.FC = () => {
         eventSource.close();
         eventSourceRef.current = null;
         setIsConnected(false);
+        setTestStatus(TestStatus.IDLE);
       };
     }
   };
@@ -113,8 +126,24 @@ const FlowCanvas: React.FC = () => {
   return (
     <>
       <div className={styles.actionContainer}>
-        <PlayButton onPlay={handlePlay} selectedScenario={selectedScenario} /> |{/* <SaveForm /> */}
+        {testStatus === TestStatus.IDLE && (
+          <PlayButton path={playIcon} onPlay={handlePlay} selectedScenario={selectedScenario} />
+        )}
+        {testStatus === TestStatus.RUNNING && (
+          <PlayButton
+            path={playing}
+            onPlay={handlePlay}
+            selectedScenario={selectedScenario}
+            loading={testStatus === TestStatus.RUNNING}
+          />
+        )}
+        {testStatus === TestStatus.COMPLETE && (
+          <PlayButton path={success} onPlay={handlePlay} selectedScenario={selectedScenario} />
+        )}
+        |
+        <SaveForm />
       </div>
+
       <div className={styles.canvas} ref={wrapperRef} onContextMenu={handleContextMenu}>
         <ReactFlow
           nodes={nodes}
