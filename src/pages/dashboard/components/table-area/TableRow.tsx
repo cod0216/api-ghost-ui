@@ -6,6 +6,7 @@ import LightIndicator from '@/common/components/LightIndicator.tsx';
 
 interface TableRowProps {
   item: ScenarioTestDetailResponseResult;
+  showAllTable: boolean;
 }
 
 /**
@@ -19,7 +20,7 @@ interface TableRowProps {
  *
  * @author haerim-kweon
  */
-const TableRow: React.FC<TableRowProps> = ({ item }) => {
+const TableRow: React.FC<TableRowProps> = ({ item, showAllTable }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -33,7 +34,7 @@ const TableRow: React.FC<TableRowProps> = ({ item }) => {
         <td>{item.status}</td>
         <td>{item.durationMs}</td>
       </tr>
-      <DetailRow isOpen={open} item={item} />
+      <DetailRow isOpen={open} showAllTable={showAllTable} item={item} />
     </>
   );
 };

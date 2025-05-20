@@ -173,3 +173,18 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.showAll {
+  font-size: $font-size-xs;
+  cursor: pointer;
+  transition: 300ms;
+  margin-left: 1rem;
+  &:hover {
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+}

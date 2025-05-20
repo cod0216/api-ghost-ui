@@ -4,6 +4,7 @@ import { ScenarioTestDetailResponseResult } from '@/pages/dashboard/types/index.
 
 interface DetailRowProps {
   isOpen: boolean;
+  showAllTable: boolean;
   item: ScenarioTestDetailResponseResult;
 }
 1;
@@ -17,11 +18,14 @@ const safeParseJson = (data?: string): any => {
   }
 };
 
-const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item }) => {
+const DetailRow: React.FC<DetailRowProps> = ({ isOpen, item, showAllTable }) => {
+  console.log('[DetailRow] : ', showAllTable);
   return (
-    <tr className={`${styles.detailRow} ${isOpen ? styles.expanded : ''}`}>
+    <tr className={`${styles.detailRow} ${isOpen || showAllTable ? styles.expanded : ''}`}>
       <td colSpan={5} style={{ padding: 0, border: 'none' }}>
-        <div className={`${styles.detailContentWrapper} ${isOpen ? styles.expanded : ''}`}>
+        <div
+          className={`${styles.detailContentWrapper} ${isOpen || showAllTable ? styles.expanded : ''}`}
+        >
           <div className={styles.detailContent}>
             <div className={styles.detailColumn}>
               <h3>Start Time</h3>
