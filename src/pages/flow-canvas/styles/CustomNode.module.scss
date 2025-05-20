@@ -25,6 +25,9 @@
   padding: 0px 6px;
   border: none;
   border-radius: $radius-2xl;
+  &:hover {
+    scale: 105%;
+  }
 }
 
 .DELETEMethod {
@@ -43,6 +46,11 @@
   @include httpMethod.method-button($put-bg, $put-font);
 }
 
+.CONNECTMethod,
+.DISCONNECTMethod,
+.SENDMethod,
+.SUBSCRIBEMethod,
+.UNSUBSCRIBEMethod,
 .PATCHMethod,
 .WEBSOCKETMethod {
   @include httpMethod.method-button($patch-bg, $patch-font);
@@ -62,6 +70,38 @@
   background-color: $green-700;
 }
 
+.passHeader {
+  border: none;
+  border-top: 4px solid $primary-300;
+  border-left: 4px solid $primary-300;
+  border-right: 4px solid $primary-300;
+  box-shadow: 0 6px 6px rgba($primary-300, 0.3);
+}
+
+.nonPassHeader {
+  border: none;
+  border-top: 4px solid $red-300;
+  border-left: 4px solid $red-300;
+  border-right: 4px solid $red-300;
+  box-shadow: 0 6px 6px rgba($red-300, 0.3);
+}
+
+.passBody {
+  border: none;
+  border-bottom: 4px solid $primary-300;
+  border-left: 4px solid $primary-300;
+  border-right: 4px solid $primary-300;
+  box-shadow: 0 -6px 6px rgba($primary-300, 0.3);
+}
+
+.nonpassBody {
+  border: none;
+  border-bottom: 4px solid $red-300;
+  border-left: 4px solid $red-300;
+  border-right: 4px solid $red-300;
+  box-shadow: 0 -6px 6px rgba($red-300, 0.3);
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -70,21 +110,33 @@
   padding: 4px 8px;
   border-radius: 0px 0px $radius-lg $radius-lg;
 }
-
+.pathInput,
 .path {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $black;
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   margin: 0 10px;
   padding: 3px 10px;
+  background: transparent;
+  border: none;
+  outline: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.pathInput {
+  &:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 .menuIcon {
@@ -92,7 +144,7 @@
   flex-direction: column;
   justify-content: space-between;
   width: 12px;
-  height: 10px;
+  height: 100%;
   cursor: pointer;
 }
 
@@ -110,6 +162,12 @@
   border-radius: $radius-sm;
   max-height: 120px;
   overflow: auto;
+  .success {
+    background: $red-500;
+  }
+  .fail {
+    background: $primary-500;
+  }
 }
 
 .bodyEditor {
@@ -153,7 +211,6 @@
   justify-content: space-between;
   background: $white;
   padding: 4px 8px;
-  cursor: pointer;
 }
 
 .handle {
@@ -162,17 +219,6 @@
   width: 10px;
   height: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    left: -50px;
-    width: 50px;
-    height: 50px;
-    background: transparent;
-    cursor: pointer;
-  }
 }
 
 .wrapper {

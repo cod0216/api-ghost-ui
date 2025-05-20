@@ -37,3 +37,10 @@ export interface FlowRoute {
     step: string;
   };
 }
+
+export enum TestStatus {
+  IDLE = 'idle',
+  RUNNING = 'running',
+  COMPLETE = 'complete',
+  ERROR = 'error',
+}

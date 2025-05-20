@@ -4,7 +4,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { ROUTES } from '@/config/routes';
 import AppLayout from './AppLayout';
 import NotFound from '@/pages/notfound/NotFound';
-import LoadTest from '@/pages/load-test/LoadTest';
+import LoadTest from '@/pages/loadtest/LoadTest';
 
 const router = createBrowserRouter([
   {
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
       { path: '', element: <Navigate to={ROUTES.FLOW_CANVAS.path} replace /> },
       { path: ROUTES.FLOW_CANVAS.path, element: <FlowCanvasMain /> },
       { path: ROUTES.DASHBOARD.path, element: <Dashboard /> },
-      { path: 'loadtest', element: <LoadTest /> },
+      { path: ROUTES.LOADTEST.path, element: <LoadTest /> },
     ],
   },
 ]);

@@ -59,17 +59,6 @@ $dashboard-background-color: $gray-50;
   }
 }
 
-.chartContainer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-}
-
 .flowGraphArea,
 .latencyGraphArea {
   flex: 1 1 45%;
@@ -87,10 +76,6 @@ $dashboard-background-color: $gray-50;
   flex-wrap: wrap;
   gap: 1rem;
   padding: 16px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
 }
 
 .tableArea {

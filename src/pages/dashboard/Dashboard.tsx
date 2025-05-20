@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '@/pages/dashboard/styles/Dashboard.module.scss';
 import MainContent from '@/pages/dashboard/components/main-content/MainContent.tsx';
 import HeaderTabs from '@/pages/dashboard/components/header-tabs/HeaderTabs.tsx';

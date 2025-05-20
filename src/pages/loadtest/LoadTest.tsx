@@ -20,7 +20,8 @@ import {
   getLoadTestParamInfo,
   getLoadTestParamNameList,
 } from '@/pages/loadtest/service/loadTestService';
-// import { loadTestParamInfo } from './__mock__';
+import createIcon from '@/assets/icons/create.svg';
+
 import CreatModal from '@/pages/loadtest/components/create-test/CreatModal';
 
 Chart.register(
@@ -42,12 +43,21 @@ const LoadTest: React.FC = () => {
 
   useEffect(() => {
     const load = async () => {
-      await getLoadTestParamNameList()
-        .then(files => setLoadTestFiles(files))
-        .catch(err => console.error('[LoadTest] getLoadTestParamNameList Error', err));
+      try {
+        const files = await getLoadTestParamNameList();
+        setLoadTestFiles(files);
+      } catch (err) {
+        console.error('[LoadTest] getLoadTestParamNameList Error', err);
+      }
     };
     load();
   }, []);
+
+  useEffect(() => {
+    if (loadTestFiles.length > 0 && !selectedLoadTest) {
+      handleSelectItem(loadTestFiles[0]);
+    }
+  }, [loadTestFiles, selectedLoadTest]);
 
   const handleSelectItem = (item: LoadTestParamName) => {
     const fileName = item.fileName;
@@ -63,7 +73,7 @@ const LoadTest: React.FC = () => {
   };
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const handleModalOpen = () => {
+  const toggleModal = () => {
     setShowModal(prev => !prev);
   };
 
@@ -73,33 +83,37 @@ const LoadTest: React.FC = () => {
         className={styles.sidebar}
         sections={[
           {
-            title: 'Load Test',
             content: (
-              <div className={styles.scenarioListContainer}>
-                <div onClick={handleModalOpen}>button</div>
-                {/* <ModalComponent /> */}
-
-                {loadTestFiles.map(item => {
-                  const fileName = item.fileName;
-                  const isSelected = item.fileName === selectedLoadTest?.fileName;
-                  return (
-                    <div
-                      key={fileName}
-                      className={`${isSelected ? '' : ''}`}
-                      title={fileName}
-                      onClick={() => handleSelectItem(item)}
-                    >
-                      {fileName}
-                    </div>
-                  );
-                })}
-              </div>
+              <>
+                <div className={styles.sidebarTitle}>
+                  <h4>Load Test</h4>
+                  <button className={styles.createButton} onClick={toggleModal}>
+                    <img src={createIcon} alt="create Scenario" width={24} height={24} />
+                  </button>
+                </div>
+                <div className={styles.sidebarListContainer}>
+                  {loadTestFiles.map(item => {
+                    const fileName = item.fileName;
+                    const isSelected = item.fileName === selectedLoadTest?.fileName;
+                    return (
+                      <div
+                        key={fileName}
+                        className={`${styles.sidebarListItem} ${isSelected ? styles.selectedSidebarListItem : ''}`}
+                        title={fileName}
+                        onClick={() => handleSelectItem(item)}
+                      >
+                        {fileName}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             ),
           },
         ]}
       />
       <LoadTestInfo loadTest={selectedLoadTest} />
-      {showModal && <CreatModal onCancle={handleModalOpen} />}
+      {showModal && <CreatModal onCancle={toggleModal} />}
     </div>
   );
 };

@@ -99,20 +99,21 @@ const ScenarioNodeBody: React.FC<ScenarioNodeBodyProps> = ({
       )}
       {subTab.showSchema && (
         <section className={styles.contentArea}>
-          {isRequestTab ? (
-            <JsonToggleField
-              initialJson={requestSchema?.json ?? ''}
-              defaultToJson={true}
-              editable={true}
-              onChange={updateRequestJson}
-            />
-          ) : (
+          {/* {isRequestTab ? ( */}
+          <JsonToggleField
+            initialJson={requestSchema?.json ?? ''}
+            defaultToJson={true}
+            editable={true}
+            onChange={updateRequestJson}
+          />
+          {/* :
+           (
             <JsonToggleField
               initialJson={responseSchema}
               defaultToJson={true}
               onChange={setResSchema}
             />
-          )}
+          ) */}
         </section>
       )}
 

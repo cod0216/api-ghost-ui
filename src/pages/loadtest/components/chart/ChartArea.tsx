@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import DataCard from '@/pages/loadtest/components/DataCard';
 import ChartCard from '@/pages/loadtest/components/ChartCard';
@@ -20,135 +20,135 @@ import {
   ParsedSnapshot,
   getEndpointMetrics,
 } from '@/pages/loadtest/utils/loadTestUtils';
-// import { snaptshat as mockSnapshat } from '../../__mock__';
-
-const POLL_INTERVAL = 5000;
 
 interface ChartAreaProps {
   loadTest: LoadTestParamInfo | null;
   onTest: boolean;
 }
-
 const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
-  if (!onTest || !loadTest) return <></>;
   const [lastSnapshot, setLastSnapshot] = useState<Snapshot>();
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [timeline, setTimeline] = useState<ParsedSnapshot[]>([]);
   const [endpointResultMap, setEndpointResultMap] = useState<Record<string, EndpointResult[]>>({});
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+  const [result, setResult] = useState<AggregatedResult | EndpointResult | null>(null);
 
-  // useEffect(() => {
-  //   if (lastSnapshot) {
-  //     const parsedSnapshot = parseSnapshot(lastSnapshot);
-  //     setTimeline([parsedSnapshot]);
-  //   }
-  // }, []);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    if (snapshots.length === 0 || !lastSnapshot) return;
+    if (!onTest || !loadTest?.fileName) return;
 
-    const updatedTimeline = snapshots.map(snapshot => parseSnapshot(snapshot));
-    setTimeline(updatedTimeline);
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
 
-    const updatedResultMap: Record<string, EndpointResult[]> = { ...endpointResultMap };
+    const eventSource = new EventSource(
+      `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
+    );
+    eventSourceRef.current = eventSource;
 
-    lastSnapshot.endpoints.forEach(item => {
-      const url = item.url;
-      if (!updatedResultMap[url]) {
-        updatedResultMap[url] = [];
-      }
-      updatedResultMap[url] = [...updatedResultMap[url], item.result];
-    });
-
-    setEndpointResultMap(updatedResultMap);
-  }, [snapshots, lastSnapshot]);
-
-  useEffect(() => {
-    const setupSSE = () => {
+    const handleSnapshot = (event: MessageEvent) => {
       try {
-        const eventSource = new EventSource(
-          `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
-        );
-
-        eventSource.onopen = () => {
-          console.log('SSE connection opened');
-          setIsConnected(true);
-        };
-
-        eventSource.addEventListener('snapshot', event => {
-          try {
-            const newSnapshot = JSON.parse(event.data) as Snapshot;
-            console.log(newSnapshot);
-            setLastSnapshot(newSnapshot);
-            setSnapshots(prev => [...prev, newSnapshot]);
-          } catch (err) {
-            console.error('Error parsing SSE data:', err);
-          }
-        });
-
-        eventSource.addEventListener('summary', event => {
-          try {
-            const summary = JSON.parse(event.data);
-            console.log('Load test summary:', summary);
-          } catch (err) {
-            console.error('Error parsing SSE summary data:', err);
-          }
-        });
-
-        eventSource.onerror = error => {
-          console.error('SSE connection error:', error);
-          setIsConnected(false);
-          eventSource.close();
-          setTimeout(setupSSE, POLL_INTERVAL);
-        };
-
-        return () => {
-          eventSource.close();
-        };
+        const newSnapshot = JSON.parse(event.data) as Snapshot;
+        updateChart(newSnapshot);
       } catch (err) {
-        console.error('Failed to establish SSE connection:', err);
-
-        const interval = setInterval(() => {
-          if (!lastSnapshot) return;
-
-          setLastSnapshot(lastSnapshot);
-          setSnapshots(prev => [...prev, lastSnapshot]);
-        }, POLL_INTERVAL);
-
-        return () => clearInterval(interval);
+        console.error('Error parsing snapshot:', err);
       }
     };
 
-    setupSSE();
-  }, [loadTest]);
+    eventSource.addEventListener('snapshot', handleSnapshot);
+    eventSource.onopen = () => {
+      setIsConnected(true);
+    };
 
-  if (!lastSnapshot) return <></>;
-  const result: AggregatedResult = lastSnapshot.result;
-  const duration: HttpReqDuration = result.http_req_duration;
+    eventSource.onerror = error => {
+      console.error('SSE error:', error);
+      setIsConnected(false);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.removeEventListener('snapshot', handleSnapshot);
+      eventSource.close();
+      eventSourceRef.current = null;
+    };
+  }, [onTest, loadTest?.fileName]);
+
+  const updateChart = (snapshot: Snapshot) => {
+    setSnapshots(prev => {
+      const newSnapshots = [...prev, snapshot];
+      setTimeline(newSnapshots.map(s => parseSnapshot(s)));
+
+      const updatedResultMap: Record<string, EndpointResult[]> = {};
+      newSnapshots.forEach(s => {
+        s.endpoints.forEach(item => {
+          const url = item.url;
+          if (!updatedResultMap[url]) updatedResultMap[url] = [];
+          updatedResultMap[url].push(item.result);
+        });
+      });
+      setEndpointResultMap(updatedResultMap);
+
+      return newSnapshots;
+    });
+
+    setLastSnapshot(snapshot);
+    setResult(snapshot.result);
+    setSelectedUrl(null);
+  };
+
+  useEffect(() => {
+    if (!lastSnapshot) return;
+
+    if (selectedUrl && endpointResultMap[selectedUrl]?.length > 0) {
+      const latestEndpointResult = endpointResultMap[selectedUrl].at(-1);
+      if (latestEndpointResult) {
+        setResult(latestEndpointResult);
+      }
+    } else {
+      setResult(lastSnapshot.result);
+    }
+  }, [selectedUrl, endpointResultMap, lastSnapshot]);
+
+  const duration = result?.http_req_duration;
 
   return (
     <div className={styles.chartArea}>
-      {/* Top metrics cards */}
+      {Object.keys(endpointResultMap).length > 0 && (
+        <div className={styles.endpointSelector}>
+          <label>API Select: </label>
+          <select value={selectedUrl || ''} onChange={e => setSelectedUrl(e.target.value || null)}>
+            <option value="">Total</option>
+            {Object.keys(endpointResultMap).map((url, idx) => (
+              <option key={idx} value={url}>
+                {url}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className={styles.dataRow}>
         <DataCard
           className={styles.dataField}
           title="Virtual Users"
-          value={result.vus.toString()}
+          value={result?.vus.toString()}
         />
         <DataCard
           className={styles.dataField}
           title="Total Requests"
-          value={result.http_reqs.count.toLocaleString()}
+          value={result?.http_reqs.count.toLocaleString()}
         />
         <DataCard
           className={styles.dataField}
           title="RPS"
-          value={result.http_reqs.rate.toFixed(2)}
+          value={result?.http_reqs.rate.toFixed(2)}
         />
         <DataCard
           className={styles.dataField}
           title="Avg. Response Time"
-          value={`${duration.avg.toFixed(2)} ms`}
+          value={`${duration && duration.avg && duration.avg.toFixed(2)} ms`}
         />
       </div>
 
@@ -199,27 +199,27 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
           <tbody>
             <tr>
               <td>Min</td>
-              <td>{duration.min.toFixed(2)}</td>
+              <td>{duration?.min.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Median</td>
-              <td>{duration.med.toFixed(2)}</td>
+              <td>{duration?.med.toFixed(2)}</td>
             </tr>
             <tr>
               <td>P90</td>
-              <td>{duration['p(90)'].toFixed(2)}</td>
+              <td>{duration && duration['p(90)'].toFixed(2)}</td>
             </tr>
             <tr>
               <td>P95</td>
-              <td>{duration['p(95)'].toFixed(2)}</td>
+              <td>{duration && duration['p(95)'].toFixed(2)}</td>
             </tr>
             <tr>
               <td>Max</td>
-              <td>{duration.max.toFixed(2)}</td>
+              <td>{duration && duration.max.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Avg</td>
-              <td>{duration.avg.toFixed(2)}</td>
+              <td>{duration && duration.avg.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>

@@ -22,8 +22,10 @@ import { NodeEndPoint } from '@/pages/flow-canvas/types/index';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setNodes as setNodesInStore, setEdges as setEdgesInStore } from '@/store/slices/flowSlice';
 import { createMockNode, createEndpointNode } from '@/common/utils/reactFlowUtils';
+import { HttpMethod, WEBSOCKETMethod } from '@/common/types';
 
 export const useFlowCanvas = () => {
+  const { getNodes } = useReactFlow();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
@@ -91,21 +93,38 @@ export const useFlowCanvas = () => {
   }, []);
 
   const onConnect = useCallback((params: Connection) => {
+    const nodes = getNodes();
+
+    const sourceNode = nodes.find(node => node.id === params.source);
+
+    const isWebSocketNode = sourceNode?.data.protocolType === HttpMethod.WEBSOCKET;
+    const isWebSocketMethod =
+      sourceNode?.data.method && Object.values(WEBSOCKETMethod).includes(sourceNode.data.method);
+
+    const statusLabel = isWebSocketNode || isWebSocketMethod ? 'OK' : '200';
+    params.source;
     const newEdge: Edge = {
       ...params,
       id: `${params.source}-${params.target}`,
       animated: true,
       type: 'flowCanvasEdge',
       data: {
-        expected: { status: '200', value: {} },
-        label: '200',
+        expected: { status: statusLabel, value: {} },
+        label: statusLabel,
       },
       source: params.source!,
       target: params.target!,
       sourceHandle: params.sourceHandle!,
       targetHandle: params.targetHandle!,
     };
-    setEdgesLocal(prev => addEdge(newEdge, prev));
+
+    console.log('[onConnect] newEdge:', newEdge);
+
+    setEdgesLocal(prev => {
+      const updated = addEdge(newEdge, prev);
+      console.log('[onConnect] updated edges:', updated);
+      return updated;
+    });
   }, []);
 
   /**
@@ -144,20 +163,24 @@ export const useFlowCanvas = () => {
   );
 
   const onEdgeUpdateStart = useCallback((_: any, edge: Edge) => {
+    console.log('[onEdgeUpdateStart] pendingEdge:', edge.id);
     pendingEdgeRef.current = edge;
   }, []);
 
   const onEdgeUpdate = useCallback((oldEdge: Edge, newConn: Connection) => {
+    console.log('[onEdgeUpdate] newConn:', newConn);
     if (newConn.target) {
+      console.log('[onEdgeUpdate] reconnecting');
       setEdgesLocal(es => reconnectEdge(oldEdge, newConn, es));
       pendingEdgeRef.current = null;
     }
   }, []);
 
   const onEdgeUpdateEnd = useCallback(() => {
-    const edge = pendingEdgeRef.current;
-    if (edge) {
-      setEdgesLocal(es => es.filter(e => e.id !== edge.id));
+    console.log('[onEdgeUpdateEnd] pendingEdge still exists?', pendingEdgeRef.current?.id);
+    if (pendingEdgeRef.current) {
+      console.log('[onEdgeUpdateEnd] deleting:', pendingEdgeRef.current.id);
+      setEdgesLocal(es => es.filter(e => e.id !== pendingEdgeRef.current!.id));
       pendingEdgeRef.current = null;
     }
   }, []);

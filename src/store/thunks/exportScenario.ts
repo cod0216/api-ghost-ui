@@ -5,6 +5,15 @@ import { exportScenario as exportService } from '@/pages/flow-canvas/service/sce
 import { HttpRequest, ProtocolType } from '@/common/types';
 import { MappingPair } from '@/pages/flow-canvas/types/mapping';
 const DEFAULT_HEADER_OBJ = JSON.stringify({ 'Content-Type': 'application/json' });
+const STOMP_METHODS = [
+  'CONNECT',
+  'DISCONNECT',
+  'SEND',
+  'SUBSCRIBE',
+  'UNSUBSCRIBE',
+  'WEBSOCKET',
+] as const;
+
 interface Payload {
   name: string;
   description: string;
@@ -59,16 +68,6 @@ export const exportScenario = createAsyncThunk(
         body: entry ? { formdata: null, json: entry } : null,
       };
 
-      const normalizeKey = (raw: string): string => {
-        if (raw.startsWith('${') && raw.endsWith('}')) {
-          return raw.slice(2, -1);
-        } else if (raw.startsWith('$')) {
-          return `\${${raw.slice(1)}}`;
-        } else {
-          return `\${${raw}}`;
-        }
-      };
-
       const routes: FlowRoute[] = edges
         .filter(e => e.source === id)
         .map(e => {
@@ -76,8 +75,7 @@ export const exportScenario = createAsyncThunk(
 
           const expectedValue: Record<string, any> = {};
           Object.entries(rawExpected).forEach(([k, v]) => {
-            const key = normalizeKey(k);
-            expectedValue[key] = v;
+            expectedValue[k] = v;
           });
 
           const pairs: MappingPair[] = Array.isArray((e.data as any)?.mappingInfo)
@@ -85,16 +83,16 @@ export const exportScenario = createAsyncThunk(
             : [];
           const thenStore: Record<string, any> = {};
           pairs.forEach(({ sourceKey, targetKey }) => {
-            const leafSource = sourceKey.split('.').pop()!;
-            const leafTarget = targetKey.split('.').pop()!;
+            if (!sourceKey.toString || !targetKey.toString) return;
+
+            const rawSource = sourceKey.toString();
+            const rawTarget = targetKey.toString();
+
+            const leafSource = rawSource.split('.').pop()!;
+            const leafTarget = rawTarget.split('.').pop()!;
 
             let val = leafSource;
-
-            if (val.startsWith('${') && val.endsWith('}')) {
-              val = val.slice(2, -1);
-            } else if (val.startsWith('$')) {
-              val = `\${${val.slice(1)}}`;
-            } else {
+            if (!(val.includes('${') && val.includes('}'))) {
               val = `\${${val}}`;
             }
 
@@ -113,8 +111,15 @@ export const exportScenario = createAsyncThunk(
           };
         });
 
+      const method = node.data.method as string;
+      const isStomp =
+        node.data.type === ProtocolType.WEBSOCKET ||
+        STOMP_METHODS.includes(method as (typeof STOMP_METHODS)[number]);
+
+      const protocolType = isStomp ? ProtocolType.WEBSOCKET : ProtocolType.HTTP;
+
       steps[id] = {
-        type: ProtocolType.HTTP,
+        type: protocolType,
         position: { x: node.position.x, y: node.position.y },
         request,
         route: routes,

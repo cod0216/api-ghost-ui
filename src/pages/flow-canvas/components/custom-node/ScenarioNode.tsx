@@ -1,32 +1,49 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
-import NodeBody from '@/pages/flow-canvas/components/custom-node/NodeBody';
 import styles from '@/pages/flow-canvas/styles/CustomNode.module.scss';
 import { MainTabType, SubTabType, NodeEndPoint } from '@/pages/flow-canvas/types';
-import { useSchemaEditor } from '@/pages/flow-canvas/hooks/useSchemaEditor';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setNodeTab } from '@/store/slices/nodeTabSlice';
 import { useFlowCanvas } from '@/pages/flow-canvas/hooks/useFlowCanvas';
 import ScenarioNodeBody from './ScenarioNodeBody';
 import { RequestBody } from '@/common/types';
+import { useNodeControls } from '@/pages/flow-canvas/hooks/useCustomNode';
 
 const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
   const { updateNode, setNodes } = useFlowCanvas();
   const dispatch = useAppDispatch();
+  const { savePath } = useNodeControls(id);
 
   const {
     baseUrl,
     method,
-    path,
+    path: initialPath,
     showBody,
     requestSchema: dataReq = '',
     responseSchema: dataRes = '',
     header: dataHeader,
+    isSuccess: pass = false,
+    isFail: nonPass = false,
   } = data;
 
   const savedTab = useAppSelector(state => state.nodeTab[id]) ?? {
     mainTab: MainTabType.REQUEST,
     subTab: SubTabType.BODY,
+  };
+
+  const [isEditingPath, setIsEditingPath] = useState(false);
+  const [tempPath, setTempPath] = useState(initialPath);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleDoubleClickPath = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
+    setIsEditingPath(true);
+  };
+
+  const handlePathBlur = () => {
+    const newPath = tempPath.trim();
+    savePath(newPath);
+    setIsEditingPath(false);
   };
 
   const handleToggleBody = (e?: MouseEvent) => {
@@ -53,21 +70,47 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
     updateNode(updatedNode);
   };
 
+  const isPassStyle = pass === true ? 'success' : '';
+  const isFailStyle = nonPass === true ? 'fail' : '';
   return (
     <div className={styles.nodeWrapper}>
       <div className={`${styles.node} ${styles[method]}`}>
-        <div className={`${styles.header}`}>{baseUrl}</div>
+        <div
+          className={`${styles.header} ${isPassStyle && styles.passHeader} ${isFailStyle && styles.nonPassHeader}`}
+        >
+          {baseUrl}
+        </div>
 
         <div
-          className={styles.actions}
-          onClick={e => {
-            e.stopPropagation();
-            handleToggleBody();
-          }}
+          className={`${styles.actions} ${isPassStyle && styles.passBody} ${isFailStyle && styles.nonpassBody} `}
         >
           <div className={`${styles.methodButton} ${styles[`${method}Method`]}`}>{method}</div>
-          <span className={styles.path}>{path}</span>
-          <div className={styles.menuIcon}>
+          {isEditingPath ? (
+            <input
+              ref={inputRef}
+              type="text"
+              className={styles.pathInput}
+              value={tempPath}
+              onChange={e => setTempPath(e.target.value)}
+              onBlur={handlePathBlur}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  handlePathBlur();
+                }
+              }}
+            />
+          ) : (
+            <span className={styles.path} onDoubleClick={handleDoubleClickPath}>
+              {initialPath}
+            </span>
+          )}
+          <div
+            className={styles.menuIcon}
+            onClick={e => {
+              e.stopPropagation();
+              handleToggleBody();
+            }}
+          >
             <span className={styles.line} />
             <span className={styles.line} />
             <span className={styles.line} />
@@ -89,8 +132,8 @@ const ScenarioNode: React.FC<NodeProps> = ({ id, data, xPos, yPos, type }) => {
           />
         )}
       </div>
-      <Handle type="target" position={Position.Left} className={styles.handle} />
-      <Handle type="source" position={Position.Right} className={styles.handle} />
+      <Handle id="target" type="target" position={Position.Left} className={styles.handle} />
+      <Handle id="source" type="source" position={Position.Right} className={styles.handle} />
     </div>
   );
 };
