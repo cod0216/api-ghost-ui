@@ -43,8 +43,6 @@
 
 .chartArea {
   display: grid;
-  // grid-template-columns: repeat(2, 1fr);
-  // grid-template-rows: auto auto 1fr 1fr;
   gap: 1.5rem;
   background-color: $gray-50;
 }
@@ -74,6 +72,15 @@
   .value {
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
+  }
+}
+
+.chartCard {
+  flex-grow: 1;
+
+  div {
+    display: flex;
+    justify-content: center;
   }
 }
 
