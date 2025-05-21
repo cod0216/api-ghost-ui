@@ -1,6 +1,6 @@
 export enum ProtocolType {
   HTTP = 'HTTP',
-  STOMP = 'STOMP',
+  WEBSOCKET = 'WEBSOCKET',
 }
 
 export enum HttpMethod {
@@ -9,6 +9,15 @@ export enum HttpMethod {
   PUT = 'PUT',
   DELETE = 'DELETE',
   PATCH = 'PATCH',
+  WEBSOCKET = 'WEBSOCKET',
+}
+
+export enum WEBSOCKETMethod {
+  CONNECT = 'CONNECT',
+  DISCONNECT = 'DISCONNECT',
+  SEND = 'SEND',
+  SUBSCRIBE = 'SUBSCRIBE',
+  UNSUBSCRIBE = 'UNSUBSCRIBE',
   WEBSOCKET = 'WEBSOCKET',
 }
 

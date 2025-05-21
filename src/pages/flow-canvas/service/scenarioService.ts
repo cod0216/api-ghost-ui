@@ -29,7 +29,7 @@ export const exportScenario = async (
 
 export const scenarioTest = (name: string): EventSource => {
   const queryString = new URLSearchParams({ scenarioName: name }).toString();
-  const fullUrl = `http://localhost:8080/apighost/scenario-test?${queryString}`;
+  const fullUrl = `http://localhost:7000/apighost/scenario-test?${queryString}`;
   return new EventSource(fullUrl);
 };
 

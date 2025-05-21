@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import CommonSidebar from '@/common/components/CommonSidebar';
 import { LoadTestParamInfo, LoadTestParamName } from '@/pages/loadtest/types';
+import { useAppSelector } from '@/store/hooks';
+import { ScenarioInfo } from '@/pages/flow-canvas/types';
 import {
   Chart,
   LineController,
@@ -40,6 +42,7 @@ Chart.register(
 const LoadTest: React.FC = () => {
   const [loadTestFiles, setLoadTestFiles] = useState<LoadTestParamName[]>([]);
   const [selectedLoadTest, setSelectedLoadTest] = useState<LoadTestParamInfo | null>(null);
+  const flowSelected = useAppSelector(state => state.scenario.selected);
 
   useEffect(() => {
     const load = async () => {
@@ -59,6 +62,16 @@ const LoadTest: React.FC = () => {
     }
   }, [loadTestFiles, selectedLoadTest]);
 
+  useEffect(() => {
+    if (loadTestFiles.length === 0) return;
+
+    const targetName = flowSelected ? `${flowSelected.name}.yaml` : '';
+    const found = loadTestFiles.find(item => item.fileName === targetName);
+    const defaultItem = found ?? loadTestFiles[0];
+
+    handleSelectItem(defaultItem);
+  }, [loadTestFiles, flowSelected]);
+
   const handleSelectItem = (item: LoadTestParamName) => {
     const fileName = item.fileName;
     if (!fileName) return;
@@ -72,7 +85,7 @@ const LoadTest: React.FC = () => {
     load();
   };
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(true);
   const toggleModal = () => {
     setShowModal(prev => !prev);
   };
@@ -113,7 +126,7 @@ const LoadTest: React.FC = () => {
         ]}
       />
       <LoadTestInfo loadTest={selectedLoadTest} />
-      {showModal && <CreatModal onCancle={toggleModal} />}
+      {showModal && <CreatModal onCancle={toggleModal} selectedScenario={flowSelected} />}
     </div>
   );
 };
