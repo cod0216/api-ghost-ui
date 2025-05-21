@@ -1,8 +1,7 @@
 import { HttpMethod, RequestOptions } from '@/common/types';
 import { buildQueryString, buildHeaders, buildFetchOptions } from '@/common/utils/apiUtils';
 
-let baseUrl = 'http://localhost:7000';
-// let baseUrl = 'http://ec2-3-38-110-166.ap-northeast-2.compute.amazonaws.com:7000';
+let baseUrl = '';
 
 export const request = async <T = any>(
   url: string,
