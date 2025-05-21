@@ -18,6 +18,7 @@ import EdgeModal from '@/pages/flow-canvas/components/custom-node/EdgeModal';
 import { TestStatus } from '@/pages/flow-canvas/types';
 import { StepResult } from '@/pages/flow-canvas/types/endpointTypes';
 import { COLORS } from '@/pages/flow-canvas/constants/color';
+import { useToast } from '@/common/components/toast/ToastContext';
 
 import PLAY from '@/assets/icons/play.svg';
 import SUCCESS from '@/assets/icons/success.svg';
@@ -48,15 +49,12 @@ const FlowCanvas: React.FC = () => {
   } = useFlowCanvas();
 
   const { autoSave } = useScenario();
-
   const [currentEdge, setCurrentEdge] = useState<Edge | null>(null);
-
   const [showMockApiModal, setShowMockApiModal] = useState<boolean>(false);
-
   const [isEdgeModalOpen, setEdgeModalOpen] = useState(false);
-
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.IDLE);
   const [stepResults, setStepResults] = useState<any[]>([]);
+  const { addToast } = useToast();
 
   const handleEdgeDoubleClick = (e: React.MouseEvent, edge: Edge) => {
     e.preventDefault();
@@ -85,6 +83,7 @@ const FlowCanvas: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePlay = (fileName: string | undefined) => {
+    addToast('test is running..', 4000);
     if (!fileName) {
       return;
     }
@@ -102,8 +101,6 @@ const FlowCanvas: React.FC = () => {
       setIsConnected(true);
 
       eventSource.addEventListener('stepResult', event => {
-        console.log('Received event:', event);
-
         try {
           const stepResult = JSON.parse(event.data) as StepResult;
           const { stepName, nextStep, isRequestSuccess } = stepResult;
@@ -151,14 +148,15 @@ const FlowCanvas: React.FC = () => {
         setTestStatus(TestStatus.COMPLETE);
         const result = JSON.parse(event.data);
         eventSource.close();
+        addToast('The test was successfully completed.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
-        console.log(result);
       });
 
       eventSource.onerror = e => {
         console.log(e);
         eventSource.close();
+        addToast('An error occurred during test execution.', 4000);
         eventSourceRef.current = null;
         setIsConnected(false);
         setTestStatus(TestStatus.ERROR);

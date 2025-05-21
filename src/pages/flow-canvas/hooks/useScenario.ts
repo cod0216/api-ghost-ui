@@ -2,12 +2,7 @@ import { useCallback } from 'react';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { exportScenario as exportScenarioThunk } from '@/store/thunks/exportScenario';
-import {
-  selectScenario,
-  setScenarioList,
-  clearSelection,
-  resetScenarioContent,
-} from '@/store/slices/scenarioSlice';
+import { selectScenario, setScenarioList, clearSelection } from '@/store/slices/scenarioSlice';
 import type { ScenarioInfo } from '@/pages/flow-canvas/types';
 import {
   getScenarioInfo,
@@ -15,11 +10,13 @@ import {
   scenarioDelete,
 } from '@/pages/flow-canvas/service/scenarioService';
 import { resetFlow } from '@/store/slices/flowSlice';
+import { useToast } from '@/common/components/toast/ToastContext';
 
 export const useScenario = () => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector(state => state.scenario.selected) as ScenarioInfo | null;
   const existingFiles = useAppSelector(state => state.scenario.list);
+  const { addToast } = useToast();
 
   const createScenario = useCallback(async (): Promise<string | void> => {
     if (selected) {
@@ -30,7 +27,7 @@ export const useScenario = () => {
     while (true) {
       const input = prompt('Enter save file name', '');
       if (input === null || input.trim() === '') {
-        alert('File name is required.');
+        addToast('File name is required.', 4000);
         return;
       }
       name = input.trim();
@@ -70,13 +67,14 @@ export const useScenario = () => {
       const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
       const resp = unwrapResult(actionResult);
       if (!resp.status) {
-        alert('Failed to save scenario.');
+        addToast('Failed to save scenario.', 4000);
         return;
       }
       const list = await getScenarioList();
       dispatch(setScenarioList(list));
       const fullfillScenario = await getScenarioInfo(fileName);
       dispatch(selectScenario(fullfillScenario));
+      addToast('An error occurred during test execution.', 4000);
       return name;
     } catch (err) {
       alert('An error occurred while saving the scenario.');
@@ -100,7 +98,6 @@ export const useScenario = () => {
         }
       } catch (error) {
         console.error('Auto-save failed with error:', error);
-        alert(`Auto-save failed: ${error instanceof Error ? error.message : error}`);
       }
     },
     [dispatch],
@@ -121,7 +118,6 @@ export const useScenario = () => {
   const exportInline = useCallback(
     async (name: string, description: string, timeoutMs: number) => {
       const fileName = `${name}.yaml`;
-      console.log('ㅎㅇ');
 
       if (selected?.name !== name && existingFiles.includes(fileName)) {
         const overwrite = window.confirm(
@@ -131,33 +127,25 @@ export const useScenario = () => {
           return;
         }
       }
-      console.log('ㅎㅇ2');
 
       try {
-        console.log('ㅎㅇ2');
-
         const actionResult = await dispatch(exportScenarioThunk({ name, description, timeoutMs }));
-        console.log('ㅎㅇ4');
 
         const resp = unwrapResult(actionResult);
-        console.log('sdg');
         if (!resp.status) {
-          alert('Failed to save scenario.');
+          addToast('Failed to save scenario.', 4000);
           return;
         }
-        console.log('ㅎㅇ3');
 
         const list = await getScenarioList();
         dispatch(setScenarioList(list));
-        console.log('ㅎㅇ4');
 
         const info = await getScenarioInfo(`${name}.yaml`);
-        console.log('ㅎㅇ5');
 
         dispatch(selectScenario(info));
       } catch (err) {
         console.error(err);
-        alert('An error occurred while saving the scenario.');
+        addToast('An error occurred while saving the scenario.', 4000);
       }
     },
     [dispatch, existingFiles, selected],
@@ -165,7 +153,7 @@ export const useScenario = () => {
 
   const removeScenario = useCallback(async (): Promise<void> => {
     if (!selected) {
-      alert('No scenario selected to delete.');
+      addToast('No scenario selected to delete.', 4000);
       return;
     }
 
@@ -177,7 +165,7 @@ export const useScenario = () => {
     try {
       const success = await scenarioDelete(fileName);
       if (!success) {
-        alert('Failed to delete scenario.');
+        addToast('Failed to delete scenario.', 4000);
         return;
       }
 
@@ -186,13 +174,13 @@ export const useScenario = () => {
         dispatch(setScenarioList(list));
       } catch (listErr) {
         console.warn('Scenario deleted, but list fetch failed:', listErr);
-        alert('Scenario deleted, but failed to refresh the scenario list.');
+        addToast('Scenario deleted, but failed to refresh the scenario list.', 4000);
       }
 
       dispatch(clearSelection());
     } catch (err) {
       console.error('removeScenario error:', err);
-      alert('An error occurred while deleting the scenario.');
+      addToast('An error occurred while deleting the scenario.', 4000);
     }
   }, [selected, dispatch]);
 
