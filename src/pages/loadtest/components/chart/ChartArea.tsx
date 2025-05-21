@@ -3,7 +3,6 @@ import styles from '@/pages/loadtest/styles/LoadTest.module.scss';
 import DataCard from '@/pages/loadtest/components/DataCard';
 import ChartCard from '@/pages/loadtest/components/ChartCard';
 import LineChart from '@/pages/loadtest/components/chart/LineChart';
-import BarChart from '@/pages/loadtest/components/chart/BarChart';
 import DoughnutChart from '@/pages/loadtest/components/chart/DoughnutChart';
 import {
   Snapshot,
@@ -159,30 +158,30 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
         <DataCard
           className={styles.dataField}
           title="Avg. Response Time"
-          value={duration?.avg.toFixed(2) ? `${duration.avg.toFixed(2)}ms` : ''}
+          value={duration?.avg ? `${duration.avg}ms` : ''}
         />
       </div>
 
       {/* Success/Failure rate */}
       <div className={styles.chartRow}>
-        <ChartCard className={styles.chartCard} title="Success/Failure Rate">
-          {lastSnapshot && <DoughnutChart data={getDoughnutChartData(lastSnapshot)} />}
-        </ChartCard>
-
         {/* VUs over time */}
-        <ChartCard className={styles.chartCard} title="Virtual Users Over Time">
+        <ChartCard className={styles.chartCard} title="VUs">
           <LineChart data={getLineChartData('vus', timeline)} />
         </ChartCard>
       </div>
 
       {/* Request/Error rate charts */}
       <div className={styles.chartRow}>
-        <ChartCard className={styles.chartCard} title="Requests Per Second">
+        {/* <ChartCard className={styles.chartCard} title="Requests Per Second">
           <LineChart data={getLineChartData('rps', timeline)} />
-        </ChartCard>
+        </ChartCard> */}
 
-        <ChartCard className={styles.chartCard} title="Failure Rate & Checks">
+        {/* <ChartCard className={styles.chartCard} title="Failure Rate">
           <LineChart data={getLineChartData('errorRate', timeline)} />
+        </ChartCard> */}
+
+        <ChartCard className={styles.chartCard} title="Success/Failure Rate">
+          {lastSnapshot && <DoughnutChart data={getDoughnutChartData(lastSnapshot)} />}
         </ChartCard>
       </div>
 
@@ -190,10 +189,6 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
       <div className={styles.chartRow}>
         <ChartCard className={styles.chartCard} title="HTTP Response Time">
           <LineChart data={getLineChartData('avgDuration', timeline)} />
-        </ChartCard>
-
-        <ChartCard className={styles.chartCard} title="Response Time Distribution">
-          <BarChart data={getBarChartData(duration)} />
         </ChartCard>
       </div>
 
@@ -210,27 +205,27 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
           <tbody>
             <tr>
               <td>Min</td>
-              <td>{duration?.min.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>Median</td>
-              <td>{duration?.med.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>P90</td>
-              <td>{duration && duration['p(90)'].toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>P95</td>
-              <td>{duration && duration['p(95)'].toFixed(2)}</td>
+              <td>{duration?.min}</td>
             </tr>
             <tr>
               <td>Max</td>
-              <td>{duration && duration.max.toFixed(2)}</td>
+              <td>{duration && duration.max}</td>
+            </tr>
+            <tr>
+              <td>Median</td>
+              <td>{duration?.med}</td>
             </tr>
             <tr>
               <td>Avg</td>
-              <td>{duration && duration.avg.toFixed(2)}</td>
+              <td>{duration && duration.avg}</td>
+            </tr>
+            <tr>
+              <td>P90</td>
+              <td>{duration && duration['p(90)']}</td>
+            </tr>
+            <tr>
+              <td>P95</td>
+              <td>{duration && duration['p(95)']}</td>
             </tr>
           </tbody>
         </table>
@@ -244,9 +239,14 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
             <thead>
               <tr>
                 <th>Endpoint</th>
-                <th>Requests</th>
-                <th>Failure Rate (%)</th>
-                <th>Avg. Duration (ms)</th>
+                <th>Request</th>
+                <th>Failure (%)</th>
+                <th>min (ms)</th>
+                <th>max (ms)</th>
+                <th>median (ms)</th>
+                <th>avg (ms)</th>
+                <th>p90 (ms)</th>
+                <th>p95 (ms)</th>
               </tr>
             </thead>
             <tbody>
@@ -255,7 +255,12 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
                   <td>{endpoint.url}</td>
                   <td>{endpoint.requests}</td>
                   <td>{endpoint.failRate.toFixed(2)}%</td>
-                  <td>{endpoint.avgDuration.toFixed(2)}</td>
+                  <td>{endpoint.minDuration}</td>
+                  <td>{endpoint.maxDuration}</td>
+                  <td>{endpoint.medDuration}</td>
+                  <td>{endpoint.avgDuration}</td>
+                  <td>{endpoint.p90}</td>
+                  <td>{endpoint.p95}</td>
                 </tr>
               ))}
             </tbody>

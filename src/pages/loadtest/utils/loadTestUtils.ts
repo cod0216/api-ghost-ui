@@ -40,7 +40,12 @@ export const parseSnapshot = (snapshot: Snapshot): ParsedSnapshot => {
 
 const formatTimestamp = (timestamp: string): string => {
   const date = new Date(timestamp);
-  return date.toLocaleTimeString();
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
 };
 
 export const getDoughnutChartData = (snapshot: Snapshot) => {
@@ -105,13 +110,6 @@ export const getLineChartData = (metricType: string, timeline: ParsedSnapshot[])
             tension: 0.4,
             fill: true,
           },
-        ],
-      };
-
-    case 'rps':
-      return {
-        labels,
-        datasets: [
           {
             label: 'Requests Per Second',
             data: timeline.map(item => item.rps),
@@ -122,6 +120,21 @@ export const getLineChartData = (metricType: string, timeline: ParsedSnapshot[])
           },
         ],
       };
+
+    // case 'rps':
+    //   return {
+    //     labels,
+    //     datasets: [
+    //       {
+    //         label: 'Requests Per Second',
+    //         data: timeline.map(item => item.rps),
+    //         borderColor: 'rgba(54, 162, 235, 1)',
+    //         backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    //         tension: 0.4,
+    //         fill: true,
+    //       },
+    //     ],
+    //   };
 
     case 'errorRate':
       return {
@@ -201,7 +214,12 @@ export const getEndpointMetrics = (endpointResultMap: Record<string, EndpointRes
       url: endpoint,
       requests: lastResult.http_reqs.count,
       failRate: lastResult.http_req_failed.rate * 100,
+      minDuration: lastResult.http_req_duration.min,
+      maxDuration: lastResult.http_req_duration.max,
+      medDuration: lastResult.http_req_duration.med,
       avgDuration: lastResult.http_req_duration.avg,
+      p90: lastResult.http_req_duration['p(90)'],
+      p95: lastResult.http_req_duration['p(95)'],
     };
   });
 };
