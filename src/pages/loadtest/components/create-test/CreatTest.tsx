@@ -249,7 +249,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose, selectedScenario }) => {
                   />
                 </label>
                 <label>
-                  Duration (s)
+                  Duration (ms)
                   <input
                     type="number"
                     value={stage.duration}

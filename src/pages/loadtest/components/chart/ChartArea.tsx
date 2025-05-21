@@ -181,7 +181,7 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
           <LineChart data={getLineChartData('rps', timeline)} />
         </ChartCard>
 
-        <ChartCard className={styles.chartCard} title="Error Rate & Checks">
+        <ChartCard className={styles.chartCard} title="Failure Rate & Checks">
           <LineChart data={getLineChartData('errorRate', timeline)} />
         </ChartCard>
       </div>
