@@ -29,7 +29,7 @@ const LoadTestInfo: React.FC<LoadTestInfoProps> = ({ loadTest }) => {
         </button>
       </div>
 
-      <ChartArea loadTest={loadTest} onTest={onTest} />
+      <ChartArea loadTest={loadTest} onTest={onTest} closeTest={() => setOnTest(false)} />
     </div>
   );
 };

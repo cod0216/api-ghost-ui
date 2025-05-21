@@ -7,7 +7,6 @@ import BarChart from '@/pages/loadtest/components/chart/BarChart';
 import DoughnutChart from '@/pages/loadtest/components/chart/DoughnutChart';
 import {
   Snapshot,
-  HttpReqDuration,
   AggregatedResult,
   EndpointResult,
   LoadTestParamInfo,
@@ -20,12 +19,14 @@ import {
   ParsedSnapshot,
   getEndpointMetrics,
 } from '@/pages/loadtest/utils/loadTestUtils';
+import { getEventSource } from '@/pages/loadtest/service/loadTestService';
 
 interface ChartAreaProps {
   loadTest: LoadTestParamInfo | null;
   onTest: boolean;
+  closeTest: () => void;
 }
-const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
+const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) => {
   const [lastSnapshot, setLastSnapshot] = useState<Snapshot>();
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [timeline, setTimeline] = useState<ParsedSnapshot[]>([]);
@@ -35,29 +36,38 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
   const [result, setResult] = useState<AggregatedResult | EndpointResult | null>(null);
 
   const eventSourceRef = useRef<EventSource | null>(null);
+  const handleSnapshot = (event: MessageEvent) => {
+    try {
+      const newSnapshot = JSON.parse(event.data) as Snapshot;
+      updateChart(newSnapshot);
+    } catch (err) {
+      console.error('Error parsing snapshot:', err);
+      closeTest();
+    }
+  };
+
+  const handleSummary = (event: MessageEvent) => {
+    closeTest();
+    eventSourceRef.current?.close();
+  };
 
   useEffect(() => {
     if (!onTest || !loadTest?.fileName) return;
 
     if (eventSourceRef.current) {
+      eventSourceRef.current.removeEventListener('snapshot', handleSnapshot);
+      eventSourceRef.current.removeEventListener('summary', handleSummary);
+
       eventSourceRef.current.close();
     }
 
-    const eventSource = new EventSource(
-      `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
-    );
+    const eventSource = getEventSource(loadTest.fileName);
+
     eventSourceRef.current = eventSource;
 
-    const handleSnapshot = (event: MessageEvent) => {
-      try {
-        const newSnapshot = JSON.parse(event.data) as Snapshot;
-        updateChart(newSnapshot);
-      } catch (err) {
-        console.error('Error parsing snapshot:', err);
-      }
-    };
-
     eventSource.addEventListener('snapshot', handleSnapshot);
+    eventSource.addEventListener('summary', handleSummary);
+
     eventSource.onopen = () => {
       setIsConnected(true);
     };
@@ -66,6 +76,7 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
       console.error('SSE error:', error);
       setIsConnected(false);
       eventSource.close();
+      closeTest();
     };
 
     return () => {
@@ -148,7 +159,7 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
         <DataCard
           className={styles.dataField}
           title="Avg. Response Time"
-          value={`${duration && duration.avg && duration.avg.toFixed(2)} ms`}
+          value={duration?.avg.toFixed(2) ? `${duration.avg.toFixed(2)}ms` : ''}
         />
       </div>
 
@@ -170,7 +181,7 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
           <LineChart data={getLineChartData('rps', timeline)} />
         </ChartCard>
 
-        <ChartCard className={styles.chartCard} title="Error Rate & Checks">
+        <ChartCard className={styles.chartCard} title="Failure Rate & Checks">
           <LineChart data={getLineChartData('errorRate', timeline)} />
         </ChartCard>
       </div>

@@ -82,12 +82,12 @@ const FlowCanvas: React.FC = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const handlePlay = (fileName: string | undefined) => {
+  const handlePlay = async (fileName: string | undefined) => {
     addToast('test is running..', 4000);
     if (!fileName) {
       return;
     }
-    const ok = autoSave(selectedScenario);
+    const ok = await autoSave(selectedScenario);
     if (isConnected) {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;

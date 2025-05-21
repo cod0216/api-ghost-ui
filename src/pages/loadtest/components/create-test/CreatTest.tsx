@@ -5,6 +5,9 @@ import { createLoadTest } from '@/pages/loadtest/service/loadTestService';
 import { CommonButton } from '@/common/components/CommonButton';
 import styles from '@/pages/loadtest/styles/CreatTest.module.scss';
 import { ScenarioInfo } from '@/pages/flow-canvas/types';
+import { useDispatch } from 'react-redux';
+import { fetchLoadTestFiles } from '@/store/slices/loadtestSlice';
+import { AppDispatch } from '@/store';
 
 interface CreatTestProps {
   onClose: () => void;
@@ -12,6 +15,8 @@ interface CreatTestProps {
 }
 
 const CreatTest: React.FC<CreatTestProps> = ({ onClose, selectedScenario }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [scenarioList, setScenarioList] = useState<string[]>([]);
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>([]);
   const [fileName, setFileName] = useState('');
@@ -79,6 +84,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose, selectedScenario }) => {
     try {
       await createLoadTest(payload);
       alert('Load Test successfully created!');
+      dispatch(fetchLoadTestFiles());
       onClose();
     } catch (error) {
       console.error('[CreatTest] submitLoadTest Error', error);
@@ -243,7 +249,7 @@ const CreatTest: React.FC<CreatTestProps> = ({ onClose, selectedScenario }) => {
                   />
                 </label>
                 <label>
-                  Duration (s)
+                  Duration (ms)
                   <input
                     type="number"
                     value={stage.duration}
