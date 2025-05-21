@@ -29,7 +29,6 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
 }) => {
   const [isExpand, setexpand] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const toggleExpand = () => {
     setexpand(expand => !expand);
@@ -43,7 +42,7 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
         {!isExpand && (
           <div
             onClick={() => {
-              navigate(ROUTES.FLOW_CANVAS.path);
+              navigate(`/apighost-ui/${ROUTES.FLOW_CANVAS.path}`);
             }}
             className={`${styles.title}`}
           >

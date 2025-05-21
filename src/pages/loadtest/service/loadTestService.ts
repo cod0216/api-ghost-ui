@@ -33,6 +33,6 @@ export const executeLoadTestParamInfo = async (
 };
 
 export const getEventSource = (name: string): EventSource => {
-  const fullUrl = `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${name}`;
+  const fullUrl = `/apighost/loadtest-execute?loadTestParam=${name}`;
   return new EventSource(fullUrl);
 };

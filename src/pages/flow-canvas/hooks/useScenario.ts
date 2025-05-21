@@ -74,7 +74,7 @@ export const useScenario = () => {
       dispatch(setScenarioList(list));
       const fullfillScenario = await getScenarioInfo(fileName);
       dispatch(selectScenario(fullfillScenario));
-      addToast('An error occurred during test execution.', 4000);
+      addToast('The scenario was created successfully', 4000);
       return name;
     } catch (err) {
       alert('An error occurred while saving the scenario.');
