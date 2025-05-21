@@ -121,21 +121,6 @@ export const getLineChartData = (metricType: string, timeline: ParsedSnapshot[])
         ],
       };
 
-    // case 'rps':
-    //   return {
-    //     labels,
-    //     datasets: [
-    //       {
-    //         label: 'Requests Per Second',
-    //         data: timeline.map(item => item.rps),
-    //         borderColor: 'rgba(54, 162, 235, 1)',
-    //         backgroundColor: 'rgba(54, 162, 235, 0.2)',
-    //         tension: 0.4,
-    //         fill: true,
-    //       },
-    //     ],
-    //   };
-
     case 'errorRate':
       return {
         labels,

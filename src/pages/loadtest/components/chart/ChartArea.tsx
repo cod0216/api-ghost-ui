@@ -172,14 +172,6 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest, closeTest }) =>
 
       {/* Request/Error rate charts */}
       <div className={styles.chartRow}>
-        {/* <ChartCard className={styles.chartCard} title="Requests Per Second">
-          <LineChart data={getLineChartData('rps', timeline)} />
-        </ChartCard> */}
-
-        {/* <ChartCard className={styles.chartCard} title="Failure Rate">
-          <LineChart data={getLineChartData('errorRate', timeline)} />
-        </ChartCard> */}
-
         <ChartCard className={styles.chartCard} title="Success/Failure Rate">
           {lastSnapshot && <DoughnutChart data={getDoughnutChartData(lastSnapshot)} />}
         </ChartCard>
