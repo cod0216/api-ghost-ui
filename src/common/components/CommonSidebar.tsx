@@ -1,6 +1,8 @@
 import React, { ReactNode, useState } from 'react';
 import styles from './CommonSidebar.module.scss';
 import { SidebarSection } from '@/common/types/index.ts';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ROUTES } from '@/config/routes.ts';
 
 interface CommonSidebarProps {
   className?: string;
@@ -20,12 +22,14 @@ interface CommonSidebarProps {
  */
 const CommonSidebar: React.FC<CommonSidebarProps> = ({
   className = '',
-  header = <h2>Ghost API</h2>,
+  header = <h2>API Ghost</h2>,
   headerIcon = null,
   search = false,
   sections = [],
 }) => {
   const [isExpand, setexpand] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleExpand = () => {
     setexpand(expand => !expand);
@@ -36,7 +40,16 @@ const CommonSidebar: React.FC<CommonSidebarProps> = ({
       className={`${styles.sidebarContainer} ${isExpand ? styles.expand : ''} ${className}`.trim()}
     >
       <div className={styles.wrappHeader}>
-        {!isExpand && <div className={`${styles.title}`}>{header}</div>}
+        {!isExpand && (
+          <div
+            onClick={() => {
+              navigate(ROUTES.FLOW_CANVAS.path);
+            }}
+            className={`${styles.title}`}
+          >
+            {header}
+          </div>
+        )}
         <button
           className={styles.expandButton}
           aria-label={isExpand ? 'expand sidebar' : 'Collapse sidebar'}
