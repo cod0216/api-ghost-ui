@@ -31,3 +31,8 @@ export const executeLoadTestParamInfo = async (
   }); //scenarioTextResonse
   return response;
 };
+
+export const getEventSource = (name: string): EventSource => {
+  const fullUrl = `/apighost/loadtest-execute?loadTestParam=${name}`;
+  return new EventSource(fullUrl);
+};

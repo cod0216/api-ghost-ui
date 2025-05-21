@@ -1,7 +1,7 @@
 import { HttpMethod, RequestOptions } from '@/common/types';
 import { buildQueryString, buildHeaders, buildFetchOptions } from '@/common/utils/apiUtils';
 
-let baseUrl = 'http://localhost:8080';
+let baseUrl = '';
 
 export const request = async <T = any>(
   url: string,

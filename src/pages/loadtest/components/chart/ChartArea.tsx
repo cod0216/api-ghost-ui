@@ -7,7 +7,6 @@ import BarChart from '@/pages/loadtest/components/chart/BarChart';
 import DoughnutChart from '@/pages/loadtest/components/chart/DoughnutChart';
 import {
   Snapshot,
-  HttpReqDuration,
   AggregatedResult,
   EndpointResult,
   LoadTestParamInfo,
@@ -20,6 +19,7 @@ import {
   ParsedSnapshot,
   getEndpointMetrics,
 } from '@/pages/loadtest/utils/loadTestUtils';
+import { getEventSource } from '@/pages/loadtest/service/loadTestService';
 
 interface ChartAreaProps {
   loadTest: LoadTestParamInfo | null;
@@ -43,9 +43,8 @@ const ChartArea: React.FC<ChartAreaProps> = ({ loadTest, onTest }) => {
       eventSourceRef.current.close();
     }
 
-    const eventSource = new EventSource(
-      `http://localhost:7000/apighost/loadtest-execute?loadTestParam=${loadTest.fileName}`,
-    );
+    const eventSource = getEventSource(loadTest.fileName);
+
     eventSourceRef.current = eventSource;
 
     const handleSnapshot = (event: MessageEvent) => {
