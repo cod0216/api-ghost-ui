@@ -39,14 +39,13 @@ const FlowCanvasMain: React.FC = () => {
   };
 
   useEffect(() => {
-    getScenarioList()
-      .then(names => dispatch(setScenarioList(names)))
-      .catch(err => console.error('[FlowCanvasMain] getScenarioList Error', err));
+    const initFlow = async () => {
+      await getScenarioList()
+        .then(names => dispatch(setScenarioList(names)))
+        .catch(err => console.error('[FlowCanvasMain] getScenarioList Error', err));
+    };
+    initFlow();
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log('[FlowCanvasMain] selected scenario changed →', selected);
-  }, [selected]);
 
   return (
     <ReactFlowProvider>
