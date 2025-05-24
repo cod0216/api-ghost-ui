@@ -110,4 +110,4 @@ npm run build
 
 ###  License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **[MIT License](https://github.com/cod0216/api-ghost-ui/blob/main/LICENSE)**.
