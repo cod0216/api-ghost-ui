@@ -63,35 +63,57 @@ npm run build
 
 ### Scenario Testing
 
-- **Drag-and-drop scenario builder** using React Flow  
-  ![nodedrag](https://github.com/user-attachments/assets/1a31443f-dcbc-4f17-854f-48078a9fe1fe)
+* **Drag-and-drop scenario builder using React Flow**
 
-    
-- **Real-time test execution and result visualization**  
-   ![resultpage](https://github.com/user-attachments/assets/eeeae1c0-5732-4de6-9f25-dd98a1256b9c)
+![nodedrag](https://github.com/user-attachments/assets/3cd89531-236e-46f0-857a-c26412507df8)
 
-    
-- **Supports WebSocket & HTTP protocols**  
-  ![websocket](https://github.com/user-attachments/assets/e194c471-0723-4d08-aac9-8ccc51ec3ab3)
 
-    
-- **Request-response mapping UI**  
-  ![mapping](https://github.com/user-attachments/assets/9a985784-9c7c-4c54-b430-cfc1a7184d3f)
+  You can create nodes by dragging and dropping endpoints listed in the API list.
 
-    
-- **Report file download**  
-  ![resultpage](https://github.com/user-attachments/assets/6d959db0-35dc-471b-bbcf-979ba8c7fe6b)
+* **Real-time test execution and result visualization**
 
-    
+![realtimeresult](https://github.com/user-attachments/assets/1e52d1df-b325-40e4-ad22-7a87b41de45d)
+
+
+  Test results are displayed in real time as the scenario is executed.
+
+* **Supports WebSocket & HTTP protocols**
+
+  ![websocket](https://github.com/user-attachments/assets/eb587765-ffe6-4828-8e45-6694d66e6b78)
+
+  WebSocket-based APIs are also fully supported for testing.
+
+* **Request-response mapping UI**
+
+![mapping](https://github.com/user-attachments/assets/200a1d30-3375-43f4-8cfb-b2c437aae95c)
+
+
+  You can define expected response values and store values to pass to the next endpoint.
+
+* **Result dashboard page**
+
+![resultpage](https://github.com/user-attachments/assets/23b4d984-59e6-4720-9768-fbcd47430a25)
+
+
+  Completed test results can be reviewed on a dedicated dashboard page.
+
+---
 
 ### Load Testing
 
-- **Generate and run load test scripts**  
-    ![loadcreate](https://github.com/user-attachments/assets/b1ef253e-a8e2-4365-ba4f-4206e1ffa579)
+* **Generate and run load test scripts**
 
-    
-- **Monitor real-time results of load tests**  
-    ![loadresult](https://github.com/user-attachments/assets/7dbd44d7-8653-43db-9a99-5e48202d7d50)
+![loadcreate](https://github.com/user-attachments/assets/c42a7c9f-8b17-4333-b19e-8604eb1269b2)
+
+
+  You can configure load test scenarios and set the number of virtual users.
+
+* **Monitor real-time results of load tests**
+
+  ![loadresult](https://github.com/user-attachments/assets/1c541b44-4929-4276-a66f-d6c526db912a)
+
+
+  Load test progress and results can be monitored in real time.
 
     
 
